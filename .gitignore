@@ -1,0 +1,10 @@
+/build
+/build-asan
+/.vscode
+/.idea
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+.DS_Store

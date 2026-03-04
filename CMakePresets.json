@@ -1,0 +1,29 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "dev-asan",
+      "displayName": "Dev (Debug + ASAN/UBSAN)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/dev-asan",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ULL_ENABLE_SANITIZERS": "ON"
+      }
+    },
+    {
+      "name": "rel",
+      "displayName": "Release",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/rel",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "ULL_ENABLE_SANITIZERS": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "dev-asan", "configurePreset": "dev-asan" },
+    { "name": "rel", "configurePreset": "rel" }
+  ]
+}
