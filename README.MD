@@ -13,3 +13,10 @@ A staged ultra-low-latency market data ingestion / replay / benchmarking project
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j
+
+## Development
+
+### Unit tests (Debug + ASAN/UBSAN)
+```bash
+./scripts/test_dev.sh
+```
