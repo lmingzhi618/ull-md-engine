@@ -20,3 +20,16 @@ cmake --build build -j
 ```bash
 ./scripts/test_dev.sh
 ```
+
+## v0.1 Status
+
+Implemented:
+- monotonic tick abstraction with `ticks()` and `ticks_to_ns()`
+- SPSC ring buffer with fixed power-of-two capacity
+- latency histogram with percentile reporting in nanoseconds
+- unit tests for ticks, ring buffer, and histogram
+- simple benchmark harness (`ull_bench`)
+
+Notes:
+- v0.1 focuses on correctness, unit consistency, and testability.
+- Performance optimization (false sharing, affinity, spin strategy) is planned for v0.2.
