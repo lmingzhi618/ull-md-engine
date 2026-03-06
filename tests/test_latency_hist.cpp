@@ -22,9 +22,9 @@ int main() {
   const auto rep = hist.report();
   assert(contains(rep, "count="));
 
-  assert(contains(rep, "p50"));
-  assert(contains(rep, "p99"));
-  assert(contains(rep, "p999"));
+  assert(contains(rep, "p50_ns="));
+  assert(contains(rep, "p99_ns="));
+  assert(contains(rep, "p999_ns="));
 
   // Basic sanity: count should be 4
   assert(contains(rep, "count=4"));

@@ -7,8 +7,8 @@ namespace ull::perf {
 
 class LatencyHist {
 public:
-  LatencyHist(std::uint64_t max_cycles, std::uint64_t bucket_cycles);
-  void add(std::uint64_t cycles) noexcept;
+  LatencyHist(std::uint64_t max_ns, std::uint64_t bucket_ns);
+  void add(std::uint64_t ns) noexcept;
   std::string report() const;
 
 private:
