@@ -1,29 +1,44 @@
 #pragma once
 #include "ull/core/cacheline.h"
 #include <atomic>
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <stdexcept>
 #include <type_traits>
 #include <vector>
 
 namespace ull {
 
+namespace detail {
+inline bool is_power_of_two(std::size_t x) noexcept {
+  return x != 0 && (x & (x - 1)) == 0;
+}
+
+inline std::size_t validate_capacity(std::size_t x) {
+  if (!is_power_of_two(x)) {
+    throw std::invalid_argument("SpscRing capacity must be a power of two");
+  }
+  return x;
+}
+} // namespace detail
+
 // SPSC ring buffer: single producer, single consumer.
-// Only supports trivially copyable T for MVP simplicity and speed.
+// Contract:
+// - capacity must be a power of two
+// - stores up to exactly `capacity` elements
+// - T must be trivially copyable
 template <class T> class SpscRing {
   static_assert(std::is_trivially_copyable_v<T>,
-                "T must be trivially copyable");
+                "SpscRing<T> requires T to be trivially copyable");
 
 public:
   explicit SpscRing(std::size_t capacity_pow2)
-      : cap_(capacity_pow2), mask_(cap_ - 1), buf_(cap_) {
-    // MVP: assume caller passes power-of-2. (We'll add validation later.)
-  }
+      : cap_(detail::validate_capacity(capacity_pow2)), mask_(cap_ - 1),
+        buf_(cap_) {}
 
   bool try_push(const T &v) noexcept {
-    const auto head =
-        head_.load(std::memory_order_relaxed); // ? Where here is relaxed, while
-                                               // tail_load is acquire
+    const auto head = head_.load(std::memory_order_relaxed);
     const auto next = head + 1;
 
     // If next - tail > cap, buffer is full.

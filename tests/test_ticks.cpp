@@ -24,9 +24,23 @@ int main() {
   const auto t0 = ull::perf::ticks();
   std::this_thread::sleep_for(std::chrono::milliseconds(1));
   const auto t1 = ull::perf::ticks();
-  const auto ns = ull::perf::ticks_to_ns(t1 - t0);
+  const auto dt = t1 - t0;
+  const auto ns = ull::perf::ticks_to_ns(dt);
+  assert(dt > 0);
   assert(ns > 0);
 
+  // A longer sleep should generally produce a larger delta.
+  const auto a0 = ull::perf::ticks();
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  const auto a1 = ull::perf::ticks();
+  const auto ns1 = ull::perf::ticks_to_ns(a1 - a0);
+
+  const auto b0 = ull::perf::ticks();
+  std::this_thread::sleep_for(std::chrono::milliseconds(3));
+  const auto b1 = ull::perf::ticks();
+  const auto ns2 = ull::perf::ticks_to_ns(b1 - b0);
+
+  assert(ns2 > ns1);
   std::cout << "test_ticks PASS\n";
   return 0;
 }

@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cstdint>
 #include <iostream>
+#include <stdexcept>
 
 #include "ull/core/spsc_ring.h"
 
@@ -10,13 +11,24 @@ struct Msg {
 };
 
 int main() {
+  // Constructor contract: capacity is reported correctly.
   ull::SpscRing<Msg> q(8);
+  assert(q.capacity() == 8);
 
-  // empty pop
+  // Constructor contract: non-power-of-two capacity must fail.
+  bool threw = false;
+  try {
+    ull::SpscRing<Msg> bad(7);
+  } catch (const std::invalid_argument &) {
+    threw = true;
+  }
+  assert(threw);
+
+  // Empty pop
   Msg out{};
   assert(!q.try_pop(out));
 
-  // push then pop preserves payload
+  // Push then pop preserves payload
   Msg m1{1, 111};
   assert(q.try_push(m1));
   assert(q.try_pop(out));
@@ -35,10 +47,11 @@ int main() {
   for (std::int32_t i = 1; i <= 8; i++) {
     assert(q.try_pop(out));
     assert(out.seq == i);
+    assert(out.payload == i * 10);
   }
   assert(!q.try_pop(out));
 
-  // wrap-around stress: push/pop many times
+  // Wrap-around stress: push/pop many times
   for (std::uint32_t i = 0; i < 10000; i++) {
     Msg m{i, i ^ 0xA5A5u};
     assert(q.try_push(m));
@@ -47,6 +60,5 @@ int main() {
   }
 
   std::cout << "test_spsc_ring PASS\n";
-
   return 0;
 }
