@@ -5,7 +5,7 @@
 #include "ull/core/spsc_ring.h"
 #include "ull/perf/latency_hist.h"
 #include "ull/perf/ticks.h"
-#include "ull/protocol/simple_binary.h"
+#include "ull/proto/simple_binary.h"
 
 int main(int argc, char **argv) {
   // 1. Parse args (N, warmup)

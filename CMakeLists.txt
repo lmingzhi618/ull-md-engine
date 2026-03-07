@@ -47,3 +47,7 @@ add_test(NAME test_spsc_ring COMMAND test_spsc_ring)
 add_executable(test_latency_hist tests/test_latency_hist.cpp)
 target_link_libraries(test_latency_hist PRIVATE ull)
 add_test(NAME test_latency_hist COMMAND test_latency_hist)
+
+add_executable(test_simple_binary tests/test_simple_binary.cpp)
+target_link_libraries(test_simple_binary PRIVATE ull)
+add_test(NAME test_simple_binary COMMAND test_simple_binary)
