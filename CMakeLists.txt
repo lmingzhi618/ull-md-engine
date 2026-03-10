@@ -23,8 +23,8 @@ include_directories(include)
 add_library(ull
   src/perf/latency_hist.cpp
   src/perf/ticks.cpp
-# src/net/udp_receiver.cpp
-# src/protocol/simple_binary.cpp
+  src/net/udp_receiver.cpp
+# src/proto/simple_binary.cpp
 )
 
 target_include_directories(ull PUBLIC include)
@@ -51,3 +51,7 @@ add_test(NAME test_latency_hist COMMAND test_latency_hist)
 add_executable(test_simple_binary tests/test_simple_binary.cpp)
 target_link_libraries(test_simple_binary PRIVATE ull)
 add_test(NAME test_simple_binary COMMAND test_simple_binary)
+
+add_executable(test_udp_receiver tests/test_udp_receiver.cpp)
+target_link_libraries(test_udp_receiver PRIVATE ull)
+add_test(NAME test_udp_receiver COMMAND test_udp_receiver)
