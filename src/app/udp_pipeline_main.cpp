@@ -106,6 +106,9 @@ int main(int argc, char **argv) {
       // MVP: spin until queue has space
     }
     ++received;
+    if ((received % 100000) == 0) {
+      std::cout << "[receiver] received=" << received << "/" << N << "\n";
+    }
   }
 
   sender.join();
@@ -113,7 +116,7 @@ int main(int argc, char **argv) {
   consumer.join();
 
   std::cout << "N=" << N << " warmup=" << WARMUP << " port=" << PORT << "\n";
-  std::cout << "hist_unit=ms bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
+  std::cout << "hist_unit=ns bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
             << "\n";
   std::cout << hist.report();
   return 0;
