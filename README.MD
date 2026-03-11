@@ -43,15 +43,17 @@ cmake --build build -j
 ./scripts/test_dev.sh
 ```
 
-## v0.1 Status
+## Status
 
-Implemented:
-- monotonic tick abstraction with `ticks()` and `ticks_to_ns()`
-- SPSC ring buffer with fixed power-of-two capacity
-- latency histogram with percentile reporting in nanoseconds
-- unit tests for ticks, ring buffer, and histogram
-- simple benchmark harness (`ull_bench`)
+Phase 1 (v0.1) — Completed
 
-Notes:
-- v0.1 focuses on correctness, unit consistency, and testability.
-- Performance optimization (false sharing, affinity, spin strategy) is planned for v0.2.
+Features:
+- UDP loopback receiver
+- fixed-size binary protocol
+- SPSC lock-free queue
+- latency histogram (p50/p99/p999)
+- end-to-end pipeline benchmark
+
+Next:
+Phase 2 will focus on latency engineering experiments
+(false sharing, affinity, spin strategies).
