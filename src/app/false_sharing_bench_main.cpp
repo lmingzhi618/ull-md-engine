@@ -15,13 +15,16 @@ int run_bench(const std::string &mode, std::uint32_t N, std::uint32_t WARMUP) {
   ull::perf::init_ticks();
   Ring q(1u << 16);
 
-  constexpr std::uint64_t kMaxNs = 5'000'000;
+  constexpr std::uint64_t kMaxNs = 20'000'000;
   constexpr std::uint64_t kBucketNs = 50;
   ull::perf::LatencyHist hist(kMaxNs, kBucketNs);
 
+  std::atomic<bool> start{false};
   std::atomic<bool> done{false};
 
   std::thread consumer([&] {
+    while (!start.load(std::memory_order_acquire)) {
+    }
     ull::proto::Msg m{};
     std::uint64_t seen = 0;
 
@@ -48,23 +51,25 @@ int run_bench(const std::string &mode, std::uint32_t N, std::uint32_t WARMUP) {
     }
   });
 
+  start.store(true, std::memory_order_release);
   for (std::uint32_t i = 1; i <= N; i++) {
     ull::proto::Msg m{};
-    m.tsc_send = ull::perf::ticks();
     m.seq = i;
     m.msg_type = 1;
     m.payload = static_cast<std::uint64_t>(i) ^ 0xA5A5A5A5ULL;
     m.reserved = 0;
 
-    while (!q.try_push(m)) {
-      // pure spin for now
+    while (true) {
+      m.tsc_send = ull::perf::ticks();
+      if (q.try_push(m)) {
+        break;
+      }
     }
   }
-
   done.store(true, std::memory_order_release);
   consumer.join();
 
-  std::cout << "mode=" << mode << " N=" << N << " warnup=" << WARMUP
+  std::cout << "mode=" << mode << " N=" << N << " warmup=" << WARMUP
             << std::endl;
   std::cout << "hist_unit=ns bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
             << std::endl;
@@ -79,6 +84,11 @@ int main(int argc, char **argv) {
       (argc >= 3) ? static_cast<std::uint32_t>(std::stoul(argv[2])) : 2'000'000;
   const std::uint32_t WARMUP =
       (argc >= 4) ? static_cast<std::uint32_t>(std::stoul(argv[3])) : 200'000;
+
+  if (N <= WARMUP) {
+    std::cerr << "N must be greater than WARMUP\n";
+    return 1;
+  }
 
   if (mode == "padded") {
     return run_bench<ull::SpscRing<ull::proto::Msg>>(mode, N, WARMUP);

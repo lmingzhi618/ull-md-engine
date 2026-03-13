@@ -13,6 +13,10 @@ A staged ultra-low-latency market data ingestion / replay / benchmarking project
 ### v0.2 — Engineering experiments
 - CPU affinity experiments
 - false-sharing experiments
+On an Apple M2 Pro, separating two hot atomic counters onto different cache lines reduced runtime by about 4x in a two-thread increment microbenchmark, demonstrating a clear false-sharing penalty in the unpadded layout.
+
+isolated microbenchmarks clearly show the cache-line contention effect, while end-to-end pipeline latency is influenced by broader system dynamics and does not always track the microbenchmark result directly.
+
 - perf / flamegraph profiling
 - replay input mode
 - CI benchmark artifacts

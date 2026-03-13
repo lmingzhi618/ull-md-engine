@@ -1,5 +1,6 @@
 #pragma once
 #include "ull/core/cacheline.h"
+#include "ull/core/utils.h"
 #include <atomic>
 #include <cassert>
 #include <cstddef>
@@ -9,19 +10,6 @@
 #include <vector>
 
 namespace ull {
-
-namespace detail {
-inline bool is_power_of_two(std::size_t x) noexcept {
-  return x != 0 && (x & (x - 1)) == 0;
-}
-
-inline std::size_t validate_capacity(std::size_t x) {
-  if (!is_power_of_two(x)) {
-    throw std::invalid_argument("SpscRing capacity must be a power of two");
-  }
-  return x;
-}
-} // namespace detail
 
 // SPSC ring buffer: single producer, single consumer.
 // Contract:
@@ -47,6 +35,7 @@ public:
 
     buf_[head & mask_] = v;                       // write payload first
     head_.store(next, std::memory_order_release); // publish
+                                                  //
     return true;
   }
 

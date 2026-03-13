@@ -41,6 +41,9 @@ target_link_libraries(udp_pipeline_bench PRIVATE ull)
 add_executable(false_sharing_bench src/app/false_sharing_bench_main.cpp)
 target_link_libraries(false_sharing_bench PRIVATE ull)
 
+add_executable(false_sharing_microbench src/app/false_sharing_microbench_main.cpp)
+target_link_libraries(false_sharing_microbench PRIVATE ull)
+
 enable_testing()
 add_executable(test_ticks tests/test_ticks.cpp)
 target_link_libraries(test_ticks PRIVATE ull)

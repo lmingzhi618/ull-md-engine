@@ -1,4 +1,5 @@
 #pragma once
+#include "ull/core/utils.h"
 #include <atomic>
 #include <cassert>
 #include <cstddef>
@@ -18,8 +19,8 @@ template <class T> class SpscRingUnpadded {
 
 public:
   explicit SpscRingUnpadded(std::size_t capacity_pow2)
-      : cap_(validate_capacity(capacity_pow2)), mask_(capacity_pow2 - 1),
-        buf_(capacity_pow2) {}
+      : cap_(detail::validate_capacity(capacity_pow2)), mask_(cap_ - 1),
+        buf_(cap_) {}
 
   bool try_push(const T &v) noexcept {
     const auto head = head_.load(std::memory_order_relaxed);
@@ -47,19 +48,6 @@ public:
   }
 
   std::size_t capacity() const noexcept { return cap_; }
-
-private:
-  inline bool is_power_of_two(std::size_t x) noexcept {
-    return x != 0 && (x & (x - 1)) == 0;
-  }
-
-  inline std::size_t validate_capacity(std::size_t x) {
-    if (!is_power_of_two(x)) {
-      throw std::invalid_argument(
-          "SpscRingUnpadded capacity must be a power of two");
-    }
-    return x;
-  }
 
 private:
   std::size_t cap_;
