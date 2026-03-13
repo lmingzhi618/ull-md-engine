@@ -116,9 +116,9 @@ can dominate the direct cost of cache-line contention.
 Padding still improves structural isolation of hot fields but may not
 translate directly into lower end-to-end latency in all workloads.
 
-⸻
+---
 
-Takeaways
+# Takeaways
 	1.	False sharing can impose large penalties in highly concurrent
 write-heavy workloads.
 	2.	Microbenchmarks are useful to isolate hardware effects.
