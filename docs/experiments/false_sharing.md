@@ -61,7 +61,7 @@ removes this contention.
 
 # Experiment B: End-to-End SPSC Queue Latency Benchmark
 
-Goal
+## Goal
 
 Measure message latency in a minimal producer → queue → consumer
 pipeline.
@@ -76,7 +76,7 @@ Two queue implementations were tested:
 	•	SpscRing (padded head/tail)
 	•	SpscRingUnpadded
 
-Queue parameters:
+## Queue parameters:
 
 ```Shell
 N = 2,000,000 messages
@@ -119,8 +119,7 @@ translate directly into lower end-to-end latency in all workloads.
 ---
 
 # Takeaways
-	1.	False sharing can impose large penalties in highly concurrent
-write-heavy workloads.
+	1.	False sharing can impose large penalties in highly concurrent write-heavy workloads.
 	2.	Microbenchmarks are useful to isolate hardware effects.
 	3.	End-to-end system benchmarks may behave differently due to:
 
