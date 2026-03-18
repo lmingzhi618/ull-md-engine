@@ -69,3 +69,7 @@ add_test(NAME test_udp_receiver COMMAND test_udp_receiver)
 add_executable(test_spsc_ring_unpadded tests/test_spsc_ring_unpadded.cpp)
 target_link_libraries(test_spsc_ring_unpadded PRIVATE ull)
 add_test(NAME test_spsc_ring_unpadded COMMAND test_spsc_ring_unpadded)
+
+add_executable(test_blocking_queue tests/test_blocking_queue.cpp)
+target_link_libraries(test_blocking_queue PRIVATE ull)
+add_test(NAME test_blocking_queue COMMAND test_blocking_queue)
