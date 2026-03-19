@@ -166,6 +166,11 @@ This experiment demonstrates a fundamental trade-off:
 | ------------ | ------------- | ----------- | --------------- |
 | Busy Polling | High          | Low         | High            |
 | Blocking     | Low           | High        | Low             |
+```text
+Determinism in low-latency systems refers to the predictability of latency distribution.
+A deterministic system produces consistent latency across runs, while a non-deterministic
+system introduces variability due to external factors such as OS scheduling.
+```
 
 ## **Conclusion**
 
