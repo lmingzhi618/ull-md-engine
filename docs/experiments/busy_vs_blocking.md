@@ -13,7 +13,6 @@
   - 1 Consumer thread
 - **CPU Affinity**: Not pinned (default OS scheduling)
 
----
 
 ## 2. Benchmark Design
 
@@ -28,7 +27,6 @@ This experiment compares two producer–consumer communication models:
   - `try_pop()` in a spin loop
 - No blocking, no syscalls
 
----
 
 ### (2) Blocking Queue
 
@@ -41,7 +39,6 @@ This experiment compares two producer–consumer communication models:
   - `pop()` (blocks when empty)
 - Uses OS scheduler for wakeup
 
----
 
 ### Common Configuration
 
@@ -60,7 +57,7 @@ latency = consumer_receive_time - producer_send_time
 * Timing:
     * ticks() + ticks_to_ns() abstraction
     * Monotonic and cross-platform
----
+
 
 ## 3. Busy Polling Results
 
@@ -111,7 +108,6 @@ This introduces:
 	•	Scheduling delays
 	•	Wake-up uncertainty
 
----
 
 ### 5.2 Busy Polling Advantages
 
@@ -125,7 +121,6 @@ This results in:
 	•	Better tail latency (p99 / p999)
 	•	More deterministic behavior
 
----
 
 ### 5.3 Tail Latency Amplification
 
@@ -138,7 +133,6 @@ In the blocking model:
 This explains:
 	* p99/p999 nearly saturating at ~8–9 ms
 
----
 
 ### 5.4 Variability
 
@@ -157,14 +151,12 @@ Busy mode is more stable because it is:
 
 Busy polling significantly outperforms blocking queues in both median and tail latency on this system.
 
----
 
 ### Engineering Insight
 
 * Blocking primitives improve CPU efficiency
 * But introduce unpredictable latency due to scheduler involvement
 
----
 
 ### Low-Latency System Implication
 
@@ -175,6 +167,6 @@ This experiment demonstrates a fundamental trade-off:
 | Busy Polling | High          | Low         | High            |
 | Blocking     | Low           | High        | Low             |
 
-### **Conclusion**
+## **Conclusion**
 
 ### In latency-sensitive systems (e.g., trading, market data processing), busy polling is often preferred despite higher CPU cost, because it eliminates scheduler-induced latency and provides tighter tail behavior.
