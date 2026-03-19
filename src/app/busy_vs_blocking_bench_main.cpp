@@ -16,13 +16,12 @@ constexpr std::uint64_t kMaxNs = 20'000'000;
 constexpr std::uint64_t kBucketNs = 50;
 constexpr std::size_t kQueueCapacity = 1u << 16;
 
-void hist_add(ull::perf::LatencyHist &hist, ull::proto::Msg &m,
-              std::uint64_t &seen, std::uint32_t WARMUP) {
+inline void record_latency(ull::perf::LatencyHist &hist, ull::proto::Msg &m,
+                           std::uint64_t &seen, std::uint32_t WARMUP) {
   const auto t1 = ull::perf::ticks();
   const auto dt_ns = ull::perf::ticks_to_ns(t1 - m.tsc_send);
 
-  ++seen;
-  if (seen > WARMUP) {
+  if (++seen > WARMUP) {
     hist.add(dt_ns);
   }
 }
@@ -40,12 +39,12 @@ int run_busy_bench(std::uint32_t N, std::uint32_t WARMUP) {
 
     while (!done.load(std::memory_order_acquire)) {
       if (q.try_pop(m)) {
-        hist_add(hist, m, seen, WARMUP);
+        record_latency(hist, m, seen, WARMUP);
       }
     }
 
     while (q.try_pop(m)) {
-      hist_add(hist, m, seen, WARMUP);
+      record_latency(hist, m, seen, WARMUP);
     }
   });
 
@@ -68,7 +67,7 @@ int run_busy_bench(std::uint32_t N, std::uint32_t WARMUP) {
   consumer.join();
 
   std::cout << "mode=busy" << " N=" << N << " warmup=" << WARMUP << std::endl;
-  std::cout << "hist_uint=ns bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
+  std::cout << "hist_unit=ns bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
             << std::endl;
   std::cout << hist.report();
 
@@ -86,7 +85,7 @@ int run_blocking_bench(std::uint32_t N, std::uint32_t WARMUP) {
     std::uint64_t seen = 0;
 
     while (q.pop(m)) {
-      hist_add(hist, m, seen, WARMUP);
+      record_latency(hist, m, seen, WARMUP);
     }
   });
 
@@ -106,7 +105,7 @@ int run_blocking_bench(std::uint32_t N, std::uint32_t WARMUP) {
 
   std::cout << "mode=blocking" << " N=" << N << " warmup=" << WARMUP
             << std::endl;
-  std::cout << "hist_uint=ns bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
+  std::cout << "hist_unit=ns bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
             << std::endl;
   std::cout << hist.report();
 
