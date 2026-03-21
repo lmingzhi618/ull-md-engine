@@ -7,6 +7,7 @@
 #include "ull/core/blocking_queue.h"
 #include "ull/core/spsc_ring.h"
 #include "ull/perf/latency_hist.h"
+#include "ull/perf/thread_affinity.h"
 #include "ull/perf/ticks.h"
 #include "ull/proto/simple_binary.h"
 
@@ -26,7 +27,8 @@ inline void record_latency(ull::perf::LatencyHist &hist, ull::proto::Msg &m,
   }
 }
 
-int run_busy_bench(std::uint32_t N, std::uint32_t WARMUP) {
+int run_busy_bench(std::uint32_t N, std::uint32_t WARMUP,
+                   const std::string &affinity) {
   ull::perf::init_ticks();
   ull::SpscRing<ull::proto::Msg> q(kQueueCapacity);
   ull::perf::LatencyHist hist(kMaxNs, kBucketNs);
@@ -47,6 +49,14 @@ int run_busy_bench(std::uint32_t N, std::uint32_t WARMUP) {
       record_latency(hist, m, seen, WARMUP);
     }
   });
+
+  if (affinity == "same") {
+    ull::perf::pin_thread_to_core(0);
+    ull::perf::pin_thread(consumer, 0);
+  } else if (affinity == "split") {
+    ull::perf::pin_thread_to_core(0);
+    ull::perf::pin_thread(consumer, 1);
+  }
 
   for (std::uint32_t i = 1; i <= N; i++) {
     ull::proto::Msg m{};
@@ -74,7 +84,8 @@ int run_busy_bench(std::uint32_t N, std::uint32_t WARMUP) {
   return 0;
 }
 
-int run_blocking_bench(std::uint32_t N, std::uint32_t WARMUP) {
+int run_blocking_bench(std::uint32_t N, std::uint32_t WARMUP,
+                       const std::string &affinity) {
   ull::perf::init_ticks();
 
   ull::BlockingQueue<ull::proto::Msg> q(kQueueCapacity);
@@ -88,6 +99,14 @@ int run_blocking_bench(std::uint32_t N, std::uint32_t WARMUP) {
       record_latency(hist, m, seen, WARMUP);
     }
   });
+
+  if (affinity == "same") {
+    ull::perf::pin_thread_to_core(0);
+    ull::perf::pin_thread(consumer, 0);
+  } else if (affinity == "split") {
+    ull::perf::pin_thread_to_core(0);
+    ull::perf::pin_thread(consumer, 1);
+  }
 
   for (std::uint32_t i = 1; i <= N; i++) {
     ull::proto::Msg m{};
@@ -119,6 +138,7 @@ int main(int argc, char **argv) {
       (argc >= 3) ? static_cast<std::uint32_t>(std::stoul(argv[2])) : 2'000'000;
   const std::uint32_t WARMUP =
       (argc >= 4) ? static_cast<std::uint32_t>(std::stoul(argv[3])) : 200'000;
+  const std::string affinity = (argc >= 5) ? argv[4] : "default";
 
   if (N <= WARMUP) {
     std::cerr << "N must be greater than WARMUP" << std::endl;
@@ -126,11 +146,11 @@ int main(int argc, char **argv) {
   }
 
   if (mode == "busy") {
-    return run_busy_bench(N, WARMUP);
+    return run_busy_bench(N, WARMUP, affinity);
   }
   if (mode == "blocking") {
 
-    return run_blocking_bench(N, WARMUP);
+    return run_blocking_bench(N, WARMUP, affinity);
   }
 
   std::cerr << "unknown mode: " << mode << " (expected 'busy' or 'blocking')"

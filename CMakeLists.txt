@@ -23,6 +23,7 @@ include_directories(include)
 add_library(ull
   src/perf/latency_hist.cpp
   src/perf/ticks.cpp
+  src/perf/thread_affinity.cpp
   src/net/udp_receiver.cpp
 # src/proto/simple_binary.cpp
 )
