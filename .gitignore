@@ -2,7 +2,7 @@
 /build-asan
 /.vscode
 /.idea
-/.cach
+.cache/
 *.o
 *.a
 *.so
