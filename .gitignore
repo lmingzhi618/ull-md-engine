@@ -2,6 +2,7 @@
 /build-asan
 /.vscode
 /.idea
+/.cach
 *.o
 *.a
 *.so
