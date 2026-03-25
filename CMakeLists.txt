@@ -45,8 +45,11 @@ target_link_libraries(false_sharing_bench PRIVATE ull)
 add_executable(false_sharing_microbench src/app/false_sharing_microbench_main.cpp)
 target_link_libraries(false_sharing_microbench PRIVATE ull)
 
+find_library(GPERFTOOLS_PROFILER_LIB profiler)
 add_executable(busy_vs_blocking_bench src/app/busy_vs_blocking_bench_main.cpp)
-target_link_libraries(busy_vs_blocking_bench PRIVATE ull)
+target_link_libraries(busy_vs_blocking_bench PRIVATE ull ${GPERFTOOLS_PROFILER_LIB})
+target_compile_options(busy_vs_blocking_bench PRIVATE -O2 -g -fno-omit-frame-pointer)
+
 
 enable_testing()
 add_executable(test_ticks tests/test_ticks.cpp)
