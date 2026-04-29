@@ -1,0 +1,533 @@
+PeriodType: cpu nanoseconds
+Period: 10000000
+Samples:
+samples/count cpu/nanoseconds
+          1   10000000: 1 2 3 
+          1   10000000: 4 5 2 3 
+          1   10000000: 6 7 8 9 
+          2   20000000: 10 11 8 9 
+          1   10000000: 12 13 8 9 
+          1   10000000: 10 11 8 9 
+          4   40000000: 14 5 2 3 
+          2   20000000: 15 7 8 9 
+          1   10000000: 16 13 8 9 
+          1   10000000: 4 5 2 3 
+          1   10000000: 17 13 8 9 
+          1   10000000: 18 13 8 9 
+          2   20000000: 10 11 8 9 
+          1   10000000: 19 13 8 9 
+          1   10000000: 17 13 8 9 
+          1   10000000: 10 11 8 9 
+          1   10000000: 14 5 2 3 
+          1   10000000: 20 13 8 9 
+          1   10000000: 10 11 8 9 
+          1   10000000: 21 2 3 
+          1   10000000: 15 13 8 9 
+          1   10000000: 10 11 8 9 
+          1   10000000: 14 5 2 3 
+          1   10000000: 22 2 3 
+          2   20000000: 4 5 2 3 
+          1   10000000: 17 13 8 9 
+          1   10000000: 10 11 8 9 
+          2   20000000: 23 2 3 
+          1   10000000: 18 13 8 9 
+          1   10000000: 20 13 8 9 
+          1   10000000: 10 11 8 9 
+          1   10000000: 24 2 3 
+          1   10000000: 18 13 8 9 
+          2   20000000: 10 11 8 9 
+          2   20000000: 14 5 2 3 
+          1   10000000: 25 2 3 
+          1   10000000: 17 13 8 9 
+          1   10000000: 20 13 8 9 
+          1   10000000: 19 13 8 9 
+          1   10000000: 24 2 3 
+          1   10000000: 26 7 8 9 
+          2   20000000: 14 5 2 3 
+          1   10000000: 22 2 3 
+          1   10000000: 14 5 2 3 
+          1   10000000: 23 2 3 
+          3   30000000: 14 5 2 3 
+          1   10000000: 23 2 3 
+          4   40000000: 10 11 8 9 
+          1   10000000: 20 13 8 9 
+          1   10000000: 26 7 8 9 
+          1   10000000: 18 13 8 9 
+          2   20000000: 20 13 8 9 
+          1   10000000: 10 11 8 9 
+          1   10000000: 14 5 2 3 
+          1   10000000: 4 5 2 3 
+          1   10000000: 15 13 8 9 
+          1   10000000: 27 2 3 
+          1   10000000: 10 11 8 9 
+          2   20000000: 24 2 3 
+          1   10000000: 28 8 9 
+          1   10000000: 10 11 8 9 
+          1   10000000: 29 8 9 
+          1   10000000: 12 13 8 9 
+          3   30000000: 14 5 2 3 
+          1   10000000: 22 2 3 
+          1   10000000: 24 2 3 
+          1   10000000: 22 2 3 
+          1   10000000: 17 13 8 9 
+          2   20000000: 23 2 3 
+          1   10000000: 24 2 3 
+          1   10000000: 10 11 8 9 
+          1   10000000: 17 13 8 9 
+          1   10000000: 20 13 8 9 
+          1   10000000: 19 13 8 9 
+          1   10000000: 30 5 2 3 
+          1   10000000: 10 11 8 9 
+          1   10000000: 31 32 32 33 5 2 3 
+          2   20000000: 17 13 8 9 
+          4   40000000: 14 5 2 3 
+          1   10000000: 27 2 3 
+          1   10000000: 20 13 8 9 
+          1   10000000: 18 13 8 9 
+          1   10000000: 14 5 2 3 
+          1   10000000: 19 13 8 9 
+          1   10000000: 10 11 8 9 
+          1   10000000: 17 13 8 9 
+          1   10000000: 24 2 3 
+          2   20000000: 14 5 2 3 
+          1   10000000: 23 2 3 
+          1   10000000: 4 5 2 3 
+          1   10000000: 23 2 3 
+          2   20000000: 10 11 8 9 
+          1   10000000: 19 13 8 9 
+          3   30000000: 34 35 33 5 11 8 9 
+          2   20000000: 36 32 33 5 11 8 9 
+          3   30000000: 37 33 5 11 8 9 
+          1   10000000: 38 33 5 11 8 9 
+          1   10000000: 39 33 5 11 8 9 
+          1   10000000: 34 35 33 5 2 3 
+          1   10000000: 40 33 33 5 2 3 
+          3   30000000: 41 32 33 5 2 3 
+          2   20000000: 42 32 33 5 2 3 
+          1   10000000: 43 35 33 5 2 3 
+         11  110000000: 44 7 8 9 
+         38  380000000: 45 13 8 9 
+          1   10000000: 10 11 8 9 
+         66  660000000: 44 13 8 9 
+         20  200000000: 14 5 11 8 9 
+          5   50000000: 46 5 11 8 9 
+          1   10000000: 47 5 11 8 9 
+          2   20000000: 24 2 3 
+         25  250000000: 10 2 3 
+         81  810000000: 48 2 3 
+         30  300000000: 49 2 3 
+          2   20000000: 50 32 32 33 5 11 8 9 
+          1   10000000: 51 32 32 33 5 11 8 9 
+          3   30000000: 52 35 35 33 5 11 8 9 
+        370 3700000000: 53 35 35 33 5 11 8 9 
+         38  380000000: 54 35 35 33 5 11 8 9 
+          4   40000000: 38 33 5 2 3 
+          6   60000000: 55 33 5 2 3 
+          1   10000000: 39 33 5 2 3 
+          1   10000000: 56 57 58 59 3 
+          5   50000000: 60 32 33 5 11 8 9 
+          1   10000000: 61 35 33 5 11 8 9 
+         38  380000000: 54 35 35 33 5 2 3 
+        413 4130000000: 53 35 35 33 5 2 3 
+          1   10000000: 51 32 32 33 5 2 3 
+          2   20000000: 50 32 32 33 5 2 3 
+Locations
+     1: 0x104601b7c M=263 ull::SpscRing::try_push /Users/lmz/ull-md-engine/include/ull/core/spsc_ring.h:36:24 s=28(_ZN3ull8SpscRingINS_5proto3MsgEE8try_pushERKS2_)
+             (anonymous namespace)::run_busy_bench /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:70:13 s=30(_ZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE)
+             main /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:149:12 s=135
+     2: 0x104601b47 M=263 (anonymous namespace)::run_busy_bench /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:69:20 s=30(_ZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE)
+             main /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:149:12 s=135
+     3: 0x185809d53 M=6 
+     4: 0x185a6bdd8 M=6 
+     5: 0x185af0eef M=6 
+     6: 0x1046021d0 M=263 ull::SpscRing::try_pop /Users/lmz/ull-md-engine/include/ull/core/spsc_ring.h:49:23 s=42(_ZN3ull8SpscRingINS_5proto3MsgEE7try_popERS2_)
+             (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:43:13 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+     7: 0x1046021ff M=263 (anonymous namespace)::record_latency /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:23:22 s=20(_ZN12_GLOBAL__N_114record_latencyERN3ull4perf11LatencyHistERNS0_5proto3MsgERyj)
+             (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:44:9 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+     8: 0x185bd1c07 M=6 
+     9: 0x185bccba7 M=6 
+    10: 0x185af0ef0 M=6 
+    11: 0x1046021f7 M=263 (anonymous namespace)::record_latency /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:22:19 s=20(_ZN12_GLOBAL__N_114record_latencyERN3ull4perf11LatencyHistERNS0_5proto3MsgERyj)
+             (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:44:9 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+    12: 0x1046021ac M=263 (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:42:13 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+    13: 0x104602217 M=263 (anonymous namespace)::record_latency /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:26:10 s=20(_ZN12_GLOBAL__N_114record_latencyERN3ull4perf11LatencyHistERNS0_5proto3MsgERyj)
+             (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:44:9 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+    14: 0x185a6be08 M=6 
+    15: 0x1046021e8 M=263 std::__1::__cxx_atomic_store[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/support/c11.h:68:3 s=67(_ZNSt3__118__cxx_atomic_storeB8ne210104IyEEvPNS_22__cxx_atomic_base_implIT_EES2_NS_12memory_orderE)
+             std::__1::__atomic_base::store[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/atomic.h:62:5 s=60(_ZNSt3__113__atomic_baseIyLb0EE5storeB8ne210104EyNS_12memory_orderE)
+             ull::SpscRing::try_pop /Users/lmz/ull-md-engine/include/ull/core/spsc_ring.h:50:11 s=42(_ZN3ull8SpscRingINS_5proto3MsgEE7try_popERS2_)
+             (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:43:13 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+    16: 0x104603550 M=263 std::__1::vector::operator[][abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__vector/vector.h:407:18 s=405(_ZNSt3__16vectorIyNS_9allocatorIyEEEixB8ne210104Em)
+             ull::perf::LatencyHist::add /Users/lmz/ull-md-engine/src/perf/latency_hist.cpp:13:5 s=10(_ZN3ull4perf11LatencyHist3addEy)
+    17: 0x1046021dc M=263 ull::SpscRing::try_pop /Users/lmz/ull-md-engine/include/ull/core/spsc_ring.h:49:9 s=42(_ZN3ull8SpscRingINS_5proto3MsgEE7try_popERS2_)
+             (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:43:13 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+    18: 0x10460355c M=263 ull::perf::LatencyHist::add /Users/lmz/ull-md-engine/src/perf/latency_hist.cpp:13:3 s=10(_ZN3ull4perf11LatencyHist3addEy)
+    19: 0x1046021c4 M=263 std::__1::__cxx_atomic_load[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/support/c11.h:81:10 s=79(_ZNSt3__117__cxx_atomic_loadB8ne210104IyEET_PKNS_22__cxx_atomic_base_implIS1_EENS_12memory_orderE)
+             std::__1::__atomic_base::load[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/atomic.h:70:12 s=68(_ZNKSt3__113__atomic_baseIyLb0EE4loadB8ne210104ENS_12memory_orderE)
+             ull::SpscRing::try_pop /Users/lmz/ull-md-engine/include/ull/core/spsc_ring.h:46:15 s=42(_ZN3ull8SpscRingINS_5proto3MsgEE7try_popERS2_)
+             (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:43:13 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+    20: 0x1046021b0 M=263 std::__1::__cxx_atomic_load[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/support/c11.h:81:10 s=79(_ZNSt3__117__cxx_atomic_loadB8ne210104IbEET_PKNS_22__cxx_atomic_base_implIS1_EENS_12memory_orderE)
+             std::__1::__atomic_base::load[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/atomic.h:70:12 s=68(_ZNKSt3__113__atomic_baseIbLb0EE4loadB8ne210104ENS_12memory_orderE)
+             (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:42:18 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+    21: 0x104601b80 M=263 std::__1::__cxx_atomic_store[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/support/c11.h:68:3 s=67(_ZNSt3__118__cxx_atomic_storeB8ne210104IyEEvPNS_22__cxx_atomic_base_implIT_EES2_NS_12memory_orderE)
+             std::__1::__atomic_base::store[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/atomic.h:62:5 s=60(_ZNSt3__113__atomic_baseIyLb0EE5storeB8ne210104EyNS_12memory_orderE)
+             ull::SpscRing::try_push /Users/lmz/ull-md-engine/include/ull/core/spsc_ring.h:37:11 s=28(_ZN3ull8SpscRingINS_5proto3MsgEE8try_pushERKS2_)
+             (anonymous namespace)::run_busy_bench /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:70:13 s=30(_ZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE)
+             main /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:149:12 s=135
+    22: 0x104603c48 M=263 ull::perf::ticks /Users/lmz/ull-md-engine/src/perf/ticks.cpp:47:7 s=45(_ZN3ull4perf5ticksEv)
+    23: 0x104601b50 M=263 std::__1::__cxx_atomic_load[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/support/c11.h:81:10 s=79(_ZNSt3__117__cxx_atomic_loadB8ne210104IyEET_PKNS_22__cxx_atomic_base_implIS1_EENS_12memory_orderE)
+             std::__1::__atomic_base::load[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/atomic.h:70:12 s=68(_ZNKSt3__113__atomic_baseIyLb0EE4loadB8ne210104ENS_12memory_orderE)
+             ull::SpscRing::try_push /Users/lmz/ull-md-engine/include/ull/core/spsc_ring.h:33:22 s=28(_ZN3ull8SpscRingINS_5proto3MsgEE8try_pushERKS2_)
+             (anonymous namespace)::run_busy_bench /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:70:13 s=30(_ZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE)
+             main /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:149:12 s=135
+    24: 0x104601b74 M=263 ull::SpscRing::try_push /Users/lmz/ull-md-engine/include/ull/core/spsc_ring.h:36:24 s=28(_ZN3ull8SpscRingINS_5proto3MsgEE8try_pushERKS2_)
+             (anonymous namespace)::run_busy_bench /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:70:13 s=30(_ZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE)
+             main /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:149:12 s=135
+    25: 0x104603df4 M=263  :0:0 s=0
+    26: 0x104603c4c M=263 ull::perf::ticks_to_ns /Users/lmz/ull-md-engine/src/perf/ticks.cpp:52:3 s=50(_ZN3ull4perf11ticks_to_nsEy)
+    27: 0x104601b54 M=263 ull::SpscRing::try_push /Users/lmz/ull-md-engine/include/ull/core/spsc_ring.h:33:56 s=28(_ZN3ull8SpscRingINS_5proto3MsgEE8try_pushERKS2_)
+             (anonymous namespace)::run_busy_bench /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:70:13 s=30(_ZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE)
+             main /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:149:12 s=135
+    28: 0x104602218 M=263 (anonymous namespace)::record_latency /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:0:10 s=20(_ZN12_GLOBAL__N_114record_latencyERN3ull4perf11LatencyHistERNS0_5proto3MsgERyj)
+             (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:44:9 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+    29: 0x104602200 M=263 (anonymous namespace)::record_latency /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:25:7 s=20(_ZN12_GLOBAL__N_114record_latencyERN3ull4perf11LatencyHistERNS0_5proto3MsgERyj)
+             (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:44:9 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+    30: 0x185b47b64 M=6 
+    31: 0x185b8f004 M=6 
+    32: 0x185a5e0d7 M=6 
+    33: 0x185a6be07 M=6 
+    34: 0x185a5e184 M=6 
+    35: 0x185a5e177 M=6 
+    36: 0x185a5e174 M=6 
+    37: 0x185a5dff4 M=6 
+    38: 0x185a6be28 M=6 
+    39: 0x185a6be20 M=6 
+    40: 0x185a5e004 M=6 
+    41: 0x185ad7b28 M=6 
+    42: 0x185b8efc0 M=6 
+    43: 0x185b8f020 M=6 
+    44: 0x1046021ec M=263 (anonymous namespace)::run_busy_bench()::$_0::operator() /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:44:24 s=38(_ZZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEENK3$_0clEv)
+             std::__1::__invoke[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__type_traits/invoke.h:87:27 s=85(_ZNSt3__18__invokeB8ne210104IJZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEENS_20__invoke_result_implIvJDpT_EE4typeEDpOSC_)
+             std::__1::__thread_execute[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:159:3 s=158(_ZNSt3__116__thread_executeB8ne210104INS_10unique_ptrINS_15__thread_structENS_14default_deleteIS2_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0JETpTnmJEEEvRNS_5tupleIJT_T0_DpT1_EEENS_15__tuple_indicesIJXspT2_EEEE)
+             std::__1::__thread_proxy[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__thread/thread.h:168:3 s=163(_ZNSt3__114__thread_proxyB8ne210104INS_5tupleIJNS_10unique_ptrINS_15__thread_structENS_14default_deleteIS3_EEEEZN12_GLOBAL__N_114run_busy_benchEjjRKNS_12basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEEE3$_0EEEEEPvSI_)
+    45: 0x104603554 M=263 ull::perf::LatencyHist::add /Users/lmz/ull-md-engine/src/perf/latency_hist.cpp:13:3 s=10(_ZN3ull4perf11LatencyHist3addEy)
+    46: 0x185b47b5c M=6 
+    47: 0x185af0ef4 M=6 
+    48: 0x104601b44 M=263 (anonymous namespace)::run_busy_bench /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:69:20 s=30(_ZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE)
+             main /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:149:12 s=135
+    49: 0x104601b84 M=263 std::__1::__cxx_atomic_store[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/support/c11.h:68:3 s=67(_ZNSt3__118__cxx_atomic_storeB8ne210104IyEEvPNS_22__cxx_atomic_base_implIT_EES2_NS_12memory_orderE)
+             std::__1::__atomic_base::store[abi:ne210104] /opt/homebrew/Cellar/llvm/21.1.4/bin/../include/c++/v1/__atomic/atomic.h:62:5 s=60(_ZNSt3__113__atomic_baseIyLb0EE5storeB8ne210104EyNS_12memory_orderE)
+             ull::SpscRing::try_push /Users/lmz/ull-md-engine/include/ull/core/spsc_ring.h:37:11 s=28(_ZN3ull8SpscRingINS_5proto3MsgEE8try_pushERKS2_)
+             (anonymous namespace)::run_busy_bench /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:70:13 s=30(_ZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE)
+             main /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:149:12 s=135
+    50: 0x185b8efdc M=6 
+    51: 0x185b8f00c M=6 
+    52: 0x185b8f034 M=6 
+    53: 0x185b8f06c M=6 
+    54: 0x185b8f070 M=6 
+    55: 0x185a5e18c M=6 
+    56: 0x185b90ae4 M=6 
+    57: 0x185bd40ab M=6 
+    58: 0x185b04323 M=6 
+    59: 0x104601ba7 M=263 (anonymous namespace)::run_busy_bench /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:77:12 s=30(_ZN12_GLOBAL__N_114run_busy_benchEjjRKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE)
+             main /Users/lmz/ull-md-engine/src/app/busy_vs_blocking_bench_main.cpp:149:12 s=135
+    60: 0x185b8efc8 M=6 
+    61: 0x185b8f018 M=6 
+Mappings
+1: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/libc++.1.dylib  
+2: 0x1f2afcf78/0x1f2afe608/0x6b404f78 /usr/lib/libc++.1.dylib  
+3: 0x1f00efd40/0x1f00f5560/0x689f7d40 /usr/lib/libc++.1.dylib  
+4: 0x1f3770120/0x1f3770150/0x6c078120 /usr/lib/libc++.1.dylib  
+5: 0x1f40f7178/0x1f40fba28/0x6c9ff178 /usr/lib/libc++.1.dylib  
+6: 0x1856f8000/0x1ebec90c8/0x0 /usr/lib/libc++.1.dylib  
+7: 0x185ae0000/0x185b72ea4/0x3e8000 /usr/lib/libc++.1.dylib  
+8: 0x2a7f1c000/0x2d6698000/0x7a19c000 /usr/lib/libRosetta.dylib  
+9: 0x29ee1b9b8/0x29ee1b9c8/0x7309b9b8 /usr/lib/libRosetta.dylib  
+10: 0x29d610970/0x29d611ad0/0x71890970 /usr/lib/libRosetta.dylib  
+11: 0x2a43e0a20/0x2a43e0d90/0x78660a20 /usr/lib/libRosetta.dylib  
+12: 0x29743c140/0x29743c178/0x6d6bc140 /usr/lib/libRosetta.dylib  
+13: 0x280098000/0x28009f31a/0x56318000 /usr/lib/libRosetta.dylib  
+14: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/libc++abi.dylib  
+15: 0x1f2afe608/0x1f2afe6e0/0x6b406608 /usr/lib/libc++abi.dylib  
+16: 0x1f00f5560/0x1f00f5920/0x689fd560 /usr/lib/libc++abi.dylib  
+17: 0x1f3770150/0x1f3770180/0x6c078150 /usr/lib/libc++abi.dylib  
+18: 0x1f40fba28/0x1f40ff4c0/0x6ca03a28 /usr/lib/libc++abi.dylib  
+19: 0x1ebec90c8/0x1ebec9548/0x667d10c8 /usr/lib/libc++abi.dylib  
+20: 0x185b73000/0x185b8d930/0x47b000 /usr/lib/libc++abi.dylib  
+21: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/libobjc.A.dylib  
+22: 0x1f2868000/0x1f2aea7e0/0x6b170000 /usr/lib/libobjc.A.dylib  
+23: 0x2001a4f68/0x205001e48/0x76aacf68 /usr/lib/libobjc.A.dylib  
+24: 0x1f2aea800/0x1f2af0d50/0x6b3f2800 /usr/lib/libobjc.A.dylib  
+25: 0x1f00e0000/0x1f00e06b0/0x689e8000 /usr/lib/libobjc.A.dylib  
+26: 0x1f37629c8/0x1f3762a60/0x6c06a9c8 /usr/lib/libobjc.A.dylib  
+27: 0x1f40cdbe0/0x1f40cea68/0x6c9d5be0 /usr/lib/libobjc.A.dylib  
+28: 0x1ebec06e0/0x1ebec1260/0x667c86e0 /usr/lib/libobjc.A.dylib  
+29: 0x18577c000/0x1857cf48c/0x84000 /usr/lib/libobjc.A.dylib  
+30: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libxpc.dylib  
+31: 0x1f2af4730/0x1f2af5328/0x6b3fc730 /usr/lib/system/libxpc.dylib  
+32: 0x1f00e19c0/0x1f00e28b8/0x689e99c0 /usr/lib/system/libxpc.dylib  
+33: 0x1f3763cd8/0x1f3763d28/0x6c06bcd8 /usr/lib/system/libxpc.dylib  
+34: 0x1f40d9a80/0x1f40dedb0/0x6c9e1a80 /usr/lib/system/libxpc.dylib  
+35: 0x1ebec1320/0x1ebec2bd0/0x667c9320 /usr/lib/system/libxpc.dylib  
+36: 0x1858a4000/0x1858f8f80/0x1ac000 /usr/lib/system/libxpc.dylib  
+37: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libunwind.dylib  
+38: 0x1f2beb3e8/0x1f2beb3f0/0x6b4f33e8 /usr/lib/system/libunwind.dylib  
+39: 0x1f03cdb78/0x1f03ce579/0x68cd5b78 /usr/lib/system/libunwind.dylib  
+40: 0x1f4f8d6d8/0x1f4f8d7f8/0x6d8956d8 /usr/lib/system/libunwind.dylib  
+41: 0x1ec855128/0x1ec855448/0x6715d128 /usr/lib/system/libunwind.dylib  
+42: 0x1955ae000/0x1955b7b0c/0xfeb6000 /usr/lib/system/libunwind.dylib  
+43: 0x2a7f1c000/0x2d6698000/0x7a19c000 /usr/lib/system/libsystem_trial.dylib  
+44: 0x2a44d0e20/0x2a44d0e58/0x78750e20 /usr/lib/system/libsystem_trial.dylib  
+45: 0x2817bb000/0x2817bbbb8/0x57a3b000 /usr/lib/system/libsystem_trial.dylib  
+46: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_trace.dylib  
+47: 0x1f2af5328/0x1f2af5a50/0x6b3fd328 /usr/lib/system/libsystem_trace.dylib  
+48: 0x1f00e28b8/0x1f00e2cf8/0x689ea8b8 /usr/lib/system/libsystem_trace.dylib  
+49: 0x1f3763d28/0x1f3763fd0/0x6c06bd28 /usr/lib/system/libsystem_trace.dylib  
+50: 0x1f40dedb0/0x1f40e0198/0x6c9e6db0 /usr/lib/system/libsystem_trace.dylib  
+51: 0x1ebec2bd0/0x1ebec3288/0x667cabd0 /usr/lib/system/libsystem_trace.dylib  
+52: 0x1858f9000/0x1859198e0/0x201000 /usr/lib/system/libsystem_trace.dylib  
+53: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_symptoms.dylib  
+54: 0x1f2b7a2b8/0x1f2b7a2d8/0x6b4822b8 /usr/lib/system/libsystem_symptoms.dylib  
+55: 0x1f028bef0/0x1f028bf20/0x68b93ef0 /usr/lib/system/libsystem_symptoms.dylib  
+56: 0x1f492b300/0x1f492b5c8/0x6d233300 /usr/lib/system/libsystem_symptoms.dylib  
+57: 0x1ec439b10/0x1ec439cb0/0x66d41b10 /usr/lib/system/libsystem_symptoms.dylib  
+58: 0x18df1f000/0x18df273b8/0x8827000 /usr/lib/system/libsystem_symptoms.dylib  
+59: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_pthread.dylib  
+60: 0x1f2b00000/0x1f2b10014/0x6b408000 /usr/lib/system/libsystem_pthread.dylib  
+61: 0x1f00f8000/0x1f0104046/0x68a00000 /usr/lib/system/libsystem_pthread.dylib  
+62: 0x1f40ff610/0x1f40ff840/0x6ca07610 /usr/lib/system/libsystem_pthread.dylib  
+63: 0x1ebecc0c8/0x1ebecc100/0x667d40c8 /usr/lib/system/libsystem_pthread.dylib  
+64: 0x185bcb000/0x185bd7abc/0x4d3000 /usr/lib/system/libsystem_pthread.dylib  
+65: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_platform.dylib  
+66: 0x1f2b10018/0x1f2b10058/0x6b418018 /usr/lib/system/libsystem_platform.dylib  
+67: 0x1f0104048/0x1f0104190/0x68a0c048 /usr/lib/system/libsystem_platform.dylib  
+68: 0x1f40ff840/0x1f40ffa60/0x6ca07840 /usr/lib/system/libsystem_platform.dylib  
+69: 0x1ebecc100/0x1ebecc120/0x667d4100 /usr/lib/system/libsystem_platform.dylib  
+70: 0x185bd8000/0x185be03f0/0x4e0000 /usr/lib/system/libsystem_platform.dylib  
+71: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_kernel.dylib  
+72: 0x1f2afe6e0/0x1f2afedb8/0x6b4066e0 /usr/lib/system/libsystem_kernel.dylib  
+73: 0x1f00f5920/0x1f00f5c94/0x689fd920 /usr/lib/system/libsystem_kernel.dylib  
+74: 0x1f40ff4c0/0x1f40ff610/0x6ca074c0 /usr/lib/system/libsystem_kernel.dylib  
+75: 0x1ebec9548/0x1ebecc0c8/0x667d1548 /usr/lib/system/libsystem_kernel.dylib  
+76: 0x185b8e000/0x185bca4a0/0x496000 /usr/lib/system/libsystem_kernel.dylib  
+77: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_secinit.dylib  
+78: 0x1f03cf6e0/0x1f03cf828/0x68cd76e0 /usr/lib/system/libsystem_secinit.dylib  
+79: 0x1f4f8e190/0x1f4f8e4c8/0x6d896190 /usr/lib/system/libsystem_secinit.dylib  
+80: 0x1ec855868/0x1ec8558f8/0x6715d868 /usr/lib/system/libsystem_secinit.dylib  
+81: 0x1955d4000/0x1955d74c0/0xfedc000 /usr/lib/system/libsystem_secinit.dylib  
+82: 0x2a7f1c000/0x2d6698000/0x7a19c000 /usr/lib/system/libsystem_sanitizers.dylib  
+83: 0x29d7ac690/0x29d7acbf0/0x71a2c690 /usr/lib/system/libsystem_sanitizers.dylib  
+84: 0x29fa12e00/0x29fa12e30/0x73c92e00 /usr/lib/system/libsystem_sanitizers.dylib  
+85: 0x2a44d0c88/0x2a44d0e20/0x78750c88 /usr/lib/system/libsystem_sanitizers.dylib  
+86: 0x2977c6420/0x2977c64e0/0x6da46420 /usr/lib/system/libsystem_sanitizers.dylib  
+87: 0x2817b3000/0x2817ba874/0x57a33000 /usr/lib/system/libsystem_sanitizers.dylib  
+88: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_sandbox.dylib  
+89: 0x1f2bc5438/0x1f2bc5460/0x6b4cd438 /usr/lib/system/libsystem_sandbox.dylib  
+90: 0x1f03a7ba0/0x1f03a7bc0/0x68cafba0 /usr/lib/system/libsystem_sandbox.dylib  
+91: 0x1f4dbd4d0/0x1f4dbd760/0x6d6c54d0 /usr/lib/system/libsystem_sandbox.dylib  
+92: 0x1ec77cc88/0x1ec77cd48/0x67084c88 /usr/lib/system/libsystem_sandbox.dylib  
+93: 0x1932f4000/0x1932fa6a8/0xdbfc000 /usr/lib/system/libsystem_sandbox.dylib  
+94: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_notify.dylib  
+95: 0x1f2b39be0/0x1f2b39c10/0x6b441be0 /usr/lib/system/libsystem_notify.dylib  
+96: 0x1f01eaa00/0x1f01eab70/0x68af2a00 /usr/lib/system/libsystem_notify.dylib  
+97: 0x1f44ae8e0/0x1f44aed98/0x6cdb68e0 /usr/lib/system/libsystem_notify.dylib  
+98: 0x1ec310768/0x1ec310950/0x66c18768 /usr/lib/system/libsystem_notify.dylib  
+99: 0x189ff5000/0x18a006ff4/0x48fd000 /usr/lib/system/libsystem_notify.dylib  
+100: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_networkextension.dylib  
+101: 0x1f2b63680/0x1f2b63782/0x6b46b680 /usr/lib/system/libsystem_networkextension.dylib  
+102: 0x1f0255130/0x1f0255768/0x68b5d130 /usr/lib/system/libsystem_networkextension.dylib  
+103: 0x1f4772290/0x1f4772f08/0x6d07a290 /usr/lib/system/libsystem_networkextension.dylib  
+104: 0x1ec3c6c70/0x1ec3c7388/0x66ccec70 /usr/lib/system/libsystem_networkextension.dylib  
+105: 0x18c2d4000/0x18c2eefdc/0x6bdc000 /usr/lib/system/libsystem_networkextension.dylib  
+106: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_malloc.dylib  
+107: 0x1f2af6490/0x1f2af6774/0x6b3fe490 /usr/lib/system/libsystem_malloc.dylib  
+108: 0x1f00ea438/0x1f00ec834/0x689f2438 /usr/lib/system/libsystem_malloc.dylib  
+109: 0x1f3768000/0x1f3770000/0x6c070000 /usr/lib/system/libsystem_malloc.dylib  
+110: 0x1f40e2348/0x1f40e2e10/0x6c9ea348 /usr/lib/system/libsystem_malloc.dylib  
+111: 0x1ebec54a0/0x1ebec5d78/0x667cd4a0 /usr/lib/system/libsystem_malloc.dylib  
+112: 0x1859c7000/0x185a12c00/0x2cf000 /usr/lib/system/libsystem_malloc.dylib  
+113: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_m.dylib  
+114: 0x1f03cda50/0x1f03cda54/0x68cd5a50 /usr/lib/system/libsystem_m.dylib  
+115: 0x1f4f8c5f0/0x1f4f8c618/0x6d8945f0 /usr/lib/system/libsystem_m.dylib  
+116: 0x195544000/0x1955818b8/0xfe4c000 /usr/lib/system/libsystem_m.dylib  
+117: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_info.dylib  
+118: 0x1f2b10058/0x1f2b10500/0x6b418058 /usr/lib/system/libsystem_info.dylib  
+119: 0x1f0104190/0x1f0104ce1/0x68a0c190 /usr/lib/system/libsystem_info.dylib  
+120: 0x1f3770180/0x1f3770350/0x6c078180 /usr/lib/system/libsystem_info.dylib  
+121: 0x1f40ffa60/0x1f4101180/0x6ca07a60 /usr/lib/system/libsystem_info.dylib  
+122: 0x1ebecc120/0x1ebecc6a8/0x667d4120 /usr/lib/system/libsystem_info.dylib  
+123: 0x185be1000/0x185c10e24/0x4e9000 /usr/lib/system/libsystem_info.dylib  
+124: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_featureflags.dylib  
+125: 0x1f2afa1b0/0x1f2afa1d0/0x6b4021b0 /usr/lib/system/libsystem_featureflags.dylib  
+126: 0x1f00edbc8/0x1f00edbf8/0x689f5bc8 /usr/lib/system/libsystem_featureflags.dylib  
+127: 0x1f40f6678/0x1f40f67f8/0x6c9fe678 /usr/lib/system/libsystem_featureflags.dylib  
+128: 0x1ebec6ad0/0x1ebec6b10/0x667cead0 /usr/lib/system/libsystem_featureflags.dylib  
+129: 0x185a5a000/0x185a5cfec/0x362000 /usr/lib/system/libsystem_featureflags.dylib  
+130: 0x2a7f1c000/0x2d6698000/0x7a19c000 /usr/lib/system/libsystem_eligibility.dylib  
+131: 0x29ee28a70/0x29ee28a80/0x730a8a70 /usr/lib/system/libsystem_eligibility.dylib  
+132: 0x2a44d0ad0/0x2a44d0c88/0x78750ad0 /usr/lib/system/libsystem_eligibility.dylib  
+133: 0x2977c5e30/0x2977c6420/0x6da45e30 /usr/lib/system/libsystem_eligibility.dylib  
+134: 0x2817a9000/0x2817b2118/0x57a29000 /usr/lib/system/libsystem_eligibility.dylib  
+135: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_dnssd.dylib  
+136: 0x1f2bec410/0x1f2bec418/0x6b4f4410 /usr/lib/system/libsystem_dnssd.dylib  
+137: 0x1f03cf828/0x1f03cf850/0x68cd7828 /usr/lib/system/libsystem_dnssd.dylib  
+138: 0x1f4f8e6d8/0x1f4f8e8d0/0x6d8966d8 /usr/lib/system/libsystem_dnssd.dylib  
+139: 0x1ec855918/0x1ec855990/0x6715d918 /usr/lib/system/libsystem_dnssd.dylib  
+140: 0x1955dc000/0x1955e4f88/0xfee4000 /usr/lib/system/libsystem_dnssd.dylib  
+141: 0x2a7f1c000/0x2d6698000/0x7a19c000 /usr/lib/system/libsystem_darwindirectory.dylib  
+142: 0x29ee28a30/0x29ee28a70/0x730a8a30 /usr/lib/system/libsystem_darwindirectory.dylib  
+143: 0x2a44d0788/0x2a44d0ad0/0x78750788 /usr/lib/system/libsystem_darwindirectory.dylib  
+144: 0x2977c5ca0/0x2977c5e30/0x6da45ca0 /usr/lib/system/libsystem_darwindirectory.dylib  
+145: 0x2817a5000/0x2817a8dec/0x57a25000 /usr/lib/system/libsystem_darwindirectory.dylib  
+146: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_darwin.dylib  
+147: 0x1f2b36a08/0x1f2b36a48/0x6b43ea08 /usr/lib/system/libsystem_darwin.dylib  
+148: 0x1f01e24d0/0x1f01e24e0/0x68aea4d0 /usr/lib/system/libsystem_darwin.dylib  
+149: 0x1f4491038/0x1f4491480/0x6cd99038 /usr/lib/system/libsystem_darwin.dylib  
+150: 0x1ec2f4328/0x1ec2f6cd0/0x66bfc328 /usr/lib/system/libsystem_darwin.dylib  
+151: 0x189b84000/0x189b8e398/0x448c000 /usr/lib/system/libsystem_darwin.dylib  
+152: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_coreservices.dylib  
+153: 0x1f2bdfa88/0x1f2bdfb30/0x6b4e7a88 /usr/lib/system/libsystem_coreservices.dylib  
+154: 0x1f03c52a0/0x1f03c52c0/0x68ccd2a0 /usr/lib/system/libsystem_coreservices.dylib  
+155: 0x1f4f0b7e8/0x1f4f0bae8/0x6d8137e8 /usr/lib/system/libsystem_coreservices.dylib  
+156: 0x1ec831798/0x1ec8320a0/0x67139798 /usr/lib/system/libsystem_coreservices.dylib  
+157: 0x194ff1000/0x194ff7f50/0xf8f9000 /usr/lib/system/libsystem_coreservices.dylib  
+158: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_containermanager.dylib  
+159: 0x1f2bac190/0x1f2bac338/0x6b4b4190 /usr/lib/system/libsystem_containermanager.dylib  
+160: 0x1f03769d0/0x1f0376ed0/0x68c7e9d0 /usr/lib/system/libsystem_containermanager.dylib  
+161: 0x1f3818790/0x1f3818bc8/0x6c120790 /usr/lib/system/libsystem_containermanager.dylib  
+162: 0x1f4be2970/0x1f4be4438/0x6d4ea970 /usr/lib/system/libsystem_containermanager.dylib  
+163: 0x1ec6d30a0/0x1ec6d3dc0/0x66fdb0a0 /usr/lib/system/libsystem_containermanager.dylib  
+164: 0x191ea1000/0x191ed92b8/0xc7a9000 /usr/lib/system/libsystem_containermanager.dylib  
+165: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_configuration.dylib  
+166: 0x1f2bc5378/0x1f2bc5438/0x6b4cd378 /usr/lib/system/libsystem_configuration.dylib  
+167: 0x1f03a7b98/0x1f03a7b99/0x68cafb98 /usr/lib/system/libsystem_configuration.dylib  
+168: 0x1f4dbd1a8/0x1f4dbd4d0/0x6d6c51a8 /usr/lib/system/libsystem_configuration.dylib  
+169: 0x1ec77cab0/0x1ec77cc88/0x67084ab0 /usr/lib/system/libsystem_configuration.dylib  
+170: 0x1932ef000/0x1932f3670/0xdbf7000 /usr/lib/system/libsystem_configuration.dylib  
+171: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_collections.dylib  
+172: 0x1f4f8e040/0x1f4f8e190/0x6d896040 /usr/lib/system/libsystem_collections.dylib  
+173: 0x1ec855860/0x1ec855868/0x6715d860 /usr/lib/system/libsystem_collections.dylib  
+174: 0x1955cf000/0x1955d3a1c/0xfed7000 /usr/lib/system/libsystem_collections.dylib  
+175: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_c.dylib  
+176: 0x1f2afa1d0/0x1f2afcf74/0x6b4021d0 /usr/lib/system/libsystem_c.dylib  
+177: 0x1f00edc00/0x1f00efd20/0x689f5c00 /usr/lib/system/libsystem_c.dylib  
+178: 0x1f3770070/0x1f3770120/0x6c078070 /usr/lib/system/libsystem_c.dylib  
+179: 0x1f40f67f8/0x1f40f7178/0x6c9fe7f8 /usr/lib/system/libsystem_c.dylib  
+180: 0x1ebec6b10/0x1ebec8368/0x667ceb10 /usr/lib/system/libsystem_c.dylib  
+181: 0x185a5d000/0x185adf048/0x365000 /usr/lib/system/libsystem_c.dylib  
+182: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_blocks.dylib  
+183: 0x1f2af4538/0x1f2af4730/0x6b3fc538 /usr/lib/system/libsystem_blocks.dylib  
+184: 0x1f00e19a8/0x1f00e19c0/0x689e99a8 /usr/lib/system/libsystem_blocks.dylib  
+185: 0x1f40d95e8/0x1f40d9a78/0x6c9e15e8 /usr/lib/system/libsystem_blocks.dylib  
+186: 0x1ebec1260/0x1ebec1318/0x667c9260 /usr/lib/system/libsystem_blocks.dylib  
+187: 0x1858a0000/0x1858a31d1/0x1a8000 /usr/lib/system/libsystem_blocks.dylib  
+188: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libsystem_asl.dylib  
+189: 0x1f2b655b0/0x1f2b65718/0x6b46d5b0 /usr/lib/system/libsystem_asl.dylib  
+190: 0x1f0255a60/0x1f0255c70/0x68b5da60 /usr/lib/system/libsystem_asl.dylib  
+191: 0x1f47dfe28/0x1f47e0878/0x6d0e7e28 /usr/lib/system/libsystem_asl.dylib  
+192: 0x1ec3c8758/0x1ec3c8d78/0x66cd0758 /usr/lib/system/libsystem_asl.dylib  
+193: 0x18c372000/0x18c389ff4/0x6c7a000 /usr/lib/system/libsystem_asl.dylib  
+194: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libremovefile.dylib  
+195: 0x1f4f8e4c8/0x1f4f8e658/0x6d8964c8 /usr/lib/system/libremovefile.dylib  
+196: 0x1ec8558f8/0x1ec855908/0x6715d8f8 /usr/lib/system/libremovefile.dylib  
+197: 0x1955d8000/0x1955dab58/0xfee0000 /usr/lib/system/libremovefile.dylib  
+198: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libquarantine.dylib  
+199: 0x1f2bcdc28/0x1f2bcdc38/0x6b4d5c28 /usr/lib/system/libquarantine.dylib  
+200: 0x1f4e408c8/0x1f4e40a20/0x6d7488c8 /usr/lib/system/libquarantine.dylib  
+201: 0x1ec794d28/0x1ec794d78/0x6709cd28 /usr/lib/system/libquarantine.dylib  
+202: 0x19486e000/0x1948711fc/0xf176000 /usr/lib/system/libquarantine.dylib  
+203: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libmacho.dylib  
+204: 0x1f4f8c6c8/0x1f4f8c738/0x6d8946c8 /usr/lib/system/libmacho.dylib  
+205: 0x1ec8541a8/0x1ec854950/0x6715c1a8 /usr/lib/system/libmacho.dylib  
+206: 0x195583000/0x195586538/0xfe8b000 /usr/lib/system/libmacho.dylib  
+207: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libkeymgr.dylib  
+208: 0x1f4f8e658/0x1f4f8e6d8/0x6d896658 /usr/lib/system/libkeymgr.dylib  
+209: 0x1ec855908/0x1ec855918/0x6715d908 /usr/lib/system/libkeymgr.dylib  
+210: 0x1955db000/0x1955dbf28/0xfee3000 /usr/lib/system/libkeymgr.dylib  
+211: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libdyld.dylib  
+212: 0x1f2844010/0x1f2844018/0x6b14c010 /usr/lib/system/libdyld.dylib  
+213: 0x1f2af0d50/0x1f2af0dd0/0x6b3f8d50 /usr/lib/system/libdyld.dylib  
+214: 0x1f00e06b0/0x1f00e19a8/0x689e86b0 /usr/lib/system/libdyld.dylib  
+215: 0x1f3762a60/0x1f3762a68/0x6c06aa60 /usr/lib/system/libdyld.dylib  
+216: 0x1f40cf2c0/0x1f40d1de8/0x6c9d72c0 /usr/lib/system/libdyld.dylib  
+217: 0x1f40cea68/0x1f40cf2c0/0x6c9d6a68 /usr/lib/system/libdyld.dylib  
+218: 0x1857d0000/0x185800bcc/0xd8000 /usr/lib/system/libdyld.dylib  
+219: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libdispatch.dylib  
+220: 0x1f2af6780/0x1f2afa1b0/0x6b3fe780 /usr/lib/system/libdispatch.dylib  
+221: 0x1f00ec840/0x1f00edbc8/0x689f4840 /usr/lib/system/libdispatch.dylib  
+222: 0x1f3770000/0x1f3770070/0x6c078000 /usr/lib/system/libdispatch.dylib  
+223: 0x1f40e2e40/0x1f40f6678/0x6c9eae40 /usr/lib/system/libdispatch.dylib  
+224: 0x1ebec5d80/0x1ebec6ad0/0x667cdd80 /usr/lib/system/libdispatch.dylib  
+225: 0x185a13000/0x185a59e60/0x31b000 /usr/lib/system/libdispatch.dylib  
+226: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libcorecrypto.dylib  
+227: 0x1f2af5a50/0x1f2af6490/0x6b3fda50 /usr/lib/system/libcorecrypto.dylib  
+228: 0x1f00e2d00/0x1f00ea438/0x689ead00 /usr/lib/system/libcorecrypto.dylib  
+229: 0x1f3763fd0/0x1f3764088/0x6c06bfd0 /usr/lib/system/libcorecrypto.dylib  
+230: 0x1f40e0198/0x1f40e2348/0x6c9e8198 /usr/lib/system/libcorecrypto.dylib  
+231: 0x1ebec3288/0x1ebec54a0/0x667cb288 /usr/lib/system/libcorecrypto.dylib  
+232: 0x18591a000/0x1859c6970/0x222000 /usr/lib/system/libcorecrypto.dylib  
+233: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libcopyfile.dylib  
+234: 0x1f2beb400/0x1f2beb410/0x6b4f3400 /usr/lib/system/libcopyfile.dylib  
+235: 0x1f4f8db68/0x1f4f8dfd8/0x6d895b68 /usr/lib/system/libcopyfile.dylib  
+236: 0x1ec855480/0x1ec855860/0x6715d480 /usr/lib/system/libcopyfile.dylib  
+237: 0x1955c0000/0x1955ca700/0xfec8000 /usr/lib/system/libcopyfile.dylib  
+238: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libcompiler_rt.dylib  
+239: 0x1f2beb410/0x1f2bec410/0x6b4f3410 /usr/lib/system/libcompiler_rt.dylib  
+240: 0x1f4f8dfd8/0x1f4f8e040/0x6d895fd8 /usr/lib/system/libcompiler_rt.dylib  
+241: 0x1955cb000/0x1955ce960/0xfed3000 /usr/lib/system/libcompiler_rt.dylib  
+242: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libcommonCrypto.dylib  
+243: 0x1f2beb3c8/0x1f2beb3e8/0x6b4f33c8 /usr/lib/system/libcommonCrypto.dylib  
+244: 0x1f4f8c850/0x1f4f8d6d8/0x6d894850 /usr/lib/system/libcommonCrypto.dylib  
+245: 0x1ec854988/0x1ec855128/0x6715c988 /usr/lib/system/libcommonCrypto.dylib  
+246: 0x1955a0000/0x1955ad620/0xfea8000 /usr/lib/system/libcommonCrypto.dylib  
+247: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/system/libcache.dylib  
+248: 0x1f4f8e8d0/0x1f4f8e9a8/0x6d8968d0 /usr/lib/system/libcache.dylib  
+249: 0x1ec855990/0x1ec855a38/0x6715d990 /usr/lib/system/libcache.dylib  
+250: 0x1955e5000/0x1955ea0b4/0xfeed000 /usr/lib/system/libcache.dylib  
+251: 0x205004000/0x229d80000/0x7b90c000 /usr/lib/libSystem.B.dylib  
+252: 0x1f2bec418/0x1f2bec420/0x6b4f4418 /usr/lib/libSystem.B.dylib  
+253: 0x1f03cf850/0x1f03cf858/0x68cd7850 /usr/lib/libSystem.B.dylib  
+254: 0x1f4f8e9a8/0x1f4f8ec88/0x6d8969a8 /usr/lib/libSystem.B.dylib  
+255: 0x1ec855a38/0x1ec855a48/0x6715da38 /usr/lib/libSystem.B.dylib  
+256: 0x1955eb000/0x1955eccf4/0xfef3000 /usr/lib/libSystem.B.dylib  
+257: 0x10463c000/0x104648000/0x10000 /opt/homebrew/Cellar/gperftools/2.18.1/lib/libprofiler.0.dylib  
+258: 0x104638000/0x10463c000/0xc000 /opt/homebrew/Cellar/gperftools/2.18.1/lib/libprofiler.0.dylib  
+259: 0x104634000/0x104638000/0x8000 /opt/homebrew/Cellar/gperftools/2.18.1/lib/libprofiler.0.dylib  
+260: 0x10462c000/0x104634000/0x0 /opt/homebrew/Cellar/gperftools/2.18.1/lib/libprofiler.0.dylib  
+261: 0x10460c000/0x104610000/0xc000 /Users/lmz/ull-md-engine/build/rel/busy_vs_blocking_bench  
+262: 0x104608000/0x10460c000/0x8000 /Users/lmz/ull-md-engine/build/rel/busy_vs_blocking_bench  
+263: 0x104600000/0x104608000/0x0 /Users/lmz/ull-md-engine/build/rel/busy_vs_blocking_bench  [FN][FL][LN][IN]
+264: 0x4600000/0x104600000/0x0 /Users/lmz/ull-md-engine/build/rel/busy_vs_blocking_bench  
