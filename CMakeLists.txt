@@ -39,6 +39,10 @@ target_link_libraries(ull_bench PRIVATE ull)
 add_executable(udp_pipeline_bench src/app/udp_pipeline_main.cpp)
 target_link_libraries(udp_pipeline_bench PRIVATE ull)
 
+add_executable(spin_strategy_bench src/app/spin_strategy_bench_main.cpp)
+target_link_libraries(spin_strategy_bench PRIVATE ull)
+
+
 add_executable(false_sharing_bench src/app/false_sharing_bench_main.cpp)
 target_link_libraries(false_sharing_bench PRIVATE ull)
 
@@ -80,3 +84,4 @@ add_test(NAME test_spsc_ring_unpadded COMMAND test_spsc_ring_unpadded)
 add_executable(test_blocking_queue tests/test_blocking_queue.cpp)
 target_link_libraries(test_blocking_queue PRIVATE ull)
 add_test(NAME test_blocking_queue COMMAND test_blocking_queue)
+
