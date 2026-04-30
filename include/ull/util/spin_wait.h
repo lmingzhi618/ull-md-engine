@@ -10,6 +10,7 @@ enum class SpinStrategy {
   CpuRelax,
   ThreadYield,
   ExponentialBackoff,
+  HybridSpinYield,
 };
 
 inline void cpu_relax_once() noexcept {
@@ -39,6 +40,8 @@ public:
     case SpinStrategy::ExponentialBackoff:
       backoff_pause();
       break;
+    case SpinStrategy::HybridSpinYield:
+      hybrid_pause();
     }
     ++attempts_;
   }
@@ -62,6 +65,16 @@ private:
     std::this_thread::yield();
   }
 
+  void hybrid_pause() noexcept {
+    constexpr std::int32_t kSpinLimit = 32;
+
+    if (attempts_ < kSpinLimit) {
+      cpu_relax_once();
+    } else {
+      std::this_thread::yield();
+    }
+  }
+
 private:
   SpinStrategy strategy_;
   std::uint32_t attempts_{0};
@@ -77,6 +90,8 @@ inline const char *to_string(SpinStrategy strategy) noexcept {
     return "thread_yield";
   case SpinStrategy::ExponentialBackoff:
     return "backoff";
+  case SpinStrategy::HybridSpinYield:
+    return "hybrid";
   }
   return "unknown";
 }
@@ -94,7 +109,9 @@ inline SpinStrategy parse_spin_strategy(const std::string &s) {
   if (s == "backoff") {
     return SpinStrategy::ExponentialBackoff;
   }
-
+  if (s == "hybrid") {
+    return SpinStrategy::HybridSpinYield;
+  }
   throw std::invalid_argument("unknown spin strategy (expected pure_spin, "
                               "cpu_relax, thread_yield, or backoff");
 }
