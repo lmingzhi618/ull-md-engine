@@ -8,6 +8,7 @@ A staged ultra-low-latency market data pipeline focused on:
 - scheduling and spin-wait strategies 
 
 This project is designed to explore how low-level engineering decisions impact latency distribution in real-time systems.
+
 ---
 
 ## Key Features 
@@ -25,6 +26,7 @@ This project is designed to explore how low-level engineering decisions impact l
 
 Separating two hot atomic counters onto different cache lines reduced runtime by ~4x in a two-thread microbenchmark.
 This demonstrates the severe performance penalty of cache-line contention.
+
 ---
 
 ### Busy vs Blocking 
@@ -36,7 +38,7 @@ Flamegraph profiling confirms:
 - busy -> CPU time spent in user-space polling 
 - blocking - time spent in synchronization and scheduler paths 
 
---- 
+---
 
 ### Thread Affinity 
 On macOS (M2 Pro) 
@@ -99,6 +101,9 @@ Insight:
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build -j
+```
+
+---
 
 ## Development
 
@@ -107,14 +112,20 @@ cmake --build build -j
 ./scripts/test_dev.sh
 ```
 
+---
+
 ## Experiments 
+
 Detailed experiment reports:
 - docs/experiments/false_sharing.md
 - docs/experiments/busy_vs_blocking.md
 - docs/experiments/thread_affinity.md
 - docs/experiments/spin_strategies.md
 
+---
+
 ## Key Takeaways 
+
 - Tail latency (p99/p999) is more important than median latency 
 - Cache-line layout can dominate performance (false sharing) 
 - Scheduling behavior significantly impacts latency distribution 
