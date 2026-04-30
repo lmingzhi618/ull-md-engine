@@ -1,7 +1,6 @@
-# ULL Market Data Engine (ull-md-engine)
+# Low-Latency Data Engine (ull-md-engine)  
 
-A staged ultra-low-latency market data pipeline focused on:
-
+A staged high-performance data pipeline for latency benchmarking and system-level optimization experiments, focused on:
 - lock-free data stuctures
 - tail latency analysis (p50 / p99 / p999)
 - CPU/cache-level performance behavior 
