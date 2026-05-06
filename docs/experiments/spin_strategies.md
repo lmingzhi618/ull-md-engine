@@ -59,6 +59,11 @@ Spins for a short period, then yields if contention persists.
 - p99: ~3.83-4.14 ms 
 -p999: ~3.86-4.15 ms 
 
+### Adaptive 
+- p50: ~2.39-2.48 ms 
+- p99: ~2.54-4.07ms 
+- p999: ~2.55-4.15 ms 
+
 ## Key Findings 
 1. Median latency (p50) is similar across all strategies. 
 2. Tail latency (p99/p999) differs significantly:
@@ -67,6 +72,9 @@ Spins for a short period, then yields if contention persists.
 
 3. CPU relax and backoff behave similarly in this workload. 
 4. Backoff does not show clear benefits because contention is not sustained long enough.
+5. Adaptive spin can occasionally find a better operating point, but the current simple threshold update rule is not stable enough to consistently outperform static strategies on macOS/M2 Pro.
+
+Static and adaptive spin strategies primarily affect tail latency rather than median latency. On macOS/M2 Pro, yield-based strategies often improve tail behavior, while the initial adaptive strategy shows promising best-case results but requires better feedback control for consistent gains.
 
 ## Interpretation
 

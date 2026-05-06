@@ -11,6 +11,7 @@ enum class SpinStrategy {
   ThreadYield,
   ExponentialBackoff,
   HybridSpinYield,
+  AdaptiveSpinYield,
 };
 
 inline void cpu_relax_once() noexcept {
@@ -42,11 +43,31 @@ public:
       break;
     case SpinStrategy::HybridSpinYield:
       hybrid_pause();
+      break;
+    case SpinStrategy::AdaptiveSpinYield:
+      adaptive_pause();
+      break;
     }
     ++attempts_;
   }
 
-  void reset() noexcept { attempts_ = 0; }
+  void reset() noexcept {
+    // If we succeeded quickly, allow a bit more spinning next time.
+    // If we had to wait long enough to yield, reduce spin budget.
+    if (strategy_ == SpinStrategy::AdaptiveSpinYield) {
+      if (attempts_ < adaptive_spin_limit_) {
+        if (adaptive_spin_limit_ < kMaxAdaptiveSpinLimit) {
+          ++adaptive_spin_limit_;
+        }
+      } else {
+        if (adaptive_spin_limit_ > kMinAdaptiveSpinLimit) {
+          --adaptive_spin_limit_;
+        }
+      }
+    }
+
+    attempts_ = 0;
+  }
 
 private:
   void backoff_pause() noexcept {
@@ -75,9 +96,20 @@ private:
     }
   }
 
+  void adaptive_pause() noexcept {
+    if (attempts_ < adaptive_spin_limit_) {
+      cpu_relax_once();
+    } else {
+      std::this_thread::yield();
+    }
+  }
+
 private:
+  static constexpr std::uint32_t kMinAdaptiveSpinLimit = 4;
+  static constexpr std::uint32_t kMaxAdaptiveSpinLimit = 128;
   SpinStrategy strategy_;
   std::uint32_t attempts_{0};
+  std::uint32_t adaptive_spin_limit_{32};
 };
 
 inline const char *to_string(SpinStrategy strategy) noexcept {
@@ -92,6 +124,8 @@ inline const char *to_string(SpinStrategy strategy) noexcept {
     return "backoff";
   case SpinStrategy::HybridSpinYield:
     return "hybrid";
+  case SpinStrategy::AdaptiveSpinYield:
+    return "adaptive";
   }
   return "unknown";
 }
@@ -112,7 +146,10 @@ inline SpinStrategy parse_spin_strategy(const std::string &s) {
   if (s == "hybrid") {
     return SpinStrategy::HybridSpinYield;
   }
+  if (s == "adaptive") {
+    return SpinStrategy::AdaptiveSpinYield;
+  }
   throw std::invalid_argument("unknown spin strategy (expected pure_spin, "
-                              "cpu_relax, thread_yield, or backoff");
+                              "cpu_relax, thread_yield, backoff, or adaptive");
 }
 } // namespace ull::util
