@@ -52,6 +52,7 @@ Compared:
 - cpu_relax (pause/yield instruction) 
 - thread_yield 
 - exponential backoff 
+- adaptive 
 
 Key findings:
 - p50 latency is similar scross strategies 
@@ -78,7 +79,7 @@ Insight:
 - busy vs blocking 
 - thread affinity 
 - spin strategies 
-- profiling / flamegraph 
+- profiling and call graph analysis 
 
 ### v0.3 — Advanced concurrency
 - MPSC queue variants
