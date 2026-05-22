@@ -85,3 +85,6 @@ add_executable(test_blocking_queue tests/test_blocking_queue.cpp)
 target_link_libraries(test_blocking_queue PRIVATE ull)
 add_test(NAME test_blocking_queue COMMAND test_blocking_queue)
 
+add_executable(test_mpsc_ring tests/test_mpsc_ring.cpp)
+target_link_libraries(test_mpsc_ring PRIVATE ull)
+add_test(NAME test_mpsc_ring COMMAND test_mpsc_ring)
