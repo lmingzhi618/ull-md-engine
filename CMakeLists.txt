@@ -54,6 +54,8 @@ add_executable(busy_vs_blocking_bench src/app/busy_vs_blocking_bench_main.cpp)
 target_link_libraries(busy_vs_blocking_bench PRIVATE ull ${GPERFTOOLS_PROFILER_LIB})
 target_compile_options(busy_vs_blocking_bench PRIVATE -O2 -g -fno-omit-frame-pointer)
 
+add_executable(mpsc_bench src/app/mpsc_bench_main.cpp)
+target_link_libraries(mpsc_bench PRIVATE ull)
 
 enable_testing()
 add_executable(test_ticks tests/test_ticks.cpp)

@@ -1,12 +1,10 @@
-#! /usr/bin/env bash
-set -euxo pipefail
+#!/usr/bin/env bash
+set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+PRODUCERS="${1:-1}"
+MESSAGES_PER_PRODUCER="${2:-500000}"
+WARMUP="${3:-50000}"
 
-cmake -S "$ROOT_DIR" \
-      -B "$ROOT_DIR/build/rel" \
-      -DCMAKE_BUILD_TYPE=Release 
-
-cmake --build "$ROOT_DIR/build/rel" -j
-
-"$ROOT_DIR/build/rel/test_mpsc_ring"
+cmake -S . -B build/rel -DCMAKE_BUILD_TYPE=Release -DULL_ENABLE_SANITIZERS=OFF
+cmake --build build/rel -j
+./build/rel/mpsc_bench "$PRODUCERS" "$MESSAGES_PER_PRODUCER" "$WARMUP"
