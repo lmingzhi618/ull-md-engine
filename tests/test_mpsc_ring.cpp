@@ -19,7 +19,7 @@ int main() {
     Msg out{};
     assert(!q.try_pop(out));
 
-    assert(q.try_push(Msg{1, 42}));
+    assert(q.push(Msg{1, 42}));
     assert(q.try_pop(out));
     assert(out.producer == 1);
     assert(out.seq == 42);
@@ -52,7 +52,7 @@ int main() {
     for (std::uint32_t p = 0; p < kProducers; ++p) {
       producers.emplace_back([&, p] {
         for (std::uint32_t i = 0; i < kPerProducer; ++i) {
-          q.try_push(Msg{p, i});
+          q.push(Msg{p, i});
         }
       });
     }

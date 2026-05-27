@@ -51,10 +51,17 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
   ull::MpscRing<Msg> q(kQueueCapacity);
   ull::perf::LatencyHist hist(kMaxNs, kBucketNs);
 
+  std::vector<ull::perf::LatencyHist> push_hists;
+  push_hists.reserve(producers);
+
+  for (std::uint32_t p = 0; p < producers; ++p) {
+    push_hists.emplace_back(kMaxNs, kBucketNs);
+  }
+
   std::atomic<bool> start{false};
   std::atomic<std::uint64_t> consumed{0};
 
-  std::vector<std::uint64_t> per_produer_counts(producers, 0);
+  std::vector<std::uint64_t> per_producer_counts(producers, 0);
 
   std::thread consumer([&] {
     Msg m{};
@@ -65,7 +72,7 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
         record_latency(hist, m, seen, warmup);
 
         if (m.producer_id < producers) {
-          ++per_produer_counts[m.producer_id];
+          ++per_producer_counts[m.producer_id];
         }
 
         consumed.fetch_add(1, std::memory_order_relaxed);
@@ -82,13 +89,25 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
         // spin until all producers are ready
       }
 
+      std::uint64_t produced_seen = 0;
+      const std::uint64_t producer_warmup = warmup / producers;
+
       for (std::uint32_t i = 0; i < messages_per_producer; ++i) {
         Msg m{};
         m.producer_id = p;
         m.seq = i;
 
-        m.tsc_send = ull::perf::ticks();
-        q.try_push(m);
+        const auto push_start = ull::perf::ticks();
+        m.tsc_send = push_start;
+
+        q.push(m);
+
+        const auto push_end = ull::perf::ticks();
+        const auto push_ns = ull::perf::ticks_to_ns(push_end - push_start);
+
+        if (++produced_seen > producer_warmup) {
+          push_hists[p].add(push_ns);
+        }
       }
     });
   }
@@ -112,7 +131,7 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
 
   bool ok = true;
   for (std::uint32_t p = 0; p < producers; ++p) {
-    if (per_produer_counts[p] != messages_per_producer) {
+    if (per_producer_counts[p] != messages_per_producer) {
       ok = false;
     }
   }
@@ -127,8 +146,12 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
   std::cout << "counts_ok=" << (ok ? "true" : "false") << "\n";
   std::cout << "hist_unit=ns bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
             << "\n";
-  std::cout << hist.report();
 
+  std::cout << hist.report();
+  for (std::uint32_t p = 0; p < producers; ++p) {
+    std::cout << "push_latency_producer=" << p << "\n";
+    std::cout << push_hists[p].report();
+  }
   return ok ? 0 : 2;
 }
 

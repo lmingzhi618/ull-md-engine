@@ -24,7 +24,7 @@ public:
     }
   }
 
-  bool try_push(const T &v) noexcept {
+  bool push(const T &v) noexcept {
     const auto pos = head_.fetch_add(1, std::memory_order_relaxed);
     Cell &cell = buf_[pos & mask_];
     // Slot is reusable only when seq == pos.
