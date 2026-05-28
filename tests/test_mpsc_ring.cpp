@@ -69,6 +69,18 @@ int main() {
       assert(counts[p] == kPerProducer);
     }
   }
+  {
+    ull::MpscRing<Msg> q(2);
+
+    assert(q.try_push(Msg{0, 1}));
+    assert(q.try_push(Msg{0, 2}));
+
+    Msg out{};
+    assert(!q.try_push(Msg{0, 3}));
+    assert(q.try_pop(out));
+    assert(out.seq == 1);
+    assert(q.try_push(Msg{0, 3}));
+  }
 
   std::cout << "test_mpsc_ring PASS\n";
   return 0;

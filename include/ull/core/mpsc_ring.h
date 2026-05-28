@@ -40,6 +40,29 @@ public:
     return true;
   }
 
+  bool try_push(const T &v) noexcept {
+    auto pos = head_.load(std::memory_order_relaxed);
+
+    for (;;) {
+      Cell &cell = buf_[pos & mask_];
+      const auto seq = cell.seq.load(std::memory_order_acquire);
+
+      if (seq != pos) {
+        return false;
+      }
+
+      if (head_.compare_exchange_weak(pos, pos + 1, std::memory_order_relaxed,
+                                      std::memory_order_relaxed)) {
+        cell.value = v;
+        cell.seq.store(pos + 1, std::memory_order_release);
+        return true;
+      }
+      // CAS failed: another producer took this pos,
+      // compare_exchange_weak updates pos to latest head value,
+      // loop and check that new pos.
+    }
+  }
+
   bool try_pop(T &out) noexcept {
     Cell &cell = buf_[tail_ & mask_];
 
