@@ -14,7 +14,6 @@
 namespace {
 constexpr std::uint64_t kMaxNs = 20'000'000;
 constexpr std::uint64_t kBucketNs = 50;
-constexpr std::size_t kQueueCapacity = 1u << 16;
 
 struct Msg {
   std::uint64_t tsc_send;
@@ -33,7 +32,7 @@ void record_latency(ull::perf::LatencyHist &hist, const Msg &m,
 }
 
 int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
-              std::uint32_t warmup) {
+              std::uint32_t warmup, std::size_t queue_capacity) {
   if (producers == 0) {
     std::cerr << "producers must be > 0\n";
     return 1;
@@ -48,7 +47,7 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
 
   ull::perf::init_ticks();
 
-  ull::MpscRing<Msg> q(kQueueCapacity);
+  ull::MpscRing<Msg> q(queue_capacity);
   ull::perf::LatencyHist hist(kMaxNs, kBucketNs);
 
   std::vector<ull::perf::LatencyHist> push_hists;
@@ -139,7 +138,8 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
   std::cout << "queue=mpsc_spin_push"
             << " producers=" << producers
             << " messages_per_producer=" << messages_per_producer
-            << " total_messages=" << total << " warmup=" << warmup << "\n";
+            << " total_messages=" << total << " warmup=" << warmup
+            << " capacity=" << queue_capacity << "\n";
 
   std::cout << "elapsed_ns=" << elapsed_ns << "\n";
   std::cout << "throughput_msg_per_sec=" << throughput << "\n";
@@ -164,9 +164,10 @@ int main(int argc, char **argv) {
       (argc >= 3) ? static_cast<std::uint32_t>(std::stoul(argv[2])) : 500'000;
   const std::uint32_t warmup =
       (argc >= 4) ? static_cast<std::uint32_t>(std::stoul(argv[3])) : 50'000;
-
+  const std::uint32_t queue_capacity =
+      (argc >= 5) ? static_cast<std::size_t>(std::stoul(argv[4])) : (1u << 16);
   try {
-    return run_bench(producers, messages_per_producer, warmup);
+    return run_bench(producers, messages_per_producer, warmup, queue_capacity);
   } catch (const std::exception &e) {
     std::cerr << e.what() << "\n";
     return 1;
