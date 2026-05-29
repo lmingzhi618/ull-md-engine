@@ -15,6 +15,31 @@ namespace {
 constexpr std::uint64_t kMaxNs = 20'000'000;
 constexpr std::uint64_t kBucketNs = 50;
 
+enum class BenchMode {
+  Push,
+  TryDrop,
+};
+
+BenchMode parse_mode(const std::string &s) {
+  if (s == "push") {
+    return BenchMode::Push;
+  }
+  if (s == "try_drop") {
+    return BenchMode::TryDrop;
+  }
+  throw std::invalid_argument("mode must be 'push' or 'try_drop'");
+}
+
+const char *to_string(BenchMode mode) {
+  switch (mode) {
+  case BenchMode::Push:
+    return "push";
+  case BenchMode::TryDrop:
+    return "try_drop";
+  }
+  return "unknown";
+}
+
 struct Msg {
   std::uint64_t tsc_send;
   std::uint32_t producer_id;
@@ -31,8 +56,9 @@ void record_latency(ull::perf::LatencyHist &hist, const Msg &m,
   }
 }
 
-int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
-              std::uint32_t warmup, std::size_t queue_capacity) {
+int run_bench(BenchMode mode, std::uint32_t producers,
+              std::uint32_t messages_per_producer, std::uint32_t warmup,
+              std::size_t queue_capacity) {
   if (producers == 0) {
     std::cerr << "producers must be > 0\n";
     return 1;
@@ -58,6 +84,9 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
   }
 
   std::atomic<bool> start{false};
+  std::atomic<bool> producers_done{false};
+  std::atomic<std::uint64_t> published{0};
+  std::atomic<std::uint64_t> dropped{0};
   std::atomic<std::uint64_t> consumed{0};
 
   std::vector<std::uint64_t> per_producer_counts(producers, 0);
@@ -66,10 +95,11 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
     Msg m{};
     std::uint64_t seen = 0;
 
-    while (consumed.load(std::memory_order_relaxed) < total) {
+    while (!producers_done.load(std::memory_order_acquire) ||
+           consumed.load(std::memory_order_relaxed) <
+               published.load(std::memory_order_acquire)) {
       if (q.try_pop(m)) {
         record_latency(hist, m, seen, warmup);
-
         if (m.producer_id < producers) {
           ++per_producer_counts[m.producer_id];
         }
@@ -98,14 +128,26 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
 
         const auto push_start = ull::perf::ticks();
         m.tsc_send = push_start;
+        bool did_publish = false;
 
-        q.push(m);
+        if (mode == BenchMode::Push) {
+          q.push(m);
+          did_publish = true;
+        } else {
+          did_publish = q.try_push(m);
+        }
 
         const auto push_end = ull::perf::ticks();
         const auto push_ns = ull::perf::ticks_to_ns(push_end - push_start);
 
-        if (++produced_seen > producer_warmup) {
-          push_hists[p].add(push_ns);
+        if (did_publish) {
+          published.fetch_add(1, std::memory_order_release);
+
+          if (++produced_seen > producer_warmup) {
+            push_hists[p].add(push_ns);
+          }
+        } else {
+          dropped.fetch_add(1, std::memory_order_relaxed);
         }
       }
     });
@@ -117,7 +159,7 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
   for (auto &t : producer_threads) {
     t.join();
   }
-
+  producers_done.store(true, std::memory_order_release);
   consumer.join();
 
   const auto t1 = std::chrono::steady_clock::now();
@@ -129,21 +171,34 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
       elapsed_s > 0.0 ? static_cast<double>(total) / elapsed_s : 0.0;
 
   bool ok = true;
-  for (std::uint32_t p = 0; p < producers; ++p) {
-    if (per_producer_counts[p] != messages_per_producer) {
-      ok = false;
+  const auto expected_per_producer =
+      (mode == BenchMode::Push) ? messages_per_producer : 0;
+
+  if (mode == BenchMode::Push) {
+    for (std::uint32_t p = 0; p < producers; ++p) {
+      if (per_producer_counts[p] != expected_per_producer) {
+        ok = false;
+      }
     }
+  } else {
+    ok = (consumed.load(std::memory_order_relaxed) ==
+          published.load(std::memory_order_relaxed));
   }
 
-  std::cout << "queue=mpsc_spin_push"
-            << " producers=" << producers
+  std::cout << "queue=mpsc"
+            << " mode=" << to_string(mode) << " producers=" << producers
             << " messages_per_producer=" << messages_per_producer
             << " total_messages=" << total << " warmup=" << warmup
             << " capacity=" << queue_capacity << "\n";
 
+  std::cout << "published=" << published.load(std::memory_order_relaxed)
+            << "\n";
+  std::cout << "dropped=" << dropped.load(std::memory_order_relaxed) << "\n";
+  std::cout << "consumed=" << consumed.load(std::memory_order_relaxed) << "\n";
+
   std::cout << "elapsed_ns=" << elapsed_ns << "\n";
   std::cout << "throughput_msg_per_sec=" << throughput << "\n";
-  std::cout << "counts_ok=" << (ok ? "true" : "false") << "\n";
+  std::cout << "integrity_ok=" << (ok ? "true" : "false") << "\n";
   std::cout << "hist_unit=ns bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
             << "\n";
 
@@ -158,16 +213,18 @@ int run_bench(std::uint32_t producers, std::uint32_t messages_per_producer,
 } // namespace
 
 int main(int argc, char **argv) {
+  const BenchMode mode = (argc >= 2) ? parse_mode(argv[1]) : BenchMode::Push;
   const std::uint32_t producers =
-      (argc >= 2) ? static_cast<std::uint32_t>(std::stoul(argv[1])) : 1;
+      (argc >= 3) ? static_cast<std::uint32_t>(std::stoul(argv[2])) : 1;
   const std::uint32_t messages_per_producer =
-      (argc >= 3) ? static_cast<std::uint32_t>(std::stoul(argv[2])) : 500'000;
+      (argc >= 4) ? static_cast<std::uint32_t>(std::stoul(argv[3])) : 500'000;
   const std::uint32_t warmup =
-      (argc >= 4) ? static_cast<std::uint32_t>(std::stoul(argv[3])) : 50'000;
+      (argc >= 5) ? static_cast<std::uint32_t>(std::stoul(argv[4])) : 50'000;
   const std::uint32_t queue_capacity =
-      (argc >= 5) ? static_cast<std::size_t>(std::stoul(argv[4])) : (1u << 16);
+      (argc >= 6) ? static_cast<std::size_t>(std::stoul(argv[5])) : (1u << 16);
   try {
-    return run_bench(producers, messages_per_producer, warmup, queue_capacity);
+    return run_bench(mode, producers, messages_per_producer, warmup,
+                     queue_capacity);
   } catch (const std::exception &e) {
     std::cerr << e.what() << "\n";
     return 1;
