@@ -79,6 +79,28 @@ Docs:
 
 ---
 
+## v0.3 Current progress
+
+Completed:
+- initial bounded MPSC ring with per-slot sequence protocol 
+- spinning `push()` baseline 
+- non-blocking `try_push()` using CAS reservation 
+- MPSC correctness tests 
+- MPSC benchmark with `push` and `try_drop` modes 
+- capacity sensitivity experiment 
+- producer push latency instrumentation 
+- sequence gap detection for drop-on-full mode 
+- overload policy notes for market-data correctness 
+
+Key findings:
+- sustained overload turns queue capacity into backlog latency 
+- smaller capacity lowers latency by bounding backlog 
+- `try_drop` reduces producer waiting but creates sequence gaps 
+- arbitrary drop-on-full is not sufficient for sequence-dependent market data without gap detection and resync 
+
+
+---
+
 ### 2. Busy Polling vs Blocking
 
 - implemented `BlockingQueue`
