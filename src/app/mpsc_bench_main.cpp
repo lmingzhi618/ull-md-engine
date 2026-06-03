@@ -90,6 +90,10 @@ int run_bench(BenchMode mode, std::uint32_t producers,
   std::atomic<std::uint64_t> consumed{0};
 
   std::vector<std::uint64_t> per_producer_counts(producers, 0);
+  std::vector<std::uint64_t> expected_seq(producers, 0);
+  std::uint64_t sequence_gap_events = 0;
+  std::uint64_t missing_messages = 0;
+  std::uint64_t out_of_order_messages = 0;
 
   std::thread consumer([&] {
     Msg m{};
@@ -102,6 +106,18 @@ int run_bench(BenchMode mode, std::uint32_t producers,
         record_latency(hist, m, seen, warmup);
         if (m.producer_id < producers) {
           ++per_producer_counts[m.producer_id];
+
+          auto &expected = expected_seq[m.producer_id];
+
+          if (m.seq == expected) {
+            ++expected;
+          } else if (m.seq > expected) {
+            ++sequence_gap_events;
+            missing_messages += static_cast<std::uint64_t>(m.seq - expected);
+            expected = static_cast<std::uint64_t>(m.seq) + 1;
+          } else {
+            ++out_of_order_messages;
+          }
         }
 
         consumed.fetch_add(1, std::memory_order_relaxed);
@@ -162,6 +178,12 @@ int run_bench(BenchMode mode, std::uint32_t producers,
   producers_done.store(true, std::memory_order_release);
   consumer.join();
 
+  for (std::uint32_t p = 0; p < producers; ++p) {
+    if (expected_seq[p] < messages_per_producer) {
+      missing_messages += messages_per_producer - expected_seq[p];
+    }
+  }
+
   const auto t1 = std::chrono::steady_clock::now();
   const auto elapsed_ns =
       std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0).count();
@@ -180,9 +202,12 @@ int run_bench(BenchMode mode, std::uint32_t producers,
         ok = false;
       }
     }
+    ok = ok && (sequence_gap_events == 0) && (missing_messages == 0) &&
+         (out_of_order_messages == 0);
   } else {
     ok = (consumed.load(std::memory_order_relaxed) ==
-          published.load(std::memory_order_relaxed));
+          published.load(std::memory_order_relaxed)) &&
+         (missing_messages == dropped.load(std::memory_order_relaxed) && (out_of_order_messages == 0);
   }
 
   std::cout << "queue=mpsc"
@@ -195,6 +220,9 @@ int run_bench(BenchMode mode, std::uint32_t producers,
             << "\n";
   std::cout << "dropped=" << dropped.load(std::memory_order_relaxed) << "\n";
   std::cout << "consumed=" << consumed.load(std::memory_order_relaxed) << "\n";
+  std::cout << "sequence_gap_events=" << sequence_gap_events << "\n";
+  std::cout << "missing_messages=" << missing_messages << "\n";
+  std::cout << "out_of_order_messages=" << out_of_order_messages << "\n";
 
   std::cout << "elapsed_ns=" << elapsed_ns << "\n";
   std::cout << "throughput_msg_per_sec=" << throughput << "\n";

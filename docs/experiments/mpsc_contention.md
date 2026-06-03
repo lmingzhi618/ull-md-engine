@@ -130,6 +130,31 @@ Command shape:
 |1,024	    |498,937	|1,501,063	|498,937	|8.62M	                |509,250	|544,350	|607,400|
 |4,096	    |539,152	|1,460,848	|539,152	|8.27M	                |1,950,750	|2,151,300	|2,186,800|
 
+### Sequence Gap detection
+The benchmark also checks per-producer sequence continuity on the consumer side.
+For each producer, the consumer tracks the next expected sequence number. If a consumed message has a sequence number greater than expcted, the benchmark records a sequence gap and counts the missing messages.
+
+Command:
+```bash 
+./scripts/run_mpsc_ring_rel try_drop 4 500000 50000 1024 
+```
+
+Result:
+| Mode	    | Published	| Dropped	| Consumed	| Sequence Gap Events   | Missing Messages  | Out-of-Order Messages |
+|----------:|----------:|----------:|----------:|----------------------:|------------------:|----------------------:|
+| push	    | 2,000,000	| 0	        | 2,000,000	| 0	                    | 0	                | 0                     |
+| try_drop	| 474,126	| 1,525,874	| 474,126	| 337,510	            | 1,525,874	        | 0                     |
+
+The key result is:
+```text 
+missing_messages == dropped 
+out_of_order_messages == 0 
+```
+
+This means the queue preserved ordering for delivered messages, but arbitrary drop-on-full broke sequence completeness.
+For market-data-style streams, this distinction matters. A consumer may receive messages in order, but still be unable to trust downstream state if sequence numbers are no longer contiguous.
+
+
 ### Drop-on-Full Observations
 
 try_drop keeps producer-side push latency low because producers do not wait for queue capacity. Full queues return false immediately and the benchmark counts the messages as dropped.
@@ -137,6 +162,8 @@ try_drop keeps producer-side push latency low because producers do not wait for 
 End-to-end latency still scales with queue capacity. Smaller capacity creates a tighter bound on backlog, while larger capacity allows more stale work to accumulate before the consumer reaches it.
 
 The drop count remains high across all tested capacities because producer supply exceeds the single consumer's drain rate. Capacity changes how much backlog is allowed, but it does not remove the consumer bottleneck.
+
+Sequence gap detection confirms taht drop-on-full preserves ordering among delivered messages but creates missing updates. This makes arbitrary drop-on-full unsuitable as a complete market-data correctness policy wihtout gap detection and resync.
 
 ### Drop-on-Full Interpretation 
 
