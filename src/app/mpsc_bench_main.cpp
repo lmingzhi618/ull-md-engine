@@ -207,7 +207,8 @@ int run_bench(BenchMode mode, std::uint32_t producers,
   } else {
     ok = (consumed.load(std::memory_order_relaxed) ==
           published.load(std::memory_order_relaxed)) &&
-         (missing_messages == dropped.load(std::memory_order_relaxed) && (out_of_order_messages == 0);
+         (missing_messages == dropped.load(std::memory_order_relaxed)) &&
+         (out_of_order_messages == 0);
   }
 
   std::cout << "queue=mpsc"

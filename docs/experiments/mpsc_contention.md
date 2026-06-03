@@ -132,11 +132,11 @@ Command shape:
 
 ### Sequence Gap detection
 The benchmark also checks per-producer sequence continuity on the consumer side.
-For each producer, the consumer tracks the next expected sequence number. If a consumed message has a sequence number greater than expcted, the benchmark records a sequence gap and counts the missing messages.
+For each producer, the consumer tracks the next expected sequence number. If a consumed message has a sequence number greater than expected, the benchmark records a sequence gap and counts the missing messages.
 
 Command:
 ```bash 
-./scripts/run_mpsc_ring_rel try_drop 4 500000 50000 1024 
+./scripts/run_mpsc_ring_rel.sh try_drop 4 500000 50000 1024 
 ```
 
 Result:
@@ -163,7 +163,7 @@ End-to-end latency still scales with queue capacity. Smaller capacity creates a 
 
 The drop count remains high across all tested capacities because producer supply exceeds the single consumer's drain rate. Capacity changes how much backlog is allowed, but it does not remove the consumer bottleneck.
 
-Sequence gap detection confirms taht drop-on-full preserves ordering among delivered messages but creates missing updates. This makes arbitrary drop-on-full unsuitable as a complete market-data correctness policy wihtout gap detection and resync.
+Sequence gap detection confirms that drop-on-full preserves ordering among delivered messages but creates missing updates. This makes arbitrary drop-on-full unsuitable as a complete market-data correctness policy without gap detection and resync.
 
 ### Drop-on-Full Interpretation 
 
