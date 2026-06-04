@@ -91,13 +91,14 @@ Completed:
 - producer push latency instrumentation 
 - sequence gap detection for drop-on-full mode 
 - overload policy notes for market-data correctness 
+- head/tail padding experiment for MPSC ring 
 
 Key findings:
 - sustained overload turns queue capacity into backlog latency 
 - smaller capacity lowers latency by bounding backlog 
 - `try_drop` reduces producer waiting but creates sequence gaps 
 - arbitrary drop-on-full is not sufficient for sequence-dependent market data without gap detection and resync 
-
+- head/tail padding improves p99 latency moderately but does not remove producer contention on the shared `head_`
 
 ---
 

@@ -8,12 +8,38 @@
 #include <vector>
 
 #include "ull/core/mpsc_ring.h"
+#include "ull/core/mpsc_ring_padded.h"
 #include "ull/perf/latency_hist.h"
 #include "ull/perf/ticks.h"
 
 namespace {
 constexpr std::uint64_t kMaxNs = 20'000'000;
 constexpr std::uint64_t kBucketNs = 50;
+
+enum class QueueLayout {
+  Plain,
+  Padded,
+};
+
+QueueLayout parse_layout(const std::string &s) {
+  if (s == "plain") {
+    return QueueLayout::Plain;
+  }
+  if (s == "padded") {
+    return QueueLayout::Padded;
+  }
+  throw std::invalid_argument("layout must be 'plain' or 'padded'");
+}
+
+const char *to_string(QueueLayout layout) {
+  switch (layout) {
+  case QueueLayout::Plain:
+    return "plain";
+  case QueueLayout::Padded:
+    return "padded";
+  }
+  return "unknown";
+}
 
 enum class BenchMode {
   Push,
@@ -56,9 +82,10 @@ void record_latency(ull::perf::LatencyHist &hist, const Msg &m,
   }
 }
 
-int run_bench(BenchMode mode, std::uint32_t producers,
-              std::uint32_t messages_per_producer, std::uint32_t warmup,
-              std::size_t queue_capacity) {
+template <class Queue>
+int run_bench_impl(BenchMode mode, QueueLayout layout, std::uint32_t producers,
+                   std::uint32_t messages_per_producer, std::uint32_t warmup,
+                   std::size_t queue_capacity) {
   if (producers == 0) {
     std::cerr << "producers must be > 0\n";
     return 1;
@@ -73,7 +100,7 @@ int run_bench(BenchMode mode, std::uint32_t producers,
 
   ull::perf::init_ticks();
 
-  ull::MpscRing<Msg> q(queue_capacity);
+  Queue q(queue_capacity);
   ull::perf::LatencyHist hist(kMaxNs, kBucketNs);
 
   std::vector<ull::perf::LatencyHist> push_hists;
@@ -212,7 +239,8 @@ int run_bench(BenchMode mode, std::uint32_t producers,
   }
 
   std::cout << "queue=mpsc"
-            << " mode=" << to_string(mode) << " producers=" << producers
+            << " layout=" << to_string(layout) << " mode=" << to_string(mode)
+            << " producers=" << producers
             << " messages_per_producer=" << messages_per_producer
             << " total_messages=" << total << " warmup=" << warmup
             << " capacity=" << queue_capacity << "\n";
@@ -239,6 +267,16 @@ int run_bench(BenchMode mode, std::uint32_t producers,
   return ok ? 0 : 2;
 }
 
+int run_bench(BenchMode mode, QueueLayout layout, std::uint32_t producers,
+              std::uint32_t messages_per_producer, std::uint32_t warmup,
+              std::size_t queue_capacity) {
+  if (layout == QueueLayout::Plain) {
+    return run_bench_impl<ull::MpscRing<Msg>>(
+        mode, layout, producers, messages_per_producer, warmup, queue_capacity);
+  }
+  return run_bench_impl<ull::MpscRingPadded<Msg>>(
+      mode, layout, producers, messages_per_producer, warmup, queue_capacity);
+}
 } // namespace
 
 int main(int argc, char **argv) {
@@ -251,8 +289,11 @@ int main(int argc, char **argv) {
       (argc >= 5) ? static_cast<std::uint32_t>(std::stoul(argv[4])) : 50'000;
   const std::uint32_t queue_capacity =
       (argc >= 6) ? static_cast<std::size_t>(std::stoul(argv[5])) : (1u << 16);
+  const QueueLayout layout =
+      (argc >= 7) ? parse_layout(argv[6]) : QueueLayout::Plain;
+
   try {
-    return run_bench(mode, producers, messages_per_producer, warmup,
+    return run_bench(mode, layout, producers, messages_per_producer, warmup,
                      queue_capacity);
   } catch (const std::exception &e) {
     std::cerr << e.what() << "\n";
