@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "ull/core/mpsc_ring.h"
+#include "ull/core/mpsc_ring_cell_padded.h"
 #include "ull/core/mpsc_ring_padded.h"
 #include "ull/perf/latency_hist.h"
 #include "ull/perf/ticks.h"
@@ -19,6 +20,7 @@ constexpr std::uint64_t kBucketNs = 50;
 enum class QueueLayout {
   Plain,
   Padded,
+  CellPadded,
 };
 
 QueueLayout parse_layout(const std::string &s) {
@@ -28,7 +30,10 @@ QueueLayout parse_layout(const std::string &s) {
   if (s == "padded") {
     return QueueLayout::Padded;
   }
-  throw std::invalid_argument("layout must be 'plain' or 'padded'");
+  if (s == "cell_padded") {
+    return QueueLayout::CellPadded;
+  }
+  throw std::invalid_argument("layout must be 'plain', 'padded', or 'cell_padded"");
 }
 
 const char *to_string(QueueLayout layout) {
@@ -37,6 +42,8 @@ const char *to_string(QueueLayout layout) {
     return "plain";
   case QueueLayout::Padded:
     return "padded";
+  case QueueLayout::CellPadded:
+    return "cell_padded";
   }
   return "unknown";
 }
@@ -274,7 +281,11 @@ int run_bench(BenchMode mode, QueueLayout layout, std::uint32_t producers,
     return run_bench_impl<ull::MpscRing<Msg>>(
         mode, layout, producers, messages_per_producer, warmup, queue_capacity);
   }
-  return run_bench_impl<ull::MpscRingPadded<Msg>>(
+  if (layout == QueueLayout::Padded) {
+    return run_bench_impl<ull::MpscRingPadded<Msg>>(
+        mode, layout, producers, messages_per_producer, warmup, queue_capacity);
+  }
+  return run_bench_impl<ull::MpscRingCellPadded<Msg>>(
       mode, layout, producers, messages_per_producer, warmup, queue_capacity);
 }
 } // namespace

@@ -95,3 +95,7 @@ add_test(NAME test_mpsc_ring COMMAND test_mpsc_ring)
 add_executable(test_mpsc_ring_padded tests/test_mpsc_ring_padded.cpp)
 target_link_libraries(test_mpsc_ring_padded PRIVATE ull)
 add_test(NAME test_mpsc_ring_padded COMMAND test_mpsc_ring_padded)
+
+add_executable(test_mpsc_ring_cell_padded tests/test_mpsc_ring_cell_padded.cpp)
+target_link_libraries(test_mpsc_ring_cell_padded PRIVATE ull)
+add_test(NAME test_mpsc_ring_cell_padded COMMAND test_mpsc_ring_cell_padded)
