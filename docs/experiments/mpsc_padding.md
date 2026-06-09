@@ -28,7 +28,7 @@ alignas(kCacheLine) std::atomic<std::uint64_t> head_;
 alignas(kCacheLine) std::uint64_t tail_;
 ```
 
-only head_ and tail_ were padded in this experiment.
+Only head_ and tail_ were padded in this experiment.
 Per-cell padding was not tested in this round.
 
 ## Benchmark Setup
@@ -52,7 +52,7 @@ Per-cell padding was not tested in this round.
 | Layout | Throughput msg/s | p50 ns | p99 ns | p999 ns |
 |-------:|-----------------:|-------:|-------:|--------:|
 |plain	 |3.55M	            |277,950 |382,150 |1,435,300|
-|padded	 |3.95M	            |254,75  |299,300 |316,000|
+|padded	 |3.95M	            |254,750 |299,300 |316,000|
 
 ### 8 Producers
 | Layout | Throughput msg/s | p50 ns | p99 ns   | p999 ns |
@@ -65,15 +65,15 @@ Per-cell padding was not tested in this round.
 Head/Tail padding improves throughput and reduces latency, especially at p99.
 For 4 producers, padded layout improved throughput by roughly 11% and reduced p99 latency by roughly 22%.
 For 8 producers, padded layout improved throughput by roughly 7% and reduced p99 latency by roughly 15%.
-The p999 improvement is large for 4 producers, but much smaller for 8 prodcuers.
+The p999 improvement is large for 4 producers, but much smaller for 8 producers.
 
 ## Interpretation
 
-The results suggest that false sharing between prodcuer-side head_ and consumer-side tail_ was present in the plain layout.
+The results suggest that false sharing between producer-side head_ and consumer-side tail_ was present in the plain layout.
 Separating head_ and tail_ reduces producer-consumer cache-line interference, but it does not remove the main MPSC contention point.
 
 The dominant remaining costs are likely:
-- producer-prodcuer contention on the shared head_
+- producer-producer contention on the shared head_
 - single-consumer drain capacity 
 - possible cache-line interaction among adjacent cells
 This means head/tail padding is useful, but not sufficient to make the MPSC ring scale linearly with producer count.

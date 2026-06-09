@@ -238,7 +238,7 @@ per-producer count correctness
 no lost messages
 no duplicated messages
 
-Status: In progress
+Status: Completed 
 
 Task 2: True Bounded try_push
 Goal
@@ -255,7 +255,7 @@ head reservation may advance too far
 full detection is harder than SPSC
 may need CAS instead of unconditional fetch_add
 
-Status: Planned
+Status: Completed
 
 Task 3: MPSC Benchmark
 Goal
@@ -276,13 +276,37 @@ producer contention effect
 tail amplification
 failed retries if CAS-based version is implemented
 
+Implemented:
+- `mpsc_bench`
+- `push` mode 
+- `try_drop` mode
+- configurable producer count 
+- configurable capacity 
+- plain vs padded layout selection 
+- throughput reporting 
+- p50 / p99 / p999 latency reporting 
+- producer push latency instrumentation 
+- sequence gap detection 
+- head/tail padding comparison 
+
 Files:
+- `src/app/mpsc_bench_main.cpp`
+- `scripts/run_mpsc_ring_rel.sh`
+- `docs/experiments/mpsc_contention.md`
+- `docs/experiments/mpsc_overload_policy.md`
+- `docs/experiments/mpsc_padding.md`
+- `include/ull/core/mpsc_ring_padded.h`
+- `tests/test_mpsc_ring_padded.cpp`
 
-src/app/mpsc_bench_main.cpp
-scripts/run_mpsc_bench_rel.sh
-docs/experiments/mpsc_contention.md
+Findings:
+- sustained overload turns queue capacity into backlog latency 
+- smaller capacity lowers latency by bounding backlog 
+- `try_drop` lowers queueing latency but creates sequence gaps 
+- arbitrary drop-on-full is not sufficient for sequence-dependent market data without gap detection and resync 
+- head/tail padding improves throughput and p99 latency moderately 
+- head/tail padding does not remove producer contention on shared `head_`
 
-Status: Planned
+Status: Completed 
 
 Task 4: Memory Ordering Documentation
 Goal
@@ -381,17 +405,12 @@ compare with macOS call graph profiling
 
 Status: Planned
 
-Current Immediate Next Steps
-Finish MPSC correctness implementation
-Make API semantics clean:
-push() if blocking/spinning
-try_push() only if truly non-blocking
-Add run_mpsc_ring_rel.sh
-Ensure test_mpsc_ring passes reliably
-Commit MPSC correctness milestone
-Start MPSC benchmark
-Current Technical Notes
-Ring Capacity
+## Current Immediate Next Steps 
+
+1. Run per-cell padding experiment 
+2. Document whether slot-level false sharing matters
+3. Write MPSC memory ordering notes 
+4. Decide whether to explore Disruptor-style sequence design 
 
 Ring capacity must be power-of-two because:
 

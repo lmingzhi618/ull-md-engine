@@ -82,6 +82,6 @@ int main() {
     assert(q.try_push(Msg{0, 3}));
   }
 
-  std::cout << "test_mpsc_ring PASS\n";
+  std::cout << "test_mpsc_ring_padded PASS\n";
   return 0;
 }
