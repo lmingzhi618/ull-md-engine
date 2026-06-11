@@ -292,11 +292,12 @@ Implemented:
 Files:
 - `src/app/mpsc_bench_main.cpp`
 - `scripts/run_mpsc_ring_rel.sh`
+- `include/ull/core/mpsc_ring_padded.h`
+- `tests/test_mpsc_ring_padded.cpp`
 - `docs/experiments/mpsc_contention.md`
 - `docs/experiments/mpsc_overload_policy.md`
 - `docs/experiments/mpsc_padding.md`
-- `include/ull/core/mpsc_ring_padded.h`
-- `tests/test_mpsc_ring_padded.cpp`
+- `docs/design/mpsc_memory_ordering.md`
 
 Findings:
 - sustained overload turns queue capacity into backlog latency 
@@ -325,7 +326,7 @@ Docs:
 
 docs/design/mpsc_memory_ordering.md
 
-Status: Planned
+Status: Completed 
 
 Task 5: Disruptor-style Sequencer Exploration
 Goal
