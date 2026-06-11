@@ -33,7 +33,8 @@ QueueLayout parse_layout(const std::string &s) {
   if (s == "cell_padded") {
     return QueueLayout::CellPadded;
   }
-  throw std::invalid_argument("layout must be 'plain', 'padded', or 'cell_padded"");
+  throw std::invalid_argument(
+      "layout must be 'plain', 'padded', or 'cell_padded");
 }
 
 const char *to_string(QueueLayout layout) {
