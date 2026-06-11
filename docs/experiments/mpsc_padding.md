@@ -172,6 +172,22 @@ This means head/tail padding is useful, but not sufficient to make the MPSC ring
 
 The remaining scalability limit is still producer contention and the single-consumer drain point. Padding helps reduce cache-line interference, but it does not change the fundamental MPSC topology.
 
+## Current Conclusion 
+
+Padding helps, but the best layout depends on the workload.
+
+For `push` mode, `cell_padded` is the strongest layout in the tested 4-producer case and improves throughput, p50, and p99 in the 8-producer case. However, the 8-producer p999 result gets worse, which shows that per-cell padding does not universally improve extreme tail latency.
+
+For `try_drop` mode, `cell_padded` is less consistently beneficial. It improves some 4-producer metrics, but worsens 8-producer tail latency compared with head/tail padding only.
+
+The practical takeway is:
+```text 
+head/tail padding is a low-cost improvement;
+per-cell padding is workload-sensitive and should be benchmarked before being treated as the default layout.
+```
+For now, MpscRingPadded is the safer default experiment variant, while MpscRingCellPadded remains useful for studying slot-level false sharing. 
+
+
 ## Next Questions
 - How stable are `padded` vs `cell_padded` results across repeated runs?
 - How does `cell_padded` behave with larger capacities?
