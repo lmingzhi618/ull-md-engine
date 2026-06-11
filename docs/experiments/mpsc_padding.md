@@ -115,6 +115,41 @@ At 8 producers, producer contention is higher. Even though per-cell padding impr
 
 The main lesson is that padding reduces some forms of false sharing, but it can also increase memory footprint. In low-latency systems, improving p50 or p99 does not guarantee an improvement at p999.
 
+## Try-Drop Padding Results 
+
+The padded layouts were also compared in `try_drop` mode.
+In this mode, producers do not wait for capacity. If the queue is full, `try_push` returns `false` and the message is counted as dropped.
+
+Command shape:
+```bash 
+./scripts/run_mpsc_ring_rel.sh try_drop <producers> 500000 50000 1024 <layout> 
+``` 
+
+### 4 Producers: Try-Drop 
+
+| Layout      | Published | Dropped | Throughput msg/s | p50 ns | p99 ns | p999 ns |
+|------------:|----------:|--------:|-----------------:|-------:|-------:|--------:|
+| padded	  |455,771	  |1,544,229|10.52M            | 427,150| 528,300|	537,450|
+| cell_padded |482,204	  |1,517,796|11.26M	           | 398,500| 536,450|	544,250|
+
+### 8 Producers: Try-Drop 
+
+| Layout      | Published | Dropped   | Throughput msg/s | p50 ns   | p99 ns   | p999 ns   |
+|------------:|----------:|----------:|-----------------:|---------:|---------:|----------:|
+| padded	  | 335,521	  | 3,664,479 | 11.54M	         |1,264,750	|1,376,750 |1,425,200  |
+| cell_padded | 340,522	  | 3,659,478 | 11.41M	         |1,308,750	|1,751,750 |1,817,750  |
+
+### Try-Drop Padding Interpretation 
+
+In `try_drop` mode, per-cell padding is less clearly beneficial than in push mode.
+
+For 4 producers, `cell_padded` publishes more messages and improves p50 latency, but p99 and p999 are roughly flat or slightly worse.
+
+For 8 producers, `cell_padded` publishes slightly more messages, but throughput and tail latency are worse than the head/tail padded layout.
+
+This suggests that when producers do not wait for queue capacity, the benefit from reducing slot-level false sharing is smaller. At higher producer counts, the larger memory footprint of per-cell padding may offset its cache-line isolation benefit. 
+
+
 ## Overall Observations 
 
 Head/Tail padding improves throughput and reduces latency moderately, especially at p99.
@@ -122,6 +157,7 @@ For 4 producers, padded layout improved throughput by roughly 11% and reduced p9
 For 8 producers, padded layout improved throughput by roughly 7% and reduced p99 latency by roughly 15%.
 The p999 improvement is large for 4 producers, but much smaller for 8 producers.
 Per-cell padding shows a stronger improvement for 4 producers, but the 8-producer p999 result shows that more padding does not always improve extreme tail latency.
+In `try_drop` mode, per-cell padding is less consistently beneficial: it helps some 4-producer metrics, but worsens 8-producer tail latency.
 
 ## Overall Interpretation
 
@@ -139,6 +175,4 @@ The remaining scalability limit is still producer contention and the single-cons
 ## Next Questions
 - How stable are `padded` vs `cell_padded` results across repeated runs?
 - How does `cell_padded` behave with larger capacities?
-- How does `cell_padded` behave in `try_drop` mode?
 - Can shared `head_` contention be reduced with a different queue design?
-
