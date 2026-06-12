@@ -4,14 +4,14 @@
 
 Document the acquire/release reasoning behind the bounded MPSC ring.
 
-The queue uses a per-slot sequene protocol. `head_` assigns producer positions, while each cell's `seq` controls whether the cell is writable or readable.
+The queue uses a per-slot sequence protocol. `head_` assigns producer positions, while each cell's `seq` controls whether the cell is writable or readable.
 
 ## Key Invariants
 
 Each logical position `pos` maps to a physical slot:
 
 ```cpp 
-Cell &cell = buf_[pos & mask];
+Cell &cell = buf_[pos & mask_];
 ```
 
 A cell moves through these states:
@@ -19,7 +19,7 @@ A cell moves through these states:
 ```text 
 seq == pos          producer may write this cell 
 seq == pos + 1      consumer may read this cell 
-seq == pos + cap    cell is recycled for the next prodcuer round 
+seq == pos + cap    cell is recycled for the next producer round 
 ```
 
 ## Producer Publish
@@ -48,7 +48,7 @@ if (cell.seq.load(std::memory_order_acquire) != tail_ + 1) {
 }
 ```
 
-If the consumer observes seq == tail_ + 1, the acquire load pairs with the producer's release store. The consumer can then safely read:
+If the consumer observes `seq == tail_ + 1`, the acquire load pairs with the producer's release store. The consumer can then safely read:
 
 ```cpp 
 out = cell.value;
@@ -56,7 +56,7 @@ out = cell.value;
 
 ## Slot Recycling 
 
-After readig the payload, the consumer recycles the cell:
+After reading the payload, the consumer recycles the cell:
 
 ```cpp 
 cell.seq.store(tail_ + cap_, std::memory_order_release);
@@ -79,10 +79,14 @@ head_.fetch_add(1, std::memory_order_relaxed);
 
 For non-blocking try_push():
 ```cpp 
-head_.compare_exchange_weak(pos, pos+1, std::memory_order_relaxed, std::memory_order_relaxed);
+head_.compare_exchange_weak(
+  pos,
+  pos+1,
+  std::memory_order_relaxed,
+  std::memory_order_relaxed);
 ```
 
-These operations need atomicity, but they do not publish payload data. Payload visibility is controlled by each cell's seq acquire/release protocol.
+These operations need atomicity, but they do not publish payload data. Payload visibility is controlled by each cell's `seq` acquire/release protocol.
 Therefore, head_ does not need acquire/release ordering.
 
 ## Why tail_ Is Non-Atomic 
