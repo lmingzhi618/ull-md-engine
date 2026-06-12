@@ -346,7 +346,7 @@ Possible files:
 
 docs/design/disruptor_notes.md
 
-Status: Planned
+Status: Started 
 
 v0.4 — Memory Optimization
 Goal
