@@ -78,7 +78,6 @@ add_executable(test_udp_receiver tests/test_udp_receiver.cpp)
 target_link_libraries(test_udp_receiver PRIVATE ull)
 add_test(NAME test_udp_receiver COMMAND test_udp_receiver)
 
-
 add_executable(test_spsc_ring_unpadded tests/test_spsc_ring_unpadded.cpp)
 target_link_libraries(test_spsc_ring_unpadded PRIVATE ull)
 add_test(NAME test_spsc_ring_unpadded COMMAND test_spsc_ring_unpadded)
@@ -99,3 +98,7 @@ add_test(NAME test_mpsc_ring_padded COMMAND test_mpsc_ring_padded)
 add_executable(test_mpsc_ring_cell_padded tests/test_mpsc_ring_cell_padded.cpp)
 target_link_libraries(test_mpsc_ring_cell_padded PRIVATE ull)
 add_test(NAME test_mpsc_ring_cell_padded COMMAND test_mpsc_ring_cell_padded)
+
+add_executable(test_sequence tests/test_sequence.cpp) 
+target_link_libraries(test_sequence PRIVATE ull)
+add_test(NAME test_sequence COMMAND test_sequence)

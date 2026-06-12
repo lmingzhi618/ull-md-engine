@@ -53,7 +53,7 @@ The current MPSC queue has one consumer and one implicit consumption position:
 tail_
 ```
 
-A Disruptor-style design may have muliple consumers, each with its own sequence:
+A Disruptor-style design may have multiple consumers, each with its own sequence:
 ```text 
 consumer_a_seq
 consumer_b_seq
@@ -90,9 +90,15 @@ Step 2:
 Introduce a named `Sequence` abstraction:
 ```cpp 
 struct Sequence {
-    std::aotmic<std::uint64_t> value;
+    std::atomic<std::uint64_t> value;
 };
 ```
+
+A minimal `Sequence` wrapper now exists in:
+```text 
+include/ull/core/sequence.h
+```
+It is cache-line aligned and wraps an atomic uint64_t.
 
 Step 3:
 Experiment with one producer cursor and one consumer gating sequence.

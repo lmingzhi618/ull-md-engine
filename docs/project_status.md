@@ -240,12 +240,13 @@ no duplicated messages
 
 Status: Completed 
 
-Task 2: True Bounded try_push
-Goal
+## Task 2: True Bounded try_push
+
+###Goal
 
 Implement non-blocking push semantics.
 
-Requirements
+### Requirements
 detect full queue before claiming too far ahead
 return false instead of spinning forever
 avoid breaking sequence protocol
@@ -255,20 +256,21 @@ head reservation may advance too far
 full detection is harder than SPSC
 may need CAS instead of unconditional fetch_add
 
-Status: Completed
+### Status: Completed
 
-Task 3: MPSC Benchmark
-Goal
+## Task 3: MPSC Benchmark
+
+###Goal
 
 Measure contention cost as producer count increases.
 
-Benchmark Modes
+### Benchmark Modes
 1 producer
 2 producers
 4 producers
 8 producers
 
-Metrics:
+### Metrics:
 
 throughput
 p50 / p99 / p999 latency
@@ -276,7 +278,7 @@ producer contention effect
 tail amplification
 failed retries if CAS-based version is implemented
 
-Implemented:
+### Implemented:
 - `mpsc_bench`
 - `push` mode 
 - `try_drop` mode
@@ -289,7 +291,7 @@ Implemented:
 - sequence gap detection 
 - head/tail padding comparison 
 
-Files:
+### Files:
 - `src/app/mpsc_bench_main.cpp`
 - `scripts/run_mpsc_ring_rel.sh`
 - `include/ull/core/mpsc_ring_padded.h`
@@ -299,7 +301,7 @@ Files:
 - `docs/experiments/mpsc_padding.md`
 - `docs/design/mpsc_memory_ordering.md`
 
-Findings:
+### Findings:
 - sustained overload turns queue capacity into backlog latency 
 - smaller capacity lowers latency by bounding backlog 
 - `try_drop` lowers queueing latency but creates sequence gaps 
@@ -307,14 +309,15 @@ Findings:
 - head/tail padding improves throughput and p99 latency moderately 
 - head/tail padding does not remove producer contention on shared `head_`
 
-Status: Completed 
+### Status: Completed 
 
-Task 4: Memory Ordering Documentation
-Goal
+## Task 4: Memory Ordering Documentation
+
+### Goal
 
 Document acquire/release reasoning for MPSC.
 
-Topics:
+### Topics:
 
 why producer publish uses release
 why consumer readiness check uses acquire
@@ -322,18 +325,19 @@ why claim and publish are separate
 why tail can be non-atomic
 why per-slot sequence avoids reading partially written payload
 
-Docs:
+### Docs:
 
 docs/design/mpsc_memory_ordering.md
 
-Status: Completed 
+### Status: Completed 
 
-Task 5: Disruptor-style Sequencer Exploration
-Goal
+## Task 5: Disruptor-style Sequencer Exploration
+
+### Goal
 
 Evolve ring buffer thinking toward Disruptor-like architecture.
 
-Topics:
+### Topics:
 
 sequence abstraction
 publish barrier
@@ -342,11 +346,16 @@ fanout consumers
 consumer dependency graph
 wait strategies
 
-Possible files:
+### Possible files:
 
 docs/design/disruptor_notes.md
 
-Status: Started 
+### Implemented:
+- initial `Sequence` abstraction 
+- cache-line aligned sequence wrapper
+- unit test for basic load/store/fetch_add behavior 
+
+### Status: Started 
 
 v0.4 — Memory Optimization
 Goal
