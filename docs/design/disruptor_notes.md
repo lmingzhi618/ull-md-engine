@@ -114,6 +114,13 @@ publish() marks it visible through the cursor
 ```
 
 The sequencer also exposes `remaining_capacity()` so tests and future experiments can observe how far the producer may advance before hitting the consumer gating sequence.
+The sequencer now exposes two claim styles:
+```text 
+try_next() returns false when there is no remaining capacity 
+next() spins until capacity becomes available 
+```
+This mirrors the queue API distinction between non-blocking try_push() and blocking/spinning push().
+
 
 Step 4:
 Explore multiple consumer gating sequences and publish barriers.

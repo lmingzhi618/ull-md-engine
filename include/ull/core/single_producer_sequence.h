@@ -26,6 +26,14 @@ public:
     return true;
   }
 
+  std::uint64_t next() noexcept {
+    std::uint64_t seq{};
+    while (!try_next(seq)) {
+      // spin until consumer advances the gating sequence
+    }
+    return seq;
+  }
+
   std::uint64_t remaining_capacity() const noexcept {
     const auto gating = gating_.load(std::memory_order_acquire);
     const auto in_flight =
