@@ -102,3 +102,7 @@ add_test(NAME test_mpsc_ring_cell_padded COMMAND test_mpsc_ring_cell_padded)
 add_executable(test_sequence tests/test_sequence.cpp) 
 target_link_libraries(test_sequence PRIVATE ull)
 add_test(NAME test_sequence COMMAND test_sequence)
+
+add_executable(test_single_producer_sequencer tests/test_single_producer_sequencer.cpp)
+target_link_libraries(test_single_producer_sequencer PRIVATE ull)
+add_test(NAME test_single_producer_sequencer COMMAND test_single_producer_sequencer)

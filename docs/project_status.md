@@ -354,6 +354,8 @@ docs/design/disruptor_notes.md
 - initial `Sequence` abstraction 
 - cache-line aligned sequence wrapper
 - unit test for basic load/store/fetch_add behavior 
+- initial single-producer sequencer prototype 
+- separation between claim (`next`) and publish(`publish`)
 
 ### Status: Started 
 

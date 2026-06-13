@@ -103,6 +103,15 @@ It also exposes `compare_exchange_weak()` so future sequencer experiments can us
 
 Step 3:
 Experiment with one producer cursor and one consumer gating sequence.
+A minimal `SingleProducerSequencer` prototype now exists in:
+```text 
+include/ull/core/single_producer_sequencer.h"
+``` 
+It separates sequence claiming from publication:
+```text 
+next() claims a sequence
+publish() marks it visible through the cursor 
+```
 
 Step 4:
 Explore multiple consumer gating sequences and publish barriers.
