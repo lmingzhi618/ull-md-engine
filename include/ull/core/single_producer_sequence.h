@@ -57,6 +57,12 @@ public:
     return seq <= cursor();
   }
 
+  void wait_until_available(std::uint64_t seq) const noexcept {
+    while (!is_available(seq)) {
+      // spin until producer publishes this sequence
+    }
+  }
+
   std::uint64_t gating_sequence() const noexcept {
     return gating_.load(std::memory_order_acquire);
   }

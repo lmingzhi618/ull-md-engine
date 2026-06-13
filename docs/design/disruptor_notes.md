@@ -129,7 +129,12 @@ For the single-producer prototype, a sequence is available when:
 ```text 
 seq <= cursor 
 ```
-because publication happens in prodcuer order.
+because publication happens in producer order.
+
+A blocking consumer-side wait is represented by:
+```text 
+wait_until_available(seq)
+```
 
 Step 4:
 Explore multiple consumer gating sequences and publish barriers.

@@ -38,6 +38,8 @@ int main() {
     s.publish(3);
     assert(s.cursor() == 3);
 
+    s.wait_until_available(3);
+
     assert(s.is_available(0));
     assert(s.is_available(3));
     assert(!s.is_available(4));
@@ -61,6 +63,18 @@ int main() {
     assert(s.remaining_capacity() == 0);
   }
 
+  {
+    ull::SingleProducerSequencer s(4);
+
+    const auto seq = s.next();
+    assert(seq == 0);
+
+    assert(!s.is_available(0));
+    s.publish(0);
+
+    s.wait_until_available(0);
+    assert(s.is_available(0));
+  }
   std::cout << "test_single_producer_sequencer PASS\n";
 
   return 0;
