@@ -53,6 +53,10 @@ public:
     return cursor_.load(std::memory_order_acquire);
   }
 
+  bool is_available(std::uint64_t seq) const noexcept {
+    return seq <= cursor();
+  }
+
   std::uint64_t gating_sequence() const noexcept {
     return gating_.load(std::memory_order_acquire);
   }

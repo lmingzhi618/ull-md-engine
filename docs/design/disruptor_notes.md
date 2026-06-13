@@ -121,6 +121,15 @@ next() spins until capacity becomes available
 ```
 This mirrors the queue API distinction between non-blocking try_push() and blocking/spinning push().
 
+Consumer-side availability is represented by:
+```text 
+is_available(seq)
+```
+For the single-producer prototype, a sequence is available when:
+```text 
+seq <= cursor 
+```
+because publication happens in prodcuer order.
 
 Step 4:
 Explore multiple consumer gating sequences and publish barriers.
