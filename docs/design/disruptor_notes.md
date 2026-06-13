@@ -99,6 +99,7 @@ A minimal `Sequence` wrapper now exists in:
 include/ull/core/sequence.h
 ```
 It is cache-line aligned and wraps an atomic uint64_t.
+It also exposes `compare_exchange_weak()` so future sequencer experiments can use CAS-based sequence claiming.
 
 Step 3:
 Experiment with one producer cursor and one consumer gating sequence.

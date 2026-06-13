@@ -8,6 +8,7 @@
 namespace ull {
 class alignas(kCacheLine) Sequence {
 public:
+  using value_type = std::uint64_t;
   explicit Sequence(std::uint64_t initial = 0) noexcept : value_(initial) {}
 
   std::uint64_t
@@ -24,6 +25,13 @@ public:
   fetch_add(std::uint64_t delta,
             std::memory_order order = std::memory_order_relaxed) noexcept {
     return value_.fetch_add(delta, order);
+  }
+
+  bool compare_exchange_weak(
+      std::uint64_t &expected, std::uint64_t desired,
+      std::memory_order success = std::memory_order_relaxed,
+      std::memory_order failure = std::memory_order_relaxed) noexcept {
+    return value_.compare_exchange_weak(expected, desired, success, failure);
   }
 
 private:

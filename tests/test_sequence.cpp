@@ -18,6 +18,20 @@ int main() {
   assert(old == 42);
   assert(seq.load(std::memory_order_relaxed) == 45);
 
+  std::uint64_t expected = 45;
+  assert(seq.compare_exchange_weak(expected, 100, std::memory_order_relaxed,
+                                   std::memory_order_relaxed));
+
+  assert(seq.load(std::memory_order_relaxed) == 100);
+  assert(expected == 45);
+
+  expected = 45;
+  assert(!seq.compare_exchange_weak(expected, 200, std::memory_order_relaxed,
+                                    std::memory_order_relaxed));
+
+  assert(expected == 100);
+  assert(seq.load(std::memory_order_relaxed) == 100);
+
   std::cout << "test_sequence PASS\n";
 
   return 0;
