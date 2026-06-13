@@ -5,21 +5,33 @@
 #include "ull/core/single_producer_sequence.h"
 
 int main() {
-  ull::SingleProducerSequencer seq;
+  ull::SingleProducerSequencer s(4);
 
-  const auto a = seq.next();
-  const auto b = seq.next();
+  std::uint64_t seq{};
 
-  assert(a == 0);
-  assert(b == 1);
+  assert(s.try_next(seq));
+  assert(seq == 0);
 
-  assert(seq.cursor() == 0);
+  assert(s.try_next(seq));
+  assert(seq == 1);
 
-  seq.publish(a);
-  assert(seq.cursor() == 0);
+  assert(s.try_next(seq));
+  assert(seq == 2);
 
-  seq.publish(b);
-  assert(seq.cursor() == 1);
+  assert(s.try_next(seq));
+  assert(seq == 3);
+
+  // Capacity is full: consumer has not advanced yet.
+  assert(!s.try_next(seq));
+
+  s.publish(3);
+  assert(s.cursor() == 3);
+
+  // Consumer has processed seq 0, so slot 0 is reusable.
+  s.set_gating_sequence(0);
+
+  assert(s.try_next(seq));
+  assert(seq == 4);
 
   std::cout << "test_single_producer_sequencer PASS\n";
 
