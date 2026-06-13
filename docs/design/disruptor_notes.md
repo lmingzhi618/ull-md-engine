@@ -105,7 +105,7 @@ Step 3:
 Experiment with one producer cursor and one consumer gating sequence.
 A minimal `SingleProducerSequencer` prototype now exists in:
 ```text 
-include/ull/core/single_producer_sequencer.h"
+include/ull/core/single_producer_sequence.h
 ``` 
 It separates sequence claiming from publication:
 ```text 

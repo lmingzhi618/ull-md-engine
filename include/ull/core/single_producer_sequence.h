@@ -12,15 +12,16 @@ static constexpr std::uint64_t kNoConsumerProgress =
 class SingleProducerSequencer {
 public:
   explicit SingleProducerSequencer(std::uint64_t capacity) noexcept
-      : capacity_(detail::validate_capacity(capacity)), next_(-1), cursor_(0),
-        gating_(static_cast<std::uint64_t>(-1)) {}
+      : capacity_(detail::validate_capacity(capacity)), next_(0),
+        cursor_(kNoConsumerProgress),
+        gating_(static_cast<std::uint64_t>(kNoConsumerProgress)) {}
 
   bool try_next(std::uint64_t &out) noexcept {
     const auto gating = gating_.load(std::memory_order_acquire);
     const auto in_flight =
-        (gating == kNoConsumerProgress) ? next_ : (next_ - capacity_ - 1);
+        (gating == kNoConsumerProgress) ? next_ : (next_ - gating - 1);
 
-    if (in_flight >= gating) {
+    if (in_flight >= capacity_) {
       return false;
     }
 
