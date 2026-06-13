@@ -113,6 +113,8 @@ next() claims a sequence
 publish() marks it visible through the cursor 
 ```
 
+The sequencer also exposes `remaining_capacity()` so tests and future experiments can observe how far the producer may advance before hitting the consumer gating sequence.
+
 Step 4:
 Explore multiple consumer gating sequences and publish barriers.
 

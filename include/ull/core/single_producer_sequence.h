@@ -17,17 +17,20 @@ public:
         gating_(static_cast<std::uint64_t>(kNoConsumerProgress)) {}
 
   bool try_next(std::uint64_t &out) noexcept {
-    const auto gating = gating_.load(std::memory_order_acquire);
-    const auto in_flight =
-        (gating == kNoConsumerProgress) ? next_ : (next_ - gating - 1);
-
-    if (in_flight >= capacity_) {
+    if (remaining_capacity() == 0) {
       return false;
     }
 
     out = next_;
     ++next_;
     return true;
+  }
+
+  std::uint64_t remaining_capacity() const noexcept {
+    const auto gating = gating_.load(std::memory_order_acquire);
+    const auto in_flight =
+        (gating == kNoConsumerProgress) ? next_ : (next_ - gating - 1);
+    return capacity_ - in_flight;
   }
 
   void publish(std::uint64_t seq) noexcept {
