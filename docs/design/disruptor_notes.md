@@ -136,6 +136,13 @@ A blocking consumer-side wait is represented by:
 wait_until_available(seq)
 ```
 
+Consumer progress is reported with:
+```text 
+mark_consumed(seq);
+```
+This advances the gating sequence and allows the producer to reuse capacity behind that point.
+
+
 Step 4:
 Explore multiple consumer gating sequences and publish barriers.
 

@@ -58,7 +58,7 @@ int main() {
     assert(s.next() == 1);
     assert(s.remaining_capacity() == 0);
 
-    s.set_gating_sequence(0);
+    s.mark_consumed(0);
     assert(s.next() == 2);
     assert(s.remaining_capacity() == 0);
   }

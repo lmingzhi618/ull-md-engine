@@ -49,6 +49,8 @@ public:
     gating_.store(seq, std::memory_order_release);
   }
 
+  void mark_consumed(std::uint64_t seq) noexcept { set_gating_sequence(seq); }
+
   std::uint64_t cursor() const noexcept {
     return cursor_.load(std::memory_order_acquire);
   }
