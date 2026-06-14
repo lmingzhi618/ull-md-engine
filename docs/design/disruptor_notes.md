@@ -142,6 +142,11 @@ mark_consumed(seq);
 ```
 This advances the gating sequence and allows the producer to reuse capacity behind that point.
 
+A small test now demonstrates the sequencer controlling a fixed-size ring:
+```text
+next() -> write ring slot -> publish() -> wait_until_available() -> read ring slot -> mark_consumed() 
+```
+This keeps storage separate from sequence control.
 
 Step 4:
 Explore multiple consumer gating sequences and publish barriers.

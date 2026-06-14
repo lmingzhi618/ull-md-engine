@@ -44,7 +44,7 @@ int main() {
     assert(s.is_available(3));
     assert(!s.is_available(4));
     // Consumer has processed seq 0, so slot 0 is reusable.
-    s.set_gating_sequence(0);
+    s.mark_consumed(0);
     assert(s.remaining_capacity() == 1);
 
     assert(s.try_next(seq));

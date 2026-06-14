@@ -33,6 +33,7 @@ target_include_directories(ull PUBLIC include)
 #add_executable(ull_replay src/app/replay_main.cpp)
 #target_link_libraries(ull_replay PRIVATE ull)
 
+
 add_executable(ull_bench src/app/bench_main.cpp)
 target_link_libraries(ull_bench PRIVATE ull)
 
@@ -106,3 +107,9 @@ add_test(NAME test_sequence COMMAND test_sequence)
 add_executable(test_single_producer_sequencer tests/test_single_producer_sequencer.cpp)
 target_link_libraries(test_single_producer_sequencer PRIVATE ull)
 add_test(NAME test_single_producer_sequencer COMMAND test_single_producer_sequencer)
+
+
+add_executable(test_single_producer_sequencer_ring tests/test_single_producer_sequencer_ring.cpp)
+target_link_libraries(test_single_producer_sequencer_ring PRIVATE ull)
+add_test(NAME test_single_producer_sequencer_ring COMMAND test_single_producer_sequencer_ring)
+
