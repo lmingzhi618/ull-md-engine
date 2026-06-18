@@ -154,4 +154,29 @@ This is why the sequencer abstraction matters. It gives us a place to model prod
 
 ## What Is Experimental vs Core
 
+Some v0.3 work is part of the engine direction, while some work is intentionally experimental.
+
+Core direction:
+- bounded ring buffers
+- explicit producer and consumer sequences
+- clear claim / publish / consume lifecycle 
+- capacity and backpressure behavior 
+- latency and throughput measurement 
+
+Experimental work:
+- `try_drop` overload policy 
+- different ring capacities 
+- padded vs cell-padded layouts 
+- standalone `Sequence` abstraction
+- `SingleProducerSequencer`
+- Disruptor-style fanout exploration 
+
+The purpose of the experimental work is not to commit to a final design too early. It is to make concurrency trade-offs visible through small implementations and measurements.
+
+A feature should move from experimental to core only when it has:
+- a clear use case in the market data engine 
+- correctness tests 
+- benchmark data 
+- documented trade-offs 
+
 ## Next Milestones
