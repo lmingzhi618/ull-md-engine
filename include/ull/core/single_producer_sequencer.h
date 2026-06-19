@@ -41,6 +41,10 @@ public:
     return capacity_ - in_flight;
   }
 
+  // Single-producer sequencer assumes in-order publication.
+  // Publishing sequence N makes all sequences <= N visible.
+  // Nulti-producer or out-of-order publication requires per-slot
+  // availability tracking instead of a single cursor.
   void publish(std::uint64_t seq) noexcept {
     cursor_.store(seq, std::memory_order_release);
   }
