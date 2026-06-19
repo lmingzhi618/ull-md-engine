@@ -131,6 +131,19 @@ seq <= cursor
 ```
 because publication happens in producer order.
 
+This is why `SingleProducerSequencer` is only valid for in-order publication. If sequence 1 were published before sequence 0, a single cursor could incorrectly make both sequences appear available.
+
+Example:
+```text
+claim seq 0 
+claim seq 1
+publish seq 1 first 
+cursor = 1
+consumer may think seq 0 is also available 
+```
+A multi-producer sequencer cannot rely only on a single cursor for publication visibility. It needs additional availability tracking, such as per-slot or per-sequence publication state, before advancing the visible cursor.
+
+
 A blocking consumer-side wait is represented by:
 ```text 
 wait_until_available(seq)

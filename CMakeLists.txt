@@ -113,3 +113,6 @@ add_executable(test_single_producer_sequencer_ring tests/test_single_producer_se
 target_link_libraries(test_single_producer_sequencer_ring PRIVATE ull)
 add_test(NAME test_single_producer_sequencer_ring COMMAND test_single_producer_sequencer_ring)
 
+add_executable(test_gating_sequences tests/test_gating_sequences.cpp)
+target_link_libraries(test_gating_sequences PRIVATE ull)
+add_test(NAME test_gating_sequences COMMAND test_gating_sequences)

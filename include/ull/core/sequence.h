@@ -6,6 +6,9 @@
 #include "ull/core/cacheline.h"
 
 namespace ull {
+static constexpr std::uint64_t kNoConsumerProgress =
+    static_cast<std::uint64_t>(-1);
+
 class alignas(kCacheLine) Sequence {
 public:
   using value_type = std::uint64_t;

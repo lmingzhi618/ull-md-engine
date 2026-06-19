@@ -7,8 +7,6 @@
 
 namespace ull {
 
-static constexpr std::uint64_t kNoConsumerProgress =
-    static_cast<std::uint64_t>(-1);
 class SingleProducerSequencer {
 public:
   explicit SingleProducerSequencer(std::uint64_t capacity) noexcept
@@ -43,7 +41,7 @@ public:
 
   // Single-producer sequencer assumes in-order publication.
   // Publishing sequence N makes all sequences <= N visible.
-  // Nulti-producer or out-of-order publication requires per-slot
+  // Multi-producer or out-of-order publication requires per-slot
   // availability tracking instead of a single cursor.
   void publish(std::uint64_t seq) noexcept {
     cursor_.store(seq, std::memory_order_release);
