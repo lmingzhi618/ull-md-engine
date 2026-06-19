@@ -132,7 +132,7 @@ A Disruptor-style model can support fanout:
 ```text 
 producer -> ring storage -> consumer A 
                          -> consumer B
-                         -> consumer 
+                         -> consumer C
 ```
 The key difference is how consumer progress is tracked.
 In the current MPSC ring, there is one consumer position:
@@ -180,3 +180,32 @@ A feature should move from experimental to core only when it has:
 - documented trade-offs 
 
 ## Next Milestones
+
+Near-term milestones:
+
+- finish the v0.3 architecture map
+- keep MPSC ring as the concrete contention baseline 
+- use `SingleProducerSequencer` to study claim / publish / consume separation without changing the production queue yet 
+- add wrap-around tests for sequencer-controlled ring storage 
+- explore multiple gating sequences after the single-consumer model is clear 
+
+The next implementation step should stay small:
+
+```text 
+SingleProducerSequencer + fixed-size ring storage + wrap-around test 
+```
+
+This should demonstrate that:
+```text 
+sequence numbers grow monotonically 
+physical slots are reused with seq & mask 
+producer capacity depends on consumer progress 
+``` 
+
+Out of scope for the immediate next step:
+- full Disruptor implementation 
+- multiple producer sequencer 
+- multi-consumer dependency graph 
+- replacing MpscRing 
+
+
