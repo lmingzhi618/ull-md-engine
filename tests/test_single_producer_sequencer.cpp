@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <iostream>
 
-#include "ull/core/single_producer_sequence.h"
+#include "ull/core/single_producer_sequencer.h"
 
 int main() {
   {
