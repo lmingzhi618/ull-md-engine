@@ -27,6 +27,32 @@ int main() {
   assert(ring[1] == 200);
   sequencer.mark_consumed(1);
 
+  const auto s2 = sequencer.next();
+  ring[s2 & (kCapacity - 1)] = 300;
+  sequencer.publish(s2);
+
+  sequencer.wait_until_available(2);
+  assert(ring[2] == 300);
+  sequencer.mark_consumed(2);
+
+  const auto s3 = sequencer.next();
+  ring[s3 & (kCapacity - 1)] = 400;
+  sequencer.publish(s3);
+
+  sequencer.wait_until_available(3);
+  assert(ring[3] == 400);
+  sequencer.mark_consumed(3);
+
+  const auto s4 = sequencer.next();
+  assert(s4 == 4);
+  assert((s4 & (kCapacity - 1)) == 0);
+
+  ring[s4 & (kCapacity - 1)] = 500;
+  sequencer.publish(s4);
+
+  sequencer.wait_until_available(4);
+  assert(ring[0] == 500);
+  sequencer.mark_consumed(4);
   std::cout << "test_single_producer_sequencer_ring PASS\n";
   return 0;
 }
