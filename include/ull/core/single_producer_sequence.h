@@ -71,6 +71,10 @@ public:
 
   std::uint64_t capacity() const noexcept { return capacity_; }
 
+  std::uint64_t index(std::uint64_t seq) const noexcept {
+    return seq & (capacity_ - 1);
+  }
+
 private:
   std::uint64_t capacity_;
   std::uint64_t next_;
