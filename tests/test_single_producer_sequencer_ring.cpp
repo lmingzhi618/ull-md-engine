@@ -79,6 +79,7 @@ int main() {
 
     assert(storage[0] == 2000);
   }
+
   std::cout << "test_single_producer_sequencer_ring PASS\n";
   return 0;
 }

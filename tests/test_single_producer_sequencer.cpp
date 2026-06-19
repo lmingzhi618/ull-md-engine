@@ -75,6 +75,26 @@ int main() {
     s.wait_until_available(0);
     assert(s.is_available(0));
   }
+
+  {
+    ull::SingleProducerSequencer s(4);
+
+    const auto s0 = s.next();
+    const auto s1 = s.next();
+
+    assert(s0 == 0);
+    assert(s1 == 1);
+
+    s.publish(s0);
+    assert(s.cursor() == 0);
+    assert(s.is_available(0));
+    assert(!s.is_available(1));
+
+    s.publish(s1);
+    assert(s.cursor() == 1);
+    assert(s.is_available(1));
+  }
+
   std::cout << "test_single_producer_sequencer PASS\n";
 
   return 0;
