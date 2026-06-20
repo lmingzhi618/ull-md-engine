@@ -70,6 +70,10 @@ public:
   }
 
   bool is_available(std::uint64_t seq) const noexcept {
+    const auto current = cursor();
+    if (current == kNoConsumerProgress) {
+      return false;
+    }
     return seq <= cursor();
   }
 

@@ -6,3 +6,5 @@ cmake -S . -B build/dev \
   -DULL_ENABLE_SANITIZERS=OFF
 
 cmake --build build/dev -j
+
+ctest --test-dir build/dev --output-on-failure

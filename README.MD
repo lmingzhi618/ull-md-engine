@@ -107,11 +107,12 @@ cmake --build build -j
 
 ## Development
 
-### Unit tests (Debug + ASAN/UBSAN)
+### Unit tests (Debug)
 ```bash
 ./scripts/test_dev.sh
 ```
-
+ASAN/UBSAN is optional and can be enabled separately when the local
+toolchain supports it reliably.
 ---
 
 ## Experiments 
