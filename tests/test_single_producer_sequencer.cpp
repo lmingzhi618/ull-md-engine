@@ -95,6 +95,33 @@ int main() {
     assert(s.is_available(1));
   }
 
+  {
+    ull::SingleProducerSequencer s(4);
+    ull::GatingSequences g(2);
+
+    s.set_gating_sequences(&g);
+
+    assert(s.next() == 0);
+    assert(s.next() == 1);
+    assert(s.next() == 2);
+    assert(s.next() == 3);
+    assert(s.remaining_capacity() == 0);
+
+    std::uint64_t seq{};
+    assert(!s.try_next(seq));
+
+    g.store(0, 3);
+    g.store(1, 0);
+
+    assert(s.remaining_capacity() == 1);
+    assert(s.try_next(seq));
+    assert(seq == 4);
+    assert(s.remaining_capacity() == 0);
+
+    g.store(1, 2);
+
+    assert(s.remaining_capacity() == 2);
+  }
   std::cout << "test_single_producer_sequencer PASS\n";
 
   return 0;

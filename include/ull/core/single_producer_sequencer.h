@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include "ull/core/gating_sequences.h"
 #include "ull/core/sequence.h"
 #include "ull/core/utils.h"
 
@@ -12,7 +13,8 @@ public:
   explicit SingleProducerSequencer(std::uint64_t capacity) noexcept
       : capacity_(detail::validate_capacity(capacity)), next_(0),
         cursor_(kNoConsumerProgress),
-        gating_(static_cast<std::uint64_t>(kNoConsumerProgress)) {}
+        gating_(static_cast<std::uint64_t>(kNoConsumerProgress)),
+        gating_sequences_(nullptr) {}
 
   bool try_next(std::uint64_t &out) noexcept {
     if (remaining_capacity() == 0) {
@@ -33,7 +35,7 @@ public:
   }
 
   std::uint64_t remaining_capacity() const noexcept {
-    const auto gating = gating_.load(std::memory_order_acquire);
+    const auto gating = gating_min();
     const auto in_flight =
         (gating == kNoConsumerProgress) ? next_ : (next_ - gating - 1);
     return capacity_ - in_flight;
@@ -47,6 +49,16 @@ public:
     cursor_.store(seq, std::memory_order_release);
   }
 
+  std::uint64_t gating_min() const noexcept {
+    if (gating_sequences_ != nullptr) {
+      return gating_sequences_->load_min();
+    }
+    return gating_.load(std::memory_order_acquire);
+  }
+
+  void set_gating_sequences(GatingSequences *gating_sequences) noexcept {
+    gating_sequences_ = gating_sequences;
+  }
   void set_gating_sequence(std::uint64_t seq) noexcept {
     gating_.store(seq, std::memory_order_release);
   }
@@ -82,5 +94,6 @@ private:
   std::uint64_t next_;
   Sequence cursor_;
   Sequence gating_;
+  GatingSequences *gating_sequences_;
 };
 } // namespace ull
