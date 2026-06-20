@@ -110,15 +110,15 @@ int main() {
     std::uint64_t seq{};
     assert(!s.try_next(seq));
 
-    g.store(0, 3);
-    g.store(1, 0);
+    g.mark_consumed(0, 3);
+    g.mark_consumed(1, 0);
 
     assert(s.remaining_capacity() == 1);
     assert(s.try_next(seq));
     assert(seq == 4);
     assert(s.remaining_capacity() == 0);
 
-    g.store(1, 2);
+    g.mark_consumed(1, 2);
 
     assert(s.remaining_capacity() == 2);
   }

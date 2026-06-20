@@ -166,7 +166,7 @@ Explore multiple consumer gating sequences and publish barriers.
 
 A minimal `GatingSequences` helper now exists in:
 ```text 
-incude/ull/core/gating_sequences.h
+include/ull/core/gating_sequences.h
 ```
 It tracks multiple consumer progress values and exposes:
 ```text

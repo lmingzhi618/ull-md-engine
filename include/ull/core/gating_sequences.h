@@ -50,6 +50,14 @@ public:
     return sequences_[index]->load();
   }
 
+  void mark_consumed(std::uint64_t consumer_index, std::uint64_t seq) noexcept {
+    store(consumer_index, seq);
+  }
+
+  std::uint64_t consumer_sequence(std::uint64_t consumer_index) const noexcept {
+    return load(consumer_index);
+  }
+
 private:
   std::vector<std::unique_ptr<Sequence>> sequences_;
 };

@@ -17,6 +17,7 @@ int main() {
     sequencer.publish(s0);
 
     sequencer.wait_until_available(0);
+
     assert(ring[0] == 100);
     sequencer.mark_consumed(0);
 
@@ -79,7 +80,39 @@ int main() {
 
     assert(storage[0] == 2000);
   }
+  {
+    ull::SingleProducerSequencer s(kCapacity);
+    ull::GatingSequences g(2); // two consumers
+    s.set_gating_sequences(&g);
 
+    std::array<std::uint64_t, kCapacity> storage{};
+
+    for (std::uint64_t i = 0; i < kCapacity; ++i) {
+      const auto seq = s.next();
+      storage[s.index(seq)] = 100 + seq;
+      s.publish(seq);
+    }
+    assert(s.remaining_capacity() == 0);
+
+    g.mark_consumed(0, 3);
+    g.mark_consumed(1, 0);
+
+    assert(s.remaining_capacity() == 1);
+
+    std::uint64_t seq{};
+    assert(s.try_next(seq));
+    assert(seq == 4);
+    assert(!s.try_next(seq));
+
+    storage[s.index(seq)] = 200;
+    s.publish(seq);
+
+    assert(storage[0] == 200);
+    assert(s.remaining_capacity() == 0);
+
+    g.mark_consumed(1, 2);
+    assert(s.remaining_capacity() == 2);
+  }
   std::cout << "test_single_producer_sequencer_ring PASS\n";
   return 0;
 }
