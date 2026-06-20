@@ -164,6 +164,25 @@ This keeps storage separate from sequence control.
 Step 4:
 Explore multiple consumer gating sequences and publish barriers.
 
+A minimal `GatingSequences` helper now exists in:
+```text 
+incude/ull/core/gating_sequences.h
+```
+It tracks multiple consumer progress values and exposes:
+```text
+load_min()
+```
+This models the fanout backpressure rule:
+```text 
+producer capacity is limited by the slowest consumer 
+```
+
+SingleProducerSequencer can now optionally use external GatingSequences for capacity calculation:
+```text 
+remaining_capacity() -> gating_min() -> min(gating_sequences) 
+```
+This keeps the current single-consumer behavior as the default while allowing fanout-style experiments without replacing the MPSC ring.
+
 ## Open Questions
 - Can the current per-slot sequence protocol extend cleanly to fanout?
 - Should publication use per-slot `seq` or a separate cursor?
