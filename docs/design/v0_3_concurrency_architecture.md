@@ -14,6 +14,10 @@ The goal is not to build a full Disruptor immediately. The goal is to understand
 
 This phase treats the current MPSC ring as the concrete baseline, then uses small sequencer experiments to move toward a Disruptor-style model.
 
+Currentness tests should be run with Debug builds so that `assert` checks are enabled. Release builds are reserved for benchmarks because `NDEBUG` disables `assert`.
+
+On the current macOS development environment, ASAN is optional rather than the default correctness path because the sanitizer runtime may hang before entering `main()`.
+
 ## Current Components
 
 Current v0.3 components:
