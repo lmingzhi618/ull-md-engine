@@ -74,7 +74,7 @@ public:
     if (current == kNoConsumerProgress) {
       return false;
     }
-    return seq <= cursor();
+    return seq <= current;
   }
 
   void wait_until_available(std::uint64_t seq) const noexcept {

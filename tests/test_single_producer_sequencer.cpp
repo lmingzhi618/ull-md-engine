@@ -122,6 +122,31 @@ int main() {
 
     assert(s.remaining_capacity() == 2);
   }
+  {
+    ull::SingleProducerSequencer s(4);
+    ull::GatingSequences g(2); // 2 consumers
+
+    s.set_gating_sequences(&g);
+
+    assert(s.next() == 0);
+    assert(s.next() == 1);
+    assert(s.next() == 2);
+    assert(s.next() == 3);
+    assert(s.remaining_capacity() == 0);
+
+    g.mark_consumed(0, 3); // consumer 0 consumed index 3
+    g.mark_consumed(1, 0); // consumer 1 consumed index 0
+    assert(s.remaining_capacity() == 1);
+
+    // After detaching external gating, the internal single-consumer gating
+    // sequence is still at kNoConsumerProgress.
+    s.set_gating_sequences(nullptr);
+    assert(s.remaining_capacity() == 0);
+
+    s.mark_consumed(1);
+    assert(s.remaining_capacity() == 2);
+  }
+
   std::cout << "test_single_producer_sequencer PASS\n";
 
   return 0;
