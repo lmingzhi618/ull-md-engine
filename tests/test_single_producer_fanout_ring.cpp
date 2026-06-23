@@ -39,17 +39,22 @@ int main() {
     assert(gating.load_min() == 0);
     assert(sequencer.remaining_capacity() == 1);
 
+    // Backpressure: consumer 1 is the slowest consuemr at seq 0.
+    // This releases exactly one slot, so producer can claim seq 4.
     std::uint64_t seq{};
     assert(sequencer.try_next(seq));
     assert(seq == 4);
     assert(sequencer.index(seq) == 0);
 
+    // Slot reuse: seq 4 maps to physical slot 0.
+    // This is safe only because all consumers have consumed seq 0.
     ring[sequencer.index(seq)] = 200;
     sequencer.publish(seq);
-
+    assert(ring[0] == 200);
     assert(sequencer.remaining_capacity() == 0);
 
-    // Consumer1 catahes up to seq 2.
+    // Consumer 1 can still catch up on seq 1 and seq 2 because their physical
+    // slots have not been reused yet.
     for (std::uint64_t s = 1; s <= 2; ++s) {
       sequencer.wait_until_available(s);
       assert(ring[sequencer.index(s)] == 100 + s);
