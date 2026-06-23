@@ -120,3 +120,7 @@ add_test(NAME test_gating_sequences COMMAND test_gating_sequences)
 add_executable(test_single_producer_fanout_ring tests/test_single_producer_fanout_ring.cpp)
 target_link_libraries(test_single_producer_fanout_ring PRIVATE ull)
 add_test(NAME test_single_producer_fanout_ring COMMAND test_single_producer_fanout_ring)
+
+add_executable(test_sequence_barrier tests/test_sequence_barrier.cpp)
+target_link_libraries(test_sequence_barrier PRIVATE ull)
+add_test(NAME test_sequence_barrier COMMAND test_sequence_barrier)
