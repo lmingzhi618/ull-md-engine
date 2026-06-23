@@ -20,6 +20,11 @@ public:
   std::uint64_t count() const noexcept {
     return static_cast<std::uint64_t>(sequences_.size());
   }
+
+  std::uint64_t slowest_consumer_sequence() const noexcept {
+    return load_min();
+  }
+
   std::uint64_t load_min() const noexcept {
     if (sequences_.empty()) {
       return kNoConsumerProgress;

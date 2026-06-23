@@ -9,7 +9,7 @@ int main() {
     ull::GatingSequences g(3);
 
     assert(g.count() == 3);
-    assert(g.load_min() == ull::kNoConsumerProgress);
+    assert(g.slowest_consumer_sequence() == ull::kNoConsumerProgress);
 
     g.mark_consumed(0, 10);
     g.mark_consumed(1, 8);
@@ -17,10 +17,10 @@ int main() {
 
     g.mark_consumed(2, 12);
 
-    assert(g.load_min() == 8);
+    assert(g.slowest_consumer_sequence() == 8);
 
     g.mark_consumed(1, 11);
-    assert(g.load_min() == 10);
+    assert(g.slowest_consumer_sequence() == 10);
 
     std::cout << "test_gating_sequences PASS\n";
   }
@@ -32,16 +32,16 @@ int main() {
     g.mark_consumed(1, 1);
     g.mark_consumed(2, 2);
 
-    assert(g.load_min() == 1);
+    assert(g.slowest_consumer_sequence() == 1);
 
     // Fast consumers moving ahead do not increase safe capacity.
     g.mark_consumed(0, 10);
     g.mark_consumed(2, 9);
-    assert(g.load_min() == 1);
+    assert(g.slowest_consumer_sequence() == 1);
 
     // Capacity only improves when the slowest consumer advances.
     g.mark_consumed(1, 8);
-    assert(g.load_min() == 8);
+    assert(g.slowest_consumer_sequence() == 8);
   }
 
   {
@@ -49,7 +49,7 @@ int main() {
     assert(g.consumer_sequence(99) == ull::kNoConsumerProgress);
 
     g.mark_consumed(99, 123);
-    assert(g.load_min() == ull::kNoConsumerProgress);
+    assert(g.slowest_consumer_sequence() == ull::kNoConsumerProgress);
   }
 
   return 0;
