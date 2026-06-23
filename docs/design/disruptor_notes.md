@@ -183,6 +183,33 @@ remaining_capacity() -> gating_min() -> min(gating_sequences)
 ```
 This keeps the current single-consumer behavior as the default while allowing fanout-style experiments without replacing the MPSC ring.
 
+A small fanout ring smoke test now demonstrates the combined model:
+```text
+producer -> shared ring storage -> consumer 0
+                                -> consumer 1
+```
+
+The test shows that both consumers read from the same ring storage, but slot reuse is controlled by the slowest consumer.
+
+```text 
+consumer 0 consumed seq 3
+consumer 1 consumed seq 0 
+min(gating_sequences) = 0
+producer may only claim one more sequence 
+```
+
+When producer claims seq 4, it maps back to slot 0:
+```
+seq 4 -> slot 0
+```
+
+This is safe only because both consumers have already consumed seq 0.
+The test is implemented in:
+```text 
+tests/test_single_producer_fanout_ring.cpp
+```
+
+
 ## Open Questions
 - Can the current per-slot sequence protocol extend cleanly to fanout?
 - Should publication use per-slot `seq` or a separate cursor?

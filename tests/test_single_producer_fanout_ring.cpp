@@ -39,7 +39,7 @@ int main() {
     assert(gating.load_min() == 0);
     assert(sequencer.remaining_capacity() == 1);
 
-    // Backpressure: consumer 1 is the slowest consuemr at seq 0.
+    // Backpressure: consumer 1 is the slowest consumer at seq 0.
     // This releases exactly one slot, so producer can claim seq 4.
     std::uint64_t seq{};
     assert(sequencer.try_next(seq));
