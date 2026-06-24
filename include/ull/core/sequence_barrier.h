@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstdint>
 
 #include "ull/core/single_producer_sequencer.h"
@@ -7,8 +9,9 @@ namespace ull {
 
 class SequenceBarrier {
 public:
-  explicit SequenceBarrier(const SingleProducerSequencer *sequencer,
-                           const BusySpinWaitStrategy *strategy) noexcept
+  explicit SequenceBarrier(
+      const SingleProducerSequencer *sequencer,
+      const BusySpinWaitStrategy *strategy = nullptr) noexcept
       : sequencer_(sequencer), wait_strategy_(strategy) {}
 
   bool is_available(std::uint64_t seq) const noexcept {

@@ -49,5 +49,6 @@ int main() {
     barrier.wait_until_available(seq);
     assert(barrier.is_available(seq));
   }
+
   return 0;
 }
