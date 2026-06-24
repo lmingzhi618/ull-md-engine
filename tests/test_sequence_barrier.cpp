@@ -2,13 +2,13 @@
 #include <cstdint>
 #include <iostream>
 
-#include "ull/core/sequencer_barrier.h"
+#include "ull/core/sequence_barrier.h"
 #include "ull/core/single_producer_sequencer.h"
 
 int main() {
   {
     ull::SingleProducerSequencer sequencer(4);
-    ull::SequenceBarrier barrier(&sequencer);
+    ull::SequenceBarrier barrier(&sequencer, nullptr);
 
     const auto seq = sequencer.next();
 
