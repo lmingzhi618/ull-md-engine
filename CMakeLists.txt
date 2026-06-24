@@ -124,3 +124,7 @@ add_test(NAME test_single_producer_fanout_ring COMMAND test_single_producer_fano
 add_executable(test_sequence_barrier tests/test_sequence_barrier.cpp)
 target_link_libraries(test_sequence_barrier PRIVATE ull)
 add_test(NAME test_sequence_barrier COMMAND test_sequence_barrier)
+
+add_executable(test_wait_strategy tests/test_wait_strategy.cpp)
+target_link_libraries(test_wait_strategy PRIVATE ull)
+add_test(NAME test_wait_strategy COMMAND test_wait_strategy)
