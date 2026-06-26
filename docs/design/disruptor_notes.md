@@ -209,6 +209,38 @@ The test is implemented in:
 tests/test_single_producer_fanout_ring.cpp
 ```
 
+Step 5:
+Introduce a minimal consumer-side wait strategy.
+
+A minimal `BusySpinWaitStrategy` now exists in:
+```text 
+include/ull/core/wait_strategy.h 
+```
+It exposes:
+```text 
+idle() 
+```
+For the busy-spin strategy, idle() intentionally does nothing. This keeps the consumer thread active and avoids scheduler wakeup latency.
+`SequenceBarrier` now owns the consumer-side visibility wait:
+```text
+wait_until_available(seq)
+```
+Internally, the barrier checks whether the sequence is visible and then delegates the waiting behavior to the wait strategy:
+```text
+while seq is not available:
+    wait_strategy.idle()
+```
+This separates two ideas:
+```text 
+SequenceBarrier:
+    when a consumer may proceed
+
+WaitStrategy:
+    how a consumer waits 
+```
+The current implementation uses busy spin by default, while allowing an external wait strategy instance to be injected for future experiments.
+
+
 
 ## Open Questions
 - Can the current per-slot sequence protocol extend cleanly to fanout?
