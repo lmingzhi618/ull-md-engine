@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <iostream>
 
+#include "ull/core/sequence_barrier.h"
 #include "ull/core/single_producer_sequencer.h"
 
 int main() {
@@ -10,6 +11,9 @@ int main() {
     constexpr std::uint64_t kCapacity = 4;
 
     ull::SingleProducerSequencer sequencer(kCapacity);
+    // Consumer-side visibility boundary.
+    // Consumers wait on the barrier before reading ring storage.
+    ull::SequenceBarrier barrier(&sequencer);
     ull::GatingSequences gating(2);
     sequencer.set_gating_sequences(&gating);
 
@@ -26,13 +30,14 @@ int main() {
 
     // Consumer 0 reads everything.
     for (std::uint64_t seq = 0; seq <= 3; ++seq) {
-      sequencer.wait_until_available(seq);
+      // Visibility: wait until producer has published this sequence.
+      barrier.wait_until_available(seq);
       assert(ring[sequencer.index(seq)] == 100 + seq);
       gating.mark_consumed(0, seq);
     }
 
     // Consumer 1 only reads seq 0.
-    sequencer.wait_until_available(0);
+    barrier.wait_until_available(0);
     assert(ring[sequencer.index(0)] == 100);
     gating.mark_consumed(1, 0);
 
@@ -56,7 +61,7 @@ int main() {
     // Consumer 1 can still catch up on seq 1 and seq 2 because their physical
     // slots have not been reused yet.
     for (std::uint64_t s = 1; s <= 2; ++s) {
-      sequencer.wait_until_available(s);
+      barrier.wait_until_available(s);
       assert(ring[sequencer.index(s)] == 100 + s);
       gating.mark_consumed(1, s);
     }
