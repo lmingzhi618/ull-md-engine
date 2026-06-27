@@ -40,7 +40,7 @@ int main() {
   {
     ull::SingleProducerSequencer sequencer(4);
     ull::BusySpinWaitStrategy strategy;
-    ull::SequenceBarrier barrier(&sequencer, &strategy);
+    ull::SequenceBarrier barrier(&sequencer, strategy);
 
     const auto seq = sequencer.next();
     assert(!barrier.is_available(seq));

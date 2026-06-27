@@ -8,7 +8,7 @@
 int main() {
   {
     ull::SingleProducerSequencer sequencer(4);
-    ull::SequenceBarrier barrier(&sequencer, nullptr);
+    ull::SequenceBarrier barrier(&sequencer);
 
     const auto seq = sequencer.next();
 
@@ -26,7 +26,7 @@ int main() {
   {
     ull::SingleProducerSequencer sequencer(4);
     ull::BusySpinWaitStrategy strategy;
-    ull::SequenceBarrier barrier(&sequencer, &strategy);
+    ull::SequenceBarrier barrier(&sequencer, strategy);
 
     const auto seq = sequencer.next();
 

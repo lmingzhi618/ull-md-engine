@@ -13,14 +13,14 @@ public:
       : sequencer_(sequencer), wait_strategy_() {}
 
   explicit SequenceBarrier(const SingleProducerSequencer *sequencer,
-                           const WaitStrategy wait_strategy) noexcept
+                           WaitStrategy wait_strategy) noexcept
       : sequencer_(sequencer), wait_strategy_(wait_strategy) {}
 
   bool is_available(std::uint64_t seq) const noexcept {
     return sequencer_ != nullptr && sequencer_->is_available(seq);
   }
 
-  void wait_until_available(std::uint64_t seq) const noexcept {
+  void wait_until_available(std::uint64_t seq) noexcept {
     while (!is_available(seq)) {
       // Wait: consumer-side visibility wait.
       // BusySpinWaitStrategy keeps the thread active to minimize wakeup
@@ -32,6 +32,6 @@ public:
 
 private:
   const SingleProducerSequencer *sequencer_;
-  const WaitStrategy wait_strategy_;
+  WaitStrategy wait_strategy_;
 };
 } // namespace ull
