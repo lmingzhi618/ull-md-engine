@@ -37,6 +37,20 @@ int main() {
     barrier.wait_until_available(seq);
     assert(barrier.is_available(seq));
   }
+  {
+    ull::SingleProducerSequencer sequencer(4);
+    ull::SpinWaitStrategy strategy(ull::util::SpinStrategy::ThreadYield);
+    ull::SequenceBarrier<ull::SpinWaitStrategy> barrier(&sequencer, strategy);
+
+    const auto seq = sequencer.next();
+
+    assert(!barrier.is_available(seq));
+
+    sequencer.publish(seq);
+
+    barrier.wait_until_available(seq);
+    assert(barrier.is_available(seq));
+  }
   std::cout << "test_sequence_barrier PASS\n";
   return 0;
 }

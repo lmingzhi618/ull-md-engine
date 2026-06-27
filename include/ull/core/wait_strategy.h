@@ -9,6 +9,7 @@ public:
     // Busy-spin strategy v1.
     // Intentionally does nothing to avoid scheduler wakeup latency.
   }
+  void reset() const noexcept {}
 };
 
 class SpinWaitStrategy {
