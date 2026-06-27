@@ -77,6 +77,8 @@ while seq is not available:
 ```
 This keeps the consumer thread active and avoids scheduler wakeup latency, at the cost of CPU usage.
 
+`SequenceBarrier` is templated on the wait strategy type, so the wait behavior is selected at compile time rather than through virtual dispatch.
+
 ## Event Flow 
 
 A single event goes through this path:

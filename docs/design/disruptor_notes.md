@@ -240,6 +240,19 @@ WaitStrategy:
 ```
 The current implementation uses busy spin by default, while allowing an external wait strategy instance to be injected for future experiments.
 
+`SequenceBarrier` is now templated on the wait strategy type:
+
+```cpp
+SequenceBarrier<BusySpinWaitStrategy>
+SequenceBarrier<SpinWaitStrategy>
+```
+This avoids virtual dispatch and keeps the wait strategy type known at compile time. That fits the low-latency direction because the consumer wait path remains simple and predictable.
+`SpinWaitStrategy` wraps the existing v0.2 `SpinWait` implementation:
+```text 
+SpinWaitStrategy::idle() -> SpinWait::pause()
+SpinWaitStrategy::reset() -> SpinWait::reset()
+```
+This connects the earlier spin strategy experiments to the v0.3 consumer wait path.
 
 
 ## Open Questions
