@@ -22,6 +22,9 @@ public:
 
   std::uint64_t wait_until_available(std::uint64_t seq) noexcept {
     while (!is_available(seq)) {
+      if (sequencer_ == nullptr) {
+        return kNoConsumerProgress;
+      }
       // Wait: consumer-side visibility wait.
       // BusySpinWaitStrategy keeps the thread active to minimize wakeup
       // latency.

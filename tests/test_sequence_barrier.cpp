@@ -66,6 +66,7 @@ int main() {
     assert(available == s2);
     assert(barrier.is_available(s0));
     assert(barrier.is_available(s1));
+    assert(barrier.is_available(s2));
   }
 
   std::cout << "test_sequence_barrier PASS\n";
