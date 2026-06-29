@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <iostream>
 
+#include "ull/core/sequence_barrier.h"
 #include "ull/core/single_producer_sequencer.h"
 
 int main() {
@@ -11,12 +12,13 @@ int main() {
     std::array<std::uint64_t, kCapacity> ring{};
 
     ull::SingleProducerSequencer sequencer(kCapacity);
+    ull::SequenceBarrier barrier(&sequencer);
 
     const auto s0 = sequencer.next();
     ring[sequencer.index(s0)] = 100;
     sequencer.publish(s0);
 
-    sequencer.wait_until_available(0);
+    barrier.wait_until_available(0);
 
     assert(ring[0] == 100);
     sequencer.mark_consumed(0);
@@ -25,7 +27,7 @@ int main() {
     ring[sequencer.index(s1)] = 200;
     sequencer.publish(s1);
 
-    sequencer.wait_until_available(1);
+    barrier.wait_until_available(1);
     assert(ring[1] == 200);
     sequencer.mark_consumed(1);
 
@@ -33,7 +35,7 @@ int main() {
     ring[sequencer.index(s2)] = 300;
     sequencer.publish(s2);
 
-    sequencer.wait_until_available(2);
+    barrier.wait_until_available(2);
     assert(ring[2] == 300);
     sequencer.mark_consumed(2);
 
@@ -41,7 +43,7 @@ int main() {
     ring[sequencer.index(s3)] = 400;
     sequencer.publish(s3);
 
-    sequencer.wait_until_available(3);
+    barrier.wait_until_available(3);
     assert(ring[3] == 400);
     sequencer.mark_consumed(3);
 
@@ -52,13 +54,14 @@ int main() {
     ring[sequencer.index(s4)] = 500;
     sequencer.publish(s4);
 
-    sequencer.wait_until_available(4);
+    barrier.wait_until_available(4);
     assert(ring[0] == 500);
     sequencer.mark_consumed(4);
   }
 
   {
     ull::SingleProducerSequencer s(kCapacity);
+    ull::SequenceBarrier barrier(&s);
     std::array<std::uint64_t, kCapacity> storage{};
 
     for (std::uint64_t i = 0; i < kCapacity; ++i) {
@@ -70,7 +73,7 @@ int main() {
     std::uint64_t seq{};
     assert(!s.try_next(seq));
 
-    s.wait_until_available(0);
+    barrier.wait_until_available(0);
     assert(storage[0] == 1000);
     s.mark_consumed(0);
 
@@ -82,6 +85,7 @@ int main() {
   }
   {
     ull::SingleProducerSequencer s(kCapacity);
+    ull::SequenceBarrier barrier(&s);
     ull::GatingSequences g(2); // two consumers
     s.set_gating_sequences(&g);
 
