@@ -77,6 +77,9 @@ public:
     return seq <= current;
   }
 
+  // Convenience helper for early tests.
+  // New consumer-side code should prefer SequenceBarrier so that
+  // visibility waiting and wait strategy are kept outside the sequencer.
   void wait_until_available(std::uint64_t seq) const noexcept {
     while (!is_available(seq)) {
       // spin until producer publishes this sequence

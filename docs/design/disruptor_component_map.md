@@ -34,6 +34,8 @@ gating_ = internal single-consumer progress
 ``` 
 With external GatingSequences, capacity is controlled by the slowest consumer.
 
+Consumer-side waiting is now modeled by `SequenceBarrier`. The sequence may still expose small convenience helpers for tests, but new consumer-facing code should wait through a barrier. 
+
 ### GatingSequences
 
 `GatingSequences` tracks consumer progress for fanout.
