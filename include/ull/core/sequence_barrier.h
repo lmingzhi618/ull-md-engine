@@ -20,7 +20,7 @@ public:
     return sequencer_ != nullptr && sequencer_->is_available(seq);
   }
 
-  void wait_until_available(std::uint64_t seq) noexcept {
+  std::uint64_t wait_until_available(std::uint64_t seq) noexcept {
     while (!is_available(seq)) {
       // Wait: consumer-side visibility wait.
       // BusySpinWaitStrategy keeps the thread active to minimize wakeup
@@ -28,6 +28,7 @@ public:
       wait_strategy_.idle();
     }
     wait_strategy_.reset();
+    return sequencer_->cursor();
   }
 
 private:
