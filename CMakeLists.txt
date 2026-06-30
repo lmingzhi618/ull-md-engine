@@ -128,3 +128,7 @@ add_test(NAME test_sequence_barrier COMMAND test_sequence_barrier)
 add_executable(test_wait_strategy tests/test_wait_strategy.cpp)
 target_link_libraries(test_wait_strategy PRIVATE ull)
 add_test(NAME test_wait_strategy COMMAND test_wait_strategy)
+
+add_executable(test_sequenced_ring tests/test_sequenced_ring.cpp)
+target_link_libraries(test_sequenced_ring PRIVATE ull)
+add_test(NAME test_sequenced_ring COMMAND test_sequenced_ring)
