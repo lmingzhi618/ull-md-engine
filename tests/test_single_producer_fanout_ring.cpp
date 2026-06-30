@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "ull/core/sequence_barrier.h"
+#include "ull/core/sequenced_ring.h"
 #include "ull/core/single_producer_sequencer.h"
 
 int main() {
@@ -17,12 +18,11 @@ int main() {
     ull::GatingSequences gating(2);
     sequencer.set_gating_sequences(&gating);
 
-    std::array<std::uint64_t, kCapacity> ring{};
-
+    ull::SequencedRing<std::uint64_t> ring(kCapacity);
     // Producer fills seq 0..3.
     for (std::uint64_t i = 0; i < kCapacity; ++i) {
       const auto seq = sequencer.next();
-      ring[sequencer.index(seq)] = 100 + seq;
+      ring.read(seq) = 100 + seq;
       sequencer.publish(seq);
     }
 
@@ -32,13 +32,13 @@ int main() {
     for (std::uint64_t seq = 0; seq <= 3; ++seq) {
       // Visibility: wait until producer has published this sequence.
       barrier.wait_until_available(seq);
-      assert(ring[sequencer.index(seq)] == 100 + seq);
+      assert(ring.read(seq) == 100 + seq);
       gating.mark_consumed(0, seq);
     }
 
     // Consumer 1 only reads seq 0.
     barrier.wait_until_available(0);
-    assert(ring[sequencer.index(0)] == 100);
+    assert(ring.read(0) == 100);
     gating.mark_consumed(1, 0);
 
     assert(gating.load_min() == 0);
@@ -53,16 +53,16 @@ int main() {
 
     // Slot reuse: seq 4 maps to physical slot 0.
     // This is safe only because all consumers have consumed seq 0.
-    ring[sequencer.index(seq)] = 200;
+    ring.write(seq, 200);
     sequencer.publish(seq);
-    assert(ring[0] == 200);
+    assert(ring.read(0) == 200);
     assert(sequencer.remaining_capacity() == 0);
 
     // Consumer 1 can still catch up on seq 1 and seq 2 because their physical
     // slots have not been reused yet.
     for (std::uint64_t s = 1; s <= 2; ++s) {
       barrier.wait_until_available(s);
-      assert(ring[sequencer.index(s)] == 100 + s);
+      assert(ring.read(s) == 100 + s);
       gating.mark_consumed(1, s);
     }
 

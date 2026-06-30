@@ -7,7 +7,7 @@
 
 namespace ull {
 
-// SequencedRing owns payload stoarge only.
+// SequencedRing owns payload storage only.
 // It does not decide whether a sequence is claimed, published, or safe to
 // reuse. Those rules are owned by the sequencer/barrier/gating logic.
 template <typename T> class SequencedRing {
