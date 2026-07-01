@@ -14,6 +14,19 @@ Ring storage owns event data. It is indexed by logical sequence numbers:
 slot = seq & (capacity - 1)
 ```
 It does not decide whether a sequence is available or whether a slot is safe to reuse.
+The current experimental storage component is:
+```text 
+include/ull/core/sequenced_ring.h"
+```
+
+`SequencedRing<T>` owns payload storage and provides:
+```text 
+write(seq, value);
+read(seq);
+index(seq);
+```
+
+It deliberately does not know whether `seq` has been claimed, published, or safely reusable. Those rules stay outside the storage component.
 
 ### SingleProducerSequencer
 
@@ -95,7 +108,7 @@ SingleProducerSequencer.next()
   v 
 Ring storage 
   |
-  | ring[seq & mask] = event 
+  | SequencedRing.write(seq, event) 
   v 
 SingleProducerSequencer.publish(seq) 
   |
@@ -105,7 +118,7 @@ SequenceBarrier.wait_until_available(seq)
   |
   | if not visible, call WaitStrategy.idle() 
   v 
-Consumer reads ring[seq & mask] 
+Consumer reads Sequenced.read(seq) 
   |
   | consumer progress 
   v

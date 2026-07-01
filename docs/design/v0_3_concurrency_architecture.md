@@ -44,6 +44,11 @@ Current v0.3 components:
   - compares padded and cell-padded layouts 
   - records throughput, latency, drops, and sequence gaps 
 
+- `SequencedRing`
+  - owns payload storage for sequencer experiments 
+  - maps logical sequence numbers to physical ring slots 
+  - does not control claim, publish, visibility, or reuse safety 
+
 ## MPSC Ring Model
 
 The current MPSC ring combines three responsibilities:
@@ -80,9 +85,14 @@ sequence control + payload storage
 In the sequencer model, these become separate:
 ```
 sequencer       -> controls sequence numbers and visibility 
-ring storage    -> stores payloads at seq & (capacity - 1)
+SequencedRing   -> stores payloads at seq & (capacity - 1)
 consumer        -> reads only after seq becomes available 
 ``` 
+The physical slot mapping is still based on:
+```text 
+slot = seq & (capacity - 1) 
+```
+but this detail is now hidden behind `SequencedRing::index()`, `write()` and `read()`.
 
 For the current `SingleProducerSequencer`, the key state is:
 ```text 

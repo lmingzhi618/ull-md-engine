@@ -1,4 +1,3 @@
-#include <array>
 #include <cassert>
 #include <cstdint>
 #include <iostream>
@@ -55,6 +54,7 @@ int main() {
     // This is safe only because all consumers have consumed seq 0.
     ring.write(seq, 200);
     sequencer.publish(seq);
+    assert(ring.read(seq) == 200);
     assert(ring.read(0) == 200);
     assert(sequencer.remaining_capacity() == 0);
 
