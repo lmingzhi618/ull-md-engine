@@ -62,11 +62,11 @@ int main() {
   {
     ull::SingleProducerSequencer s(kCapacity);
     ull::SequenceBarrier barrier(&s);
-    std::array<std::uint64_t, kCapacity> storage{};
+    ull::SequencedRing<std::uint64_t> storage(kCapacity);
 
     for (std::uint64_t i = 0; i < kCapacity; ++i) {
       const auto seq = s.next();
-      storage[s.index(seq)] = 1000 + seq;
+      storage.write(seq, 1000 + seq);
       s.publish(seq);
     }
 
@@ -74,14 +74,14 @@ int main() {
     assert(!s.try_next(seq));
 
     barrier.wait_until_available(0);
-    assert(storage[0] == 1000);
+    assert(storage.read(0) == 1000);
     s.mark_consumed(0);
 
     assert(s.try_next(seq));
     assert(seq == kCapacity);
-    storage[s.index(seq)] = 2000;
+    storage.write(seq, 2000);
 
-    assert(storage[0] == 2000);
+    assert(storage.read(0) == 2000);
   }
   {
     ull::SingleProducerSequencer s(kCapacity);
@@ -89,11 +89,11 @@ int main() {
     ull::GatingSequences g(2); // two consumers
     s.set_gating_sequences(&g);
 
-    std::array<std::uint64_t, kCapacity> storage{};
+    ull::SequencedRing<std::uint64_t> storage(kCapacity);
 
     for (std::uint64_t i = 0; i < kCapacity; ++i) {
       const auto seq = s.next();
-      storage[s.index(seq)] = 100 + seq;
+      storage.write(seq, 100 + seq);
       s.publish(seq);
     }
     assert(s.remaining_capacity() == 0);
@@ -108,10 +108,10 @@ int main() {
     assert(seq == 4);
     assert(!s.try_next(seq));
 
-    storage[s.index(seq)] = 200;
+    storage.write(seq, 200);
     s.publish(seq);
 
-    assert(storage[0] == 200);
+    assert(storage.read(0) == 200);
     assert(s.remaining_capacity() == 0);
 
     g.mark_consumed(1, 2);
