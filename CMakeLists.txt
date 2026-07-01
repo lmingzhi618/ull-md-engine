@@ -132,3 +132,7 @@ add_test(NAME test_wait_strategy COMMAND test_wait_strategy)
 add_executable(test_sequenced_ring tests/test_sequenced_ring.cpp)
 target_link_libraries(test_sequenced_ring PRIVATE ull)
 add_test(NAME test_sequenced_ring COMMAND test_sequenced_ring)
+
+add_executable(test_single_producer_event_pipeline tests/test_single_producer_event_pipeline.cpp)
+target_link_libraries(test_single_producer_event_pipeline PRIVATE ull)
+add_test(NAME test_single_producer_event_pipeline COMMAND test_single_producer_event_pipeline)

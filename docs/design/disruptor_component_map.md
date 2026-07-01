@@ -28,6 +28,37 @@ index(seq);
 
 It deliberately does not know whether `seq` has been claimed, published, or safely reusable. Those rules stay outside the storage component.
 
+### SingleProducerEventPipeline 
+
+`SingleProducerEventPipeline` is a small composition layer.
+It wires together the current v0.3 building blocks:
+
+```text 
+SingleProducerSequencer      -> claim / publish / capacity 
+SequencedRing<T>             -> payload storage 
+SequenceBarrier              -> consumer visibility wait 
+```
+It is intentionally limited in v1:
+- single producer 
+- single consumer 
+- bounded ring storage 
+- default busy-spin barrier 
+The pipeline does not replace the lower-lever components. It exists to make the common single-producer flow easier to test and understand:
+```text 
+seq = pipeine.next()
+pipeline.write(seq, event)
+pipeline.publish(seq)
+
+pipeline.wait_until_available(seq)
+event = pipeline.read(seq)
+pipeline.mark_consumed(seq)
+```
+Fanout remains modeled by the lower-level components:
+```text 
+SingleProducerSequencer + GatingSequences + SequencedRing + SequenceBarrier 
+```
+
+
 ### SingleProducerSequencer
 
 `SingleProducerSequencer` controls producer-side sequencing.
