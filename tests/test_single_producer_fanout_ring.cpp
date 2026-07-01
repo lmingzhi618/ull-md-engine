@@ -22,7 +22,7 @@ int main() {
     // Producer fills seq 0..3.
     for (std::uint64_t i = 0; i < kCapacity; ++i) {
       const auto seq = sequencer.next();
-      ring.read(seq) = 100 + seq;
+      ring.write(seq, 100 + seq);
       sequencer.publish(seq);
     }
 

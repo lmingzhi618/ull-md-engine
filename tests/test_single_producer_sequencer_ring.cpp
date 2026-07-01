@@ -81,6 +81,7 @@ int main() {
     assert(seq == kCapacity);
     storage.write(seq, 2000);
 
+    assert(storage.read(seq) == 2000);
     assert(storage.read(0) == 2000);
   }
   {
@@ -111,6 +112,7 @@ int main() {
     storage.write(seq, 200);
     s.publish(seq);
 
+    assert(storage.read(seq) == 200);
     assert(storage.read(0) == 200);
     assert(s.remaining_capacity() == 0);
 
