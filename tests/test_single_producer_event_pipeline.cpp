@@ -47,7 +47,6 @@ int main() {
     }
 
     std::uint64_t seq;
-    std::cout << "remaining_capacity() = " << p.remaining_capacity() << "\n";
     assert(p.remaining_capacity() == 0);
     assert(!p.try_next(seq));
 
@@ -57,7 +56,23 @@ int main() {
     assert(p.try_next(seq));
     assert(seq == 4);
   }
+  {
+    ull::SpinWaitStrategy strategy(ull::util::SpinStrategy::ThreadYield);
 
-  std::cout << "test_single_producer_event_pipeline Passed\n";
+    ull::SingleProducerEventPipeline<std::uint64_t, ull::SpinWaitStrategy> p(
+        4, strategy);
+
+    const auto seq = p.next();
+
+    p.write(seq, 123);
+    p.publish(seq);
+
+    const auto available = p.wait_until_available(seq);
+    assert(available >= seq);
+    assert(p.read(seq) == 123);
+
+    p.mark_consumed(seq);
+  }
+  std::cout << "test_single_producer_event_pipeline PASS\n";
   return 0;
 }

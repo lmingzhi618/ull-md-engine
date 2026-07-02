@@ -12,10 +12,16 @@ namespace ull {
 //
 // It is intentionally single-producder/single-consumer in v1.
 // Fanout remains modeled by lower-level components for now.
-template <typename T> class SingleProducerEventPipeline {
+template <typename T, typename WaitStrategy = BusySpinWaitStrategy>
+class SingleProducerEventPipeline {
 public:
   explicit SingleProducerEventPipeline(std::uint64_t capacity)
       : sequencer_(capacity), ring_(capacity), barrier_(&sequencer_) {}
+
+  SingleProducerEventPipeline(std::uint64_t capacity,
+                              WaitStrategy wait_strategy)
+      : sequencer_(capacity), ring_(capacity),
+        barrier_(&sequencer_, wait_strategy) {}
 
   std::uint64_t next() noexcept { return sequencer_.next(); }
 
@@ -46,6 +52,6 @@ public:
 private:
   SingleProducerSequencer sequencer_;
   SequencedRing<T> ring_;
-  SequenceBarrier<> barrier_;
+  SequenceBarrier<WaitStrategy> barrier_;
 };
 } // namespace ull
