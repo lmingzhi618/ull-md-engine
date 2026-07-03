@@ -93,6 +93,9 @@ Completed:
 - overload policy notes for market-data correctness 
 - head/tail padding experiment for MPSC ring 
 
+- added `SingleProducerEventPipeline` threaded correctness test and baseline benchmark.
+- observed that larger pipeline capacity increases queue residency latency without clearly improving steady-state throughput.
+
 Key findings:
 - sustained overload turns queue capacity into backlog latency 
 - smaller capacity lowers latency by bounding backlog 
