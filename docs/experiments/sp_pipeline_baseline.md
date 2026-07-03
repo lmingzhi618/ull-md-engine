@@ -83,6 +83,35 @@ This benchmark currently uses:
 
 The result is a useful baseline, but not yet a final performance characterization.
 
+
+## SPSC comparison 
+
+A second benchmark compares `SingleProducerEventPipeline` against the existing `SpscRing` using the same benchmark shape:
+```text 
+producer timestamp 
+-> queue/pipeline  
+-> consumer read timestamp 
+-> latency sample 
+```
+Each configuration was run 5 times.The table below reports median values.
+| Capacity | SPSC throughput | Pipeline throughput | SPSC p50 ns | Pipeline p50 ns |
+|---:|---:|---:|---:|---:|
+| 256 | 12.61M | 13.26M | 13,850 | 16,400 |
+| 1024 | 17.18M | 17.09M | 43,600 | 52,800 |
+| 4096 | 18.63M | 16.36M | 178,050 | 209,200 |
+| 16384 | 17.70M | 17.80M | 719,100 | 806,450 |
+
+The pipeline usually has slightly higher latency than the specialized SPSC ring. This is expected because the pipeline makes the lifecycle explicit:
+```text 
+claim -> write -> publish -> wait -> read -> consume 
+```
+
+The SPSC ring is a more specialized queue and has a shorter hot path.
+However, the dominant effect is still capacity/backlog. Increasing capacity raises queue residency time for both implementations much more than the sequencer/barrier abstraction itself.
+
+Throughput is noisier than latency in this benchmark. Without thread affinity, small throughput differences should not be over-interpreted.
+
+
 ## Next Step 
 
 Compare the single-producer event pipeline against the existing SPSC ring under a similar one-producer / one-consumer benchmark shape.

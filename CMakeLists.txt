@@ -32,6 +32,8 @@ target_include_directories(ull PUBLIC include)
 
 #add_executable(ull_replay src/app/replay_main.cpp)
 #target_link_libraries(ull_replay PRIVATE ull)
+add_executable(spsc_baseline_bench src/app/spsc_baseline_bench_main.cpp)
+target_link_libraries(spsc_baseline_bench PRIVATE ull)
 
 add_executable(sp_pipeline_bench src/app/sp_pipeline_bench_main.cpp)
 target_link_libraries(sp_pipeline_bench PRIVATE ull)
