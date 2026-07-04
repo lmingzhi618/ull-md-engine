@@ -201,13 +201,43 @@ tail latency becomes sensitive to slow or descheduled consumers
 
 This makes the fanout model useful for pipelines where shared ordering and shared storage matter, but it is not a free replacement for a simple point-to-point SPSC queue.
 
+### Affinity Follow-up 
+
+`sp_fanout_bench` was extended with an optional affinity mode:
+
+```base 
+./build/rel/sp_fanout_bench <consumers> <messages> <capacity> <affinity>
+```
+Supported modes:
+```text 
+default 
+same 
+split 
+```
+For the 4-consumer benchmark with `messages=1,000,000` and `capacity=1024`, the observed throughput ranges were:
+| Affinity | Throughput range |
+|---|---:|
+| default | 5.28M - 5.54M msg/s |
+| same | 5.14M - 5.38M msg/s |
+| split | 5.27M - 5.43M msg/s |
+
+On this macOS run, affinity did not materially improve throughput or tail latency. This is consistent with earlier affinity experiments: `THREAD_AFFINITY_POLICY` is a best-effort scheduler hint rather than strict CPU spinning.
+
+The dominant fanout costs remain:
+```text 
+consumer count 
+slowest-consumer backpressure 
+O(number_of_consumers) gating scan 
+busy-spin scheduler pressure 
+```
+
 ### Limitations 
 
-This benchmark currently has no thread affinity. With multiple busy-spinning consumers, OS scheduling noise can strongly affect both throughput and latency.
+The benchmark still runs on maxOS, where affinity is not strict CPU pinning. Stronger conclusions require running the same benchmark on Linux with `sched_setaffinity`.
 
-The next step should therefore be to add optional thread affinity to the fanout benchmark before drawing stronger conclusions from 4-consumer results.
 
 ## Next Step 
 
-Add optional thread affinity to `sp_fanout_bench`.
-This should reduce scheduler noise and make the fanout measurements more interpretable, especially for 4-consumer results.
+Run the fanout benchmark on linux with stronger CPU affinity support, or compare shared-ring fanout against one-SPSC-queue-per-consumer fanout.
+
+The next implementation step should stay small. Prefer documenting the current affinity result first, then choose between Linux affinity validation and SPSC fanout comparison.

@@ -4,12 +4,13 @@
 #include <cstdlib>
 #include <iostream>
 #include <thread>
+#include <vector>
 
 #include "ull/core/sequence_barrier.h"
 #include "ull/core/sequenced_ring.h"
 #include "ull/core/single_producer_sequencer.h"
-#include "ull/core/spsc_ring.h"
 #include "ull/perf/latency_hist.h"
+#include "ull/perf/thread_affinity.h"
 
 namespace {
 constexpr std::uint64_t kDefaultConsumers = 2;
@@ -44,6 +45,7 @@ int main(int argc, char **argv) {
       argc > 2 ? parse_arg(argv, 2, kDefaultMessages) : kDefaultMessages;
   const auto capacity =
       argc > 3 ? parse_arg(argv, 3, kDefaultCapacity) : kDefaultCapacity;
+  const std::string affinity = argc > 4 ? argv[4] : "default";
 
   ull::SingleProducerSequencer sequencer(capacity);
   ull::SequencedRing<std::uint64_t> ring(capacity);
@@ -77,6 +79,7 @@ int main(int argc, char **argv) {
         const auto available = barrier.wait_until_available(expected);
         if (available < expected) {
           std::cerr << "visibility error\n";
+          std::abort();
         }
 
         const auto sent_ns = ring.read(expected);
@@ -90,6 +93,13 @@ int main(int argc, char **argv) {
         gating.mark_consumed(consumer_id, expected);
       }
     });
+
+    if (affinity == "same") {
+      ull::perf::pin_thread(consumer_threads.back(), 0);
+    } else if (affinity == "split") {
+      ull::perf::pin_thread(consumer_threads.back(),
+                            static_cast<std::size_t>(consumer_id + 1));
+    }
   }
 
   std::thread producer([&] {
@@ -101,6 +111,9 @@ int main(int argc, char **argv) {
       sequencer.publish(seq);
     }
   });
+  if (affinity == "same" || affinity == "split") {
+    ull::perf::pin_thread(producer, 0);
+  }
 
   producer.join();
 
@@ -120,6 +133,7 @@ int main(int argc, char **argv) {
       elapsed_s > 0.0 ? static_cast<double>(messages) / elapsed_s : 0.0;
 
   std::cout << "queue=single_producer_fanout\n";
+  std::cout << "affinity=" << affinity << "\n";
   std::cout << "consumers=" << consumers << "\n";
   std::cout << "messages=" << messages << "\n";
   std::cout << "capacity=" << capacity << "\n";
