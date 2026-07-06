@@ -205,7 +205,7 @@ This makes the fanout model useful for pipelines where shared ordering and share
 
 `sp_fanout_bench` was extended with an optional affinity mode:
 
-```base 
+```bash 
 ./build/rel/sp_fanout_bench <consumers> <messages> <capacity> <affinity>
 ```
 Supported modes:
@@ -215,13 +215,14 @@ same
 split 
 ```
 For the 4-consumer benchmark with `messages=1,000,000` and `capacity=1024`, the observed throughput ranges were:
+
 | Affinity | Throughput range |
 |---|---:|
 | default | 5.28M - 5.54M msg/s |
 | same | 5.14M - 5.38M msg/s |
 | split | 5.27M - 5.43M msg/s |
 
-On this macOS run, affinity did not materially improve throughput or tail latency. This is consistent with earlier affinity experiments: `THREAD_AFFINITY_POLICY` is a best-effort scheduler hint rather than strict CPU spinning.
+On this macOS run, affinity did not materially improve throughput or tail latency. This is consistent with earlier affinity experiments: `THREAD_AFFINITY_POLICY` is a best-effort scheduler hint rather than strict CPU pinning.
 
 The dominant fanout costs remain:
 ```text 
@@ -233,11 +234,11 @@ busy-spin scheduler pressure
 
 ### Limitations 
 
-The benchmark still runs on maxOS, where affinity is not strict CPU pinning. Stronger conclusions require running the same benchmark on Linux with `sched_setaffinity`.
+The benchmark still runs on macOS, where affinity is not strict CPU pinning. Stronger conclusions require running the same benchmark on Linux with `sched_setaffinity`.
 
 
 ## Next Step 
 
-Run the fanout benchmark on linux with stronger CPU affinity support, or compare shared-ring fanout against one-SPSC-queue-per-consumer fanout.
+Run the fanout benchmark on Linux with stronger CPU affinity support, or compare shared-ring fanout against one-SPSC-queue-per-consumer fanout.
 
 The next implementation step should stay small. Prefer documenting the current affinity result first, then choose between Linux affinity validation and SPSC fanout comparison.
