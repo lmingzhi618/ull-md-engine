@@ -17,7 +17,7 @@ namespace {
 constexpr std::uint64_t kDefaultConsumers = 2;
 constexpr std::uint64_t kDefaultMessages = 1000000;
 constexpr std::uint64_t kDefaultCapacity = 1024;
-constexpr std::uint64_t kWarmup = 50000;
+constexpr std::uint64_t kDefaultWarmup = 50000;
 
 constexpr std::uint64_t kMaxNs = 20000000;
 constexpr std::uint64_t kBucketNs = 50;
@@ -44,7 +44,8 @@ void print_usage(const char *prog) {
             << " consumers: positive integer\n"
             << " messages : positive integer\n"
             << " capacity : power of two\n"
-            << " affinity : default | same | split\n";
+            << " affinity : default | same | split\n"
+            << " warmup   : non-negative integer smaller than messages\n";
 }
 
 bool is_power_of_two(std::uint64_t x) noexcept {
@@ -65,9 +66,11 @@ int main(int argc, char **argv) {
   const auto capacity =
       argc > 3 ? parse_arg(argv, 3, kDefaultCapacity) : kDefaultCapacity;
   const std::string affinity = argc > 4 ? argv[4] : "default";
+  const auto warmup =
+      argc > 5 ? parse_arg(argv, 5, kDefaultWarmup) : kDefaultWarmup;
 
   if (consumers == 0 || messages == 0 || !is_power_of_two(capacity) ||
-      !is_valid_affinity(affinity)) {
+      !is_valid_affinity(affinity) || warmup >= messages) {
     print_usage(argv[0]);
     return 1;
   }
@@ -108,7 +111,7 @@ int main(int argc, char **argv) {
         }
 
         const auto sent_ns = ring.read(expected);
-        if (expected >= kWarmup) {
+        if (expected >= warmup) {
           const auto latency_ns = now_ns() - sent_ns;
           hists[consumer_id].add(latency_ns);
         }
@@ -152,7 +155,7 @@ int main(int argc, char **argv) {
           .count());
 
   const auto measured_messages =
-      messages > kWarmup ? messages - kWarmup : std::uint64_t{0};
+      messages > warmup ? messages - warmup : std::uint64_t{0};
   const auto elapsed_s = static_cast<double>(elapsed_ns) / 1e9;
   const double throughput =
       elapsed_s > 0.0 ? static_cast<double>(messages) / elapsed_s : 0.0;
@@ -162,7 +165,7 @@ int main(int argc, char **argv) {
   std::cout << "consumers=" << consumers << "\n";
   std::cout << "messages=" << messages << "\n";
   std::cout << "capacity=" << capacity << "\n";
-  std::cout << "warmup=" << kWarmup << "\n";
+  std::cout << "warmup=" << warmup << "\n";
   std::cout << "measured_messages=" << measured_messages << "\n";
   std::cout << "elapsed_ns=" << elapsed_ns << "\n";
   std::cout << "throughput_msg_per_sec=" << throughput << "\n";
