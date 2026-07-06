@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
+#include <string>
 #include <thread>
 #include <vector>
 
@@ -36,6 +37,24 @@ std::uint64_t parse_arg(char **argv, int index, std::uint64_t fallback) {
   }
   return static_cast<std::uint64_t>(std::strtoull(argv[index], nullptr, 10));
 }
+
+void print_usage(const char *prog) {
+  std::cerr << "usage: " << prog
+            << " <consumers> <messages> <capacity> <affinity>\n"
+            << " consumers: positive integer\n"
+            << " messages : positive integer\n"
+            << " capacity : power of two\n"
+            << " affinity : default | same | split\n";
+}
+
+bool is_power_of_two(std::uint64_t x) noexcept {
+  return x != 0 && (x & (x - 1)) == 0;
+}
+
+bool is_valid_affinity(const std::string &affinity) {
+  return affinity == "default" || affinity == "same" || affinity == "split";
+}
+
 } // namespace
 
 int main(int argc, char **argv) {
@@ -46,6 +65,12 @@ int main(int argc, char **argv) {
   const auto capacity =
       argc > 3 ? parse_arg(argv, 3, kDefaultCapacity) : kDefaultCapacity;
   const std::string affinity = argc > 4 ? argv[4] : "default";
+
+  if (consumers == 0 || messages == 0 || !is_power_of_two(capacity) ||
+      !is_valid_affinity(affinity)) {
+    print_usage(argv[0]);
+    return 1;
+  }
 
   ull::SingleProducerSequencer sequencer(capacity);
   ull::SequencedRing<std::uint64_t> ring(capacity);
