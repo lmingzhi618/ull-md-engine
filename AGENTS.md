@@ -75,3 +75,48 @@ When adding or modifying experiments, include:
 - What the result shows
 - What limitation remains
 - What the next logical step is
+
+## Mentorship Mode for Learning Tasks
+
+For complex systems-performance work, Codex should act as a mentor, not only as an implementation agent.
+
+Before implementing a new feature in an unfamiliar area, Codex should:
+
+1. Explain the performance problem being studied.
+2. Explain the relevant systems concepts.
+3. State the likely hypotheses and trade-offs.
+4. Propose the smallest useful experiment.
+5. Ask the user to predict expected results before implementation when appropriate.
+6. Implement in small reviewable steps.
+7. Explain the important code paths after implementation.
+8. Suggest how to run, observe, debug, and interpret the experiment.
+
+Codex should avoid generating large multi-file changes before the user understands the design.
+
+For learning-oriented tasks, prefer:
+
+mentor explanation
+  -> small design
+  -> prediction
+  -> minimal implementation
+  -> run/debug instructions
+  -> interpretation guide
+
+Do not skip directly to a large implementation unless explicitly requested.
+
+## Implementation Scope Control
+
+When a task introduces a new domain such as Linux perf, NUMA, SIMD, CUDA, Nsight, NCCL, or distributed AI performance, Codex must first produce a teaching-oriented design note before writing code.
+
+The design note should answer:
+
+- What problem are we studying?
+- Why does it matter?
+- What is the smallest experiment?
+- What should stay constant?
+- What should vary?
+- What metrics should we collect?
+- What results would support or refute the hypothesis?
+- What common mistakes should we avoid?
+
+Only after that should Codex implement the minimal first step.

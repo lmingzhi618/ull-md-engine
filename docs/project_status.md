@@ -2,36 +2,74 @@
 
 ## Project Goal
 
-Build a staged ultra-low-latency market data engine and experimentation platform focused on:
+Build a staged performance-engineering platform that begins with a low-latency market-data pipeline and progressively develops capabilities in: 
 
 - lock-free concurrency
-- latency engineering 
-- cache and scheduler behavior
-- advanced queue design 
-- memory optimization 
-- NUMA and allocator control
-- reproducible benchmarking 
-- systems performance research 
+- tail-latency engineering
+- CPU cache and scheduler behavior
+- Linux profiling
+- hardware-counter analysis
+- memory hierarchy
+- NUMA
+- SIMD and compiler optimization
+- GPU acceleration
+- CPU/GPU pipeline performance
+- multi-GPU communication
+- distributed AI-infrastructure performance analysis
+
+The project uses a bottleneck-driven methodology:
+```text 
+question
+  -> hypothesis
+  -> controlled experiment
+  -> measurement
+  -> evidence
+  -> optimization
+  -> validation
+```
+The project is no longer primarily a queue implementation. It is a staged performance-engineering portfolio demonstrating concurrency correctness, lock-free design, cache behavior, scheduler effects, tail latency, overload semantics, profiling, and bottleneck-driven experimentation.
+
+---
+
+## Related Documents
+
+- `docs/roadmap.md`
+- `docs/design/design_requirements.md`
+- `docs/design/performance_analysis_platform.md`
+- `docs/design/benchmark_result_schema.md`
+- `docs/design/v0_3_concurrency_architecture.md`
+- `docs/design/disruptor_component_map.md`
+- `docs/design/mpsc_memory_ordering.md`
+- `docs/experiments/`
 
 ---
 
 ## Tagged Roadmap 
 
-- v0.1 -> MVP pipeline
-- v0.2 -> Engineering version (B)
-- v0.3 -> Advanced concurrency
-- v0.4 -> Memory optimization 
-- v0.5 -> NUMA + allocator control 
+| Version | Theme                                              | Status                             |
+| ------- | -------------------------------------------------- | ---------------------------------- |
+| v0.1    | Market Data Pipeline                               | Complete                           |
+| v0.2    | CPU Performance Experiments                        | Complete enough for tagged release |
+| v0.3    | Concurrent Pipeline Architecture                   | In progress                        |
+| v0.4    | Linux Performance Laboratory                       | Planned                            |
+| v0.5    | Memory + NUMA                                      | Planned                            |
+| v0.6    | SIMD / CPU Optimization                            | Planned                            |
+| v0.7    | GPU Acceleration                                   | Planned                            |
+| v0.8    | Heterogeneous Pipeline Performance                 | Planned                            |
+| v0.9    | Multi-GPU Communication                            | Planned                            |
+| v1.0    | Distributed AI-Infrastructure Performance Platform | Planned                            |
+
+Detailed roadmap: `docs/roadmap.md`.
 
 ---
 
-# v0.1 - MVP Pipeline 
+# v0.1 - Market Data Pipeline 
 
 ## Goal 
 
-Runnable, measurable low-latency market data engine 
+Runnable, measurable low-latency market-data engine 
 
-## Completed 
+## Completed
 
 - UDP receiver over loopback
 - fixed-size custom binary message format 
@@ -54,19 +92,19 @@ Runnable, measurable low-latency market data engine
 - `udp_pipeline_bench`
 - benchmark output with p50 / p99 / p999 
 
-Status: Completed
+Status: Complete.
 
 ---
 
-# v0.2 — Engineering Experiments
+# v0.2 — CPU Performance Experiments
 
 ## Goal
 
-Increase technical signal strength through latency engineering experiments.
+Isolate important sources of CPU latency and jitter.
 
 ## Completed
 
-### 1. Cache Padding / False Sharing
+### 1. Cache and False Sharing
 
 - added padded vs unpadded SPSC ring
 - verified cache-line separation
@@ -77,31 +115,6 @@ Increase technical signal strength through latency engineering experiments.
 Docs:
 - `docs/experiments/false_sharing.md`
 
----
-
-## v0.3 Current progress
-
-Completed:
-- initial bounded MPSC ring with per-slot sequence protocol 
-- spinning `push()` baseline 
-- non-blocking `try_push()` using CAS reservation 
-- MPSC correctness tests 
-- MPSC benchmark with `push` and `try_drop` modes 
-- capacity sensitivity experiment 
-- producer push latency instrumentation 
-- sequence gap detection for drop-on-full mode 
-- overload policy notes for market-data correctness 
-- head/tail padding experiment for MPSC ring 
-
-- added `SingleProducerEventPipeline` threaded correctness test and baseline benchmark.
-- observed that larger pipeline capacity increases queue residency latency without clearly improving steady-state throughput.
-
-Key findings:
-- sustained overload turns queue capacity into backlog latency 
-- smaller capacity lowers latency by bounding backlog 
-- `try_drop` reduces producer waiting but creates sequence gaps 
-- arbitrary drop-on-full is not sufficient for sequence-dependent market data without gap detection and resync 
-- head/tail padding improves p99 latency moderately but does not remove producer contention on the shared `head_`
 
 ---
 
@@ -152,314 +165,431 @@ Docs:
 
 ## v0.2 Status
 
-Status: Completed enough for v0.2 tag
+Status: Completed.
 
-Recommended README wording:
-- profiling / hotspot analysis
-- call graph analysis
-- avoid claiming full Linux perf flamegraph unless later done on Linux
+Linux `perf` and a real Linux FlameGraph workflow are not part of v0.2.
+They move to v0.4.
 
 ---
 
-# v0.3 — Advanced Concurrency
+# v0.3 — Concurrent Pipeline Architecture 
+
+## Current progress
+
+Completed:
+- initial bounded MPSC ring with per-slot sequence protocol 
+- spinning `push()` baseline 
+- non-blocking `try_push()` using CAS reservation 
+- MPSC correctness tests 
+- MPSC benchmark with `push` and `try_drop` modes 
+- capacity sensitivity experiment 
+- producer push latency instrumentation 
+- sequence gap detection for drop-on-full mode 
+- overload policy notes for market-data correctness 
+- head/tail padding experiment for MPSC ring 
+
+- added `SingleProducerEventPipeline` threaded correctness test and baseline benchmark.
+- observed that larger pipeline capacity increases queue residency latency without clearly improving steady-state throughput.
+
+Key findings:
+- sustained overload turns queue capacity into backlog latency 
+- smaller capacity lowers latency by bounding backlog 
+- `try_drop` reduces producer waiting but creates sequence gaps 
+- arbitrary drop-on-full is not sufficient for sequence-dependent market data without gap detection and resync 
+- head/tail padding improves p99 latency moderately but does not remove producer contention on the shared `head_`
+
+---
 
 ## Goal
 
-Move from low-contention SPSC to real contention and advanced concurrent queue design.
+Move from low-contention SPSC behavior to contention, overload, sequencing, and pipeline topology.
 
 ## Current Focus
 
-Bounded lock-free MPSC ring buffer.
+v0.3 studies how concurrent pipelines behave under contention,
+backpressure, overload, and fanout.
+
+The current scope is intentionally limited:
+
+- bounded MPSC behavior
+- overload and sequence-gap semantics
+- sequencer-controlled storage
+- single-producer event pipeline
+- shared-ring fanout exploration
+
+The goal is not to build a full Disruptor clone.
 
 ---
 
-## Task 1: MPSC Ring Correctness
+## MPSC Ring
 
-### Goal
+Completed:
 
-Implement a bounded MPSC queue using per-slot sequence protocol.
+- bounded MPSC ring
+- per-slot sequence protocol
+- spinning `push`
+- bounded non-blocking `try_push`
+- correctness tests
+- producer-count benchmark
+- configurable capacity
+- configurable layout variants
 
-### Concepts
+Implemented files include:
 
-- many producers
-- single consumer
-- producer contention
-- `fetch_add` ticket allocation
-- per-slot sequence numbers
-- claim vs publish separation
-- acquire/release ordering
-
-### Implementation Plan
-
-Files:
 - `include/ull/core/mpsc_ring.h`
+- `include/ull/core/mpsc_ring_padded.h`
+- `include/ull/core/mpsc_ring_cell_padded.h`
 - `tests/test_mpsc_ring.cpp`
-- `scripts/run_mpsc_ring_rel.sh`
-
-### Design
-
-Each cell:
-
-```cpp
-struct Cell {
-  std::atomic<std::uint64_t> seq;
-  T value;
-};
-
-Producer flow:
-
-claim position with head_.fetch_add(1)
-map logical position to physical slot with pos & mask_
-wait until cell.seq == pos
-write payload
-publish with cell.seq.store(pos + 1, release)
-
-Consumer flow:
-
-inspect tail_
-check cell.seq == tail_ + 1
-read payload
-recycle with cell.seq.store(tail_ + capacity, release)
-increment tail_
-Important API Note
-
-Initial version may block/spin inside push path.
-
-If try_push() can wait indefinitely, rename it to:
-
-void push(const T& v)
-
-A true bounded try_push() should return false when full.
-
-Tests
-constructor / capacity
-empty pop
-single producer push/pop
-multiple producers
-total count correctness
-per-producer count correctness
-no lost messages
-no duplicated messages
-
-Status: Completed 
-
-## Task 2: True Bounded try_push
-
-###Goal
-
-Implement non-blocking push semantics.
-
-### Requirements
-detect full queue before claiming too far ahead
-return false instead of spinning forever
-avoid breaking sequence protocol
-preserve correctness under multiple producers
-Expected Challenges
-head reservation may advance too far
-full detection is harder than SPSC
-may need CAS instead of unconditional fetch_add
-
-### Status: Completed
-
-## Task 3: MPSC Benchmark
-
-###Goal
-
-Measure contention cost as producer count increases.
-
-### Benchmark Modes
-1 producer
-2 producers
-4 producers
-8 producers
-
-### Metrics:
-
-throughput
-p50 / p99 / p999 latency
-producer contention effect
-tail amplification
-failed retries if CAS-based version is implemented
-
-### Implemented:
-- `mpsc_bench`
-- `push` mode 
-- `try_drop` mode
-- configurable producer count 
-- configurable capacity 
-- plain vs padded layout selection 
-- throughput reporting 
-- p50 / p99 / p999 latency reporting 
-- producer push latency instrumentation 
-- sequence gap detection 
-- head/tail padding comparison 
-
-### Files:
 - `src/app/mpsc_bench_main.cpp`
 - `scripts/run_mpsc_ring_rel.sh`
-- `include/ull/core/mpsc_ring_padded.h`
-- `tests/test_mpsc_ring_padded.cpp`
+
+## Contention and Capacity
+
+Completed:
+
+- 1 / 2 / 4 / 8 producer experiments
+- throughput reporting
+- p50 / p99 / p999 latency reporting
+- producer push-latency instrumentation
+- capacity sensitivity experiments
+- shared-head contention analysis
+- head/tail padding experiments
+- cell-level padding experiments
+
+Findings:
+
+- sustained overload turns queue capacity into backlog latency
+- smaller capacity can lower latency by bounding backlog
+- head/tail padding improves some latency metrics but does not remove
+  contention on shared producer reservation state
+- cell padding can reduce cache-line interaction among adjacent slots,
+  but consumer count and shared reservation state remain important
+
+Docs:
+
 - `docs/experiments/mpsc_contention.md`
-- `docs/experiments/mpsc_overload_policy.md`
 - `docs/experiments/mpsc_padding.md`
+
+## Overload Semantics
+
+Completed:
+
+- `try_drop` mode
+- published / dropped / consumed accounting
+- sequence-gap detection
+- market-data correctness notes
+
+Findings:
+
+- drop-on-full can reduce producer waiting and queueing latency
+- arbitrary drops create sequence gaps
+- sequence-dependent market-data streams require gap detection and
+  recovery/resync before downstream state can be trusted
+
+Docs:
+
+- `docs/experiments/mpsc_overload_policy.md`
+
+## Memory Ordering
+
+Completed:
+
+- acquire/release reasoning for MPSC publication
+- claim vs publish explanation
+- per-slot sequence protocol notes
+- explanation of why consumers must not read partially written payloads
+
+Docs:
+
 - `docs/design/mpsc_memory_ordering.md`
 
-### Findings:
-- sustained overload turns queue capacity into backlog latency 
-- smaller capacity lowers latency by bounding backlog 
-- `try_drop` lowers queueing latency but creates sequence gaps 
-- arbitrary drop-on-full is not sufficient for sequence-dependent market data without gap detection and resync 
-- head/tail padding improves throughput and p99 latency moderately 
-- head/tail padding does not remove producer contention on shared `head_`
+## Sequencer Exploration
 
-### Status: Completed 
+Started and partially completed:
 
-## Task 4: Memory Ordering Documentation
+- `Sequence`
+- cache-line aligned sequence state
+- `GatingSequences`
+- `SingleProducerSequencer`
+- claim / publish / consume lifecycle
+- `SequencedRing`
+- `SequenceBarrier`
+- wait-strategy abstraction
+- `SingleProducerEventPipeline`
 
-### Goal
+Implemented files include:
 
-Document acquire/release reasoning for MPSC.
+- `include/ull/core/sequence.h`
+- `include/ull/core/gating_sequences.h`
+- `include/ull/core/single_producer_sequencer.h`
+- `include/ull/core/sequenced_ring.h`
+- `include/ull/core/sequence_barrier.h`
+- `include/ull/core/wait_strategy.h`
+- `include/ull/core/single_producer_event_pipeline.h`
 
-### Topics:
+## Single-Producer Event Pipeline
 
-why producer publish uses release
-why consumer readiness check uses acquire
-why claim and publish are separate
-why tail can be non-atomic
-why per-slot sequence avoids reading partially written payload
+Completed:
 
-### Docs:
+- threaded correctness test
+- baseline benchmark
+- comparison against SPSC baseline benchmark
+- queue-residency latency observation
+- configurable wait-strategy support
 
-docs/design/mpsc_memory_ordering.md
+Findings:
 
-### Status: Completed 
+- the pipeline makes claim / write / publish / wait / read / consume
+  explicit
+- SPSC remains the simpler specialized point-to-point queue
+- capacity/backlog dominates latency more than abstraction overhead in the
+  tested workloads
 
-## Task 5: Disruptor-style Sequencer Exploration
+Docs:
 
-### Goal
+- `docs/experiments/sp_pipeline_baseline.md`
 
-Evolve ring buffer thinking toward Disruptor-like architecture.
+## Fanout Exploration
 
-### Topics:
+Completed:
 
-sequence abstraction
-publish barrier
-gating sequence
-fanout consumers
-consumer dependency graph
-wait strategies
+- shared-ring fanout benchmark
+- multiple consumers reading one published sequence stream
+- producer backpressure through `GatingSequences`
+- affinity-mode experiment for fanout benchmark
 
-### Possible files:
+Findings:
 
-docs/design/disruptor_notes.md
+- producer writes each event once
+- all consumers observe the same ordered stream
+- producer capacity is constrained by the slowest consumer
+- throughput decreases as consumer count increases
+- current gating scan is O(number of consumers)
+- macOS affinity hints did not materially improve throughput or tail
+  latency in the 4-consumer fanout runs
 
-### Implemented:
-- initial `Sequence` abstraction 
-- cache-line aligned sequence wrapper
-- unit test for basic load/store/fetch_add behavior 
-- initial single-producer sequencer prototype 
-- separation between claim (`next`) and publish(`publish`)
+Docs:
 
-### Status: Started 
+- `docs/experiments/sp_pipeline_baseline.md`
+- `docs/design/v0_3_concurrency_architecture.md`
+- `docs/design/disruptor_component_map.md`
 
-v0.4 — Memory Optimization
-Goal
+## Remaining v0.3 Scope
 
-Reduce allocation, layout, and cache-related jitter.
+Remaining v0.3 work should stay intentionally limited.
 
-Planned Tasks
-1. Custom Memory Pool / Slab Allocator
-fixed-size object pool
-preallocation
-no runtime heap allocation on hot path
-benchmark allocator jitter
-2. Structure Layout Tuning
-field ordering
-cache-line alignment
-padding analysis
-hot/cold field separation
-3. Branch / Prefetch Experiments
-branch prediction effects
-likely/unlikely annotations if useful
-manual prefetch experiments
-measure impact on tail latency
-4. Replay + Snapshot
-replay binary market data stream
-snapshot state
-replay deterministic benchmark workload
+Recommended remaining tasks:
 
-Status: Planned
+1. Finish one bounded sequencer-controlled ring/fanout comparison.
+2. Complete the remaining v0.3 architecture documentation.
+3. Stop before building a complete Disruptor clone.
 
-v0.5 — NUMA + Allocator Control
-Goal
+Status: In progress.
 
-Move toward production-like low-latency infrastructure concerns.
+---
 
-Planned Tasks
-1. NUMA-aware Pipeline
-producer/consumer placement
-memory locality
-per-node allocation
-Linux-only experiments
-2. Allocator Jitter Control
-compare system allocator vs custom pool
-observe tail latency impact
-document allocation-related jitter
-3. Burst Traffic Modeling
-simulate bursty market data
-measure queue backlog
-measure tail amplification
-evaluate backpressure policies
-4. Linux perf / FlameGraph
-run on Linux environment
-perf record
-perf script
-stackcollapse-perf.pl
-flamegraph.pl
-compare with macOS call graph profiling
+# v0.4 - Linux Performance Laboratory
 
-Status: Planned
+## Goal
 
-## Current Immediate Next Steps 
+Build a reproducible Linux performance-analysis foundation.
 
-1. Run per-cell padding experiment 
-2. Document whether slot-level false sharing matters
-3. Write MPSC memory ordering notes 
-4. Decide whether to explore Disruptor-style sequence design 
+Planned:
 
-Ring capacity must be power-of-two because:
+- strict CPU affinity
+- system-topology capture
+- `perf stat`
+- `perf record`
+- FlameGraph workflow
+- canonical JSON benchmark results
+- benchmark comparison tooling
+- source/build metadata capture
 
-idx = pos & (capacity - 1);
+Primary outcome:
 
-This is equivalent to:
+```text
+A reproducible Linux performance-analysis foundation.
+```
 
-idx = pos % capacity;
+Status: Planned.
 
-only when capacity is a power of two.
+---
 
-Benefits:
+# v0.5 - Memory + NUMA
 
-avoids expensive modulo
-enables efficient logical sequence to physical slot mapping
-common in Disruptor-style and lock-free ring buffers
-Percentiles
-p50: median latency
-p99: tail latency, slowest 1%
-p999: extreme tail latency, slowest 0.1%
+## Goal
 
-p99/p999 are critical because low-latency systems care more about worst-case behavior than average behavior.
+Analyze allocation, pages, locality, and remote-memory effects.
 
-Project Positioning
+Planned:
 
-This project is no longer just a queue implementation.
+- allocator jitter
+- no-allocation hot path
+- pre-touch
+- page faults
+- huge pages
+- local vs remote NUMA memory
+- topology-aware results
+- burst traffic as a cross-cutting workload
+- deterministic replay as a future workload source
 
-It is a staged low-latency systems engineering portfolio covering:
+Primary outcome:
 
-lock-free queues
-cache effects
-tail latency
-scheduler behavior
-spin strategies
-profiling
-advanced concurrency
-future NUMA / allocator control
+```text
+Evidence-based understanding of memory locality and tail jitter.
+```
+
+Status: Planned.
+
+---
+
+# v0.6 - SIMD / CPU Optimization
+
+## Goal
+
+Optimize real CPU hot paths using layout, vectorization, and compiler
+techniques.
+
+Planned:
+
+- scalar baseline
+- data-layout experiment
+- SIMD path
+- compiler optimization comparison
+- cycles/item
+- assembly inspection where useful
+- branch and prefetch experiments where evidence justifies them
+
+Primary outcome:
+
+```text
+One complete profile-to-optimization CPU case study.
+```
+
+Status: Planned.
+
+---
+
+# v0.7 - GPU Acceleration
+
+## Goal
+
+Add CUDA execution and study batching, launch, and transfer overhead.
+
+Planned:
+
+- CUDA workload
+- CPU reference
+- batch-size sweep
+- transfer timing
+- kernel timing
+- CPU/GPU crossover analysis
+
+Primary outcome:
+
+```text
+First heterogeneous performance experiments.
+```
+
+Status: Planned.
+
+---
+
+# v0.8 - Heterogeneous Pipeline Performance
+
+## Goal
+
+Optimize CPU/GPU overlap and end-to-end pipeline utilization.
+
+Planned:
+
+- pinned memory
+- asynchronous transfer
+- buffering
+- CUDA streams
+- Nsight Systems
+- Nsight Compute
+
+Primary outcome:
+
+```text
+End-to-end CPU/GPU pipeline optimization.
+```
+
+Status: Planned.
+
+---
+
+# v0.9 - Multi-GPU Communication
+
+## Goal
+
+Analyze collectives, topology, and communication/computation overlap.
+
+Planned:
+
+- NCCL collectives
+- message-size sweeps
+- GPU topology
+- affinity experiments
+- communication/computation overlap
+
+Primary outcome:
+
+```text
+Communication and topology performance analysis.
+```
+
+Status: Planned.
+
+---
+
+# v1.0 - Distributed AI-Infrastructure Performance Platform
+
+## Goal
+
+Diagnose bottlenecks in distributed AI workloads using unified evidence.
+
+Planned:
+
+- distributed reference workload
+- stage-level instrumentation
+- bottleneck taxonomy
+- bottleneck injection
+- scaling analysis
+- `ull-analyze` prototype
+
+Primary outcome:
+
+```text
+Unified CPU, GPU, and communication bottleneck analysis.
+```
+
+Status: Planned.
+
+---
+
+## Current Immediate Next Steps
+
+1. Finish the intentionally limited v0.3 sequencer/fanout comparison.
+2. Complete the remaining v0.3 architecture documentation.
+3. Prepare a Linux development and benchmark environment.
+4. Begin v0.4 with:
+   - strict CPU affinity
+   - canonical benchmark JSON
+   - system metadata capture
+5. Add `perf stat` collection after the first JSON-emitting benchmark path
+   is stable.
+6. Build the first compare-results analysis script.
+
+The immediate plan should not jump directly to CUDA. The project should
+first establish:
+
+```text
+Linux
+  -> reproducible measurements
+  -> canonical results
+  -> profiler evidence
+```
+
+before moving into later hardware layers.

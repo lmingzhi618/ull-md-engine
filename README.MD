@@ -1,141 +1,170 @@
-# Low-Latency Data Engine (ull-md-engine)  
+# ull-md-engine
 
-A staged high-performance data pipeline for latency benchmarking and system-level optimization experiments, focused on:
-- lock-free data stuctures
-- tail latency analysis (p50 / p99 / p999)
-- CPU/cache-level performance behavior 
-- scheduling and spin-wait strategies 
+`ull-md-engine` is a staged performance-engineering platform that begins with a low-latency market-data pipeline and progressively explores
+CPU performance, concurrency, Linux profiling, memory hierarchy, NUMA, SIMD, GPU acceleration, heterogeneous pipelines, multi-GPU communication,
+and distributed AI-infrastructure performance.
 
-This project is designed to explore how low-level engineering decisions impact latency distribution in real-time systems.
+The project preserves its origin in low-latency market-data systems, but its long-term goal is broader:
+build a portfolio of evidence-driven systems performance work.
 
----
+The project focuses on bottleneck-driven performance analysis:
 
-## Key Features 
+```text 
+question 
+  -> hypothesis 
+  -> controlled experiment 
+  -> measurement 
+  -> bottleneck evidence 
+  -> optimization 
+  -> validation 
+```
 
+Future topics such as CUDA, NCCL, and distributed AI analysis are roadmap items. They are not implemented yet.
+
+## Current Capabilities 
+
+Implemented today:
+- UDP loopback market-data pipeline 
+- fixed-size binary message format 
 - SPSC lock-free ring buffer 
-- synthetic market data feed (UDP loopback)
-- latency histogram (p50 / p99 / p999)
-- end-to-end pipeline benchmark 
-- reproducible microbenchmarks 
----
+- bounded MPSC ring buffer 
+- per-slot sequence protocol 
+- latency histogram with p50 / p99 / p999 reporting 
+- false-sharing experiments 
+- busy-polling vs blocking experiments 
+- thread-affinity experiments on macOS
+- spin-strategy experiments 
+- hotspot and call-graph profiling with gperftools/pprof 
+- MPSC producer-contention benchmarks
+- queue-capacity sensitivity experiments 
+- overload and drop-on-full experiments 
+- sequence-gap detection for dropped market-data messages 
+- padded and cell-padded ring layout experiments 
+- early sequencer architecture exploration 
+- single-producer event pipeline experiments 
+- shared-ring fanout benchmark experiments 
 
-## Engineering Experiments (v0.2)
+Not implemented yet:
+- full Linux `perf` workflow 
+- real Linux FlameGraph workflow 
+- NUMA optimization
+- SIMD optimization 
+- CUDA 
+- Nsight profiling 
+- NCCL 
+- distributed AI workload analysis 
+
+## Engineering Insights 
 
 ### False Sharing 
 
-Separating two hot atomic counters onto different cache lines reduced runtime by ~4x in a two-thread microbenchmark.
-This demonstrates the severe performance penalty of cache-line contention.
+Separating hot atomic state onto different cache lines produced a substantial improvement in controlled two-thread experiments. The result shows how cache-line contention can dominate simple concurrent workloads. 
 
----
+### Scheduler Interaction 
 
-### Busy vs Blocking 
+Busy waiting avoids blocking wakeup costs, but aggressive spinning can increase contention and tail jitter. On macOS, scheduler behavior and weak affinity hints make tail-latency results noisy.
 
-- Busy polling achieves lower latency by staying in user space 
-- Blocking introduces scheduler and wakeup overhead 
+### Queue Capacity 
 
-Flamegraph profiling confirms:
-- busy -> CPU time spent in user-space polling 
-- blocking - time spent in synchronization and scheduler paths 
+Under sustained overload, larger queues can convert excess capacity into additional backlog latency without clearly improving steady-state throughput.
 
----
+### Drop Policy 
 
-### Thread Affinity 
-On macOS (M2 Pro) 
-- affinity hints are weak (not strict pinning)
-- co-locating threads increases contention 
-- default scheduling shows high variance 
----
+Drop-on-full behavior can reduce producer waiting, but arbitrary drops can break sequence-dependent market-data correctness unless gap detection and recovery exist.
 
-### Spin Strategies 
-Compared:
-- pure spin 
-- cpu_relax (pause/yield instruction) 
-- thread_yield 
-- exponential backoff 
-- adaptive 
+### MPSC Contention 
 
-Key findings:
-- p50 latency is similar scross strategies 
-- tail latency (p99/p999) differs significantly
-- `thread_yield` reduces tail latency by ~30-40% on macOS 
-- pure spin increase contention and tail jitters 
+Padding shared metadata can reduce false sharing, but it does not remove fundamental contention on shared producer reservation state. 
 
-Insight:
-> Tail latency is more sensitive to scheduling fairness than raw spin aggressiveness.
+### Fanout 
 
----
+Shared-ring fanout makes ordering and backpressure explicit, but producer progress is constrained by the slowest consumer. More consumers also increase gating overhead and scheduler pressure.
 
+## Performance Methodology 
 
-## Roadmap (Tagged Releases)
+Major experiments follow:
+```text 
+question 
+  -> hypothesis 
+  -> controlled variants 
+  -> reproducible measurement 
+  -> bottleneck evidence 
+  -> optimization 
+  -> before/after validation 
+  -> documented limitations 
+``` 
+From v0.4 onward, new benchmarks are expected to support canonical JSON results for machine comparison and analysis.
 
-### v0.1 — MVP pipeline
-- SPSC ring buffer
-- synthetic market data feed
-- latency measurement
-- benchmark harness
+## Roadmap 
 
-### v0.2 — Engineering experiments
-- false sharing 
-- busy vs blocking 
-- thread affinity 
-- spin strategies 
-- profiling and call graph analysis 
+| Version | Theme                                              | Status                             |
+| ------- | -------------------------------------------------- | ---------------------------------- |
+| v0.1    | Market Data Pipeline                               | Complete                           |
+| v0.2    | CPU Performance Experiments                        | Complete enough for tagged release |
+| v0.3    | Concurrent Pipeline Architecture                   | In progress                        |
+| v0.4    | Linux Performance Laboratory                       | Planned                            |
+| v0.5    | Memory + NUMA                                      | Planned                            |
+| v0.6    | SIMD / CPU Optimization                            | Planned                            |
+| v0.7    | GPU Acceleration                                   | Planned                            |
+| v0.8    | Heterogeneous Pipeline Performance                 | Planned                            |
+| v0.9    | Multi-GPU Communication                            | Planned                            |
+| v1.0    | Distributed AI-Infrastructure Performance Platform | Planned                            |
 
-### v0.3 — Advanced concurrency
-- MPSC queue variants
-- fanout topologies
-- backpressure policies
+See `docs/roadmap.md` for detailed goals, experiments, and exit criteria.
 
-### v0.4 — Memory optimization
-- memory pool / slab allocator
-- structure layout tuning
-- branch / prefetch experiments
+## Build 
 
-### v0.5 — NUMA & allocator control
-- NUMA-aware pipeline
-- allocator jitter control
-- burst traffic modeling
----
-
-## Build
 ```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build -j
+cmake -S . -B build/rel -DCMAKE_BUILD_TYPE=Release -G Ninja
+cmake --build build/rel
 ```
 
----
+Debug build:
+```bash 
+cmake -S . -B build/dev -DCMAKE_BUILD_TYPE=Debug
+cmake --build build/dev
+```
 
-## Development
+## Test 
 
-### Unit tests (Debug)
-```bash
+```bash 
 ./scripts/test_debug.sh
 ```
 ASAN/UBSAN is optional and can be enabled separately when the local
 toolchain supports it reliably.
----
 
-## Experiments 
+## Example Benchmarks 
 
-Detailed experiment reports:
-- docs/experiments/false_sharing.md
-- docs/experiments/busy_vs_blocking.md
-- docs/experiments/thread_affinity.md
-- docs/experiments/spin_strategies.md
+MPSC contention benchmark:
+```bash 
+./scripts/run_mpsc_ring_rel.sh push 4 500000 50000 1024 padded
+```
 
----
+Single-producer event pipeline benchmark:
+```bash 
+./build/rel/sp_pipeline_bench 1000000 1024
+```
 
-## Key Takeaways 
+Shared-ring fanout benchmark:
+```bash 
+./build/rel/sp_fanout_bench 4 1000000 1024 default 50000
+```
 
-- Tail latency (p99/p999) is more important than median latency 
-- Cache-line layout can dominate performance (false sharing) 
-- Scheduling behavior significantly impacts latency distribution 
-- Spin strategy design is critical in low-latency systems 
-- Optimal strategies are platform-dependent (macOS vs Linux)
----
+## Documentation 
 
-## Status
-- Phase 1(v0.1): Completed
-- Phase 2(v0.2): In progress (experiments)
-- Phase 3: Advanced concurrency and adaptive strategies 
+- `docs/roadmap.md`
+  Long-term project roadmap.
+- `docs/design/design_requirements.md`
+  Global requirements for implementation and experiments. 
+- `docs/design/performance_analysis_platform.md`
+  Performance-analysis methodology and platform design.
+- `docs/design/benchmark_result_schema.md`
+  Canonical machine-readable benchmark result model.
+- `docs/project_status.md`
+  Current implementation progress. 
+- `docs/experiments/`
+  Completed experiment reports. 
+- `docs/design/`
+  Architecture and correctness reasoning.
+
 
