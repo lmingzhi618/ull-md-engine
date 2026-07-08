@@ -5,7 +5,10 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include <utility>
 #include <vector>
+
+#include <nlohmann/json.hpp>
 
 #include "ull/core/sequence_barrier.h"
 #include "ull/core/sequenced_ring.h"
@@ -39,13 +42,15 @@ std::uint64_t parse_arg(char **argv, int index, std::uint64_t fallback) {
 }
 
 void print_usage(const char *prog) {
-  std::cerr << "usage: " << prog
-            << " <consumers> <messages> <capacity> <affinity>\n"
-            << " consumers: positive integer\n"
-            << " messages : positive integer\n"
-            << " capacity : power of two\n"
-            << " affinity : default | same | split\n"
-            << " warmup   : non-negative integer smaller than messages\n";
+  std::cerr
+      << "usage: " << prog
+      << " <consumers> <messages> <capacity> <affinity> <warmup> [--json]\n"
+      << " consumers: positive integer\n"
+      << " messages : positive integer\n"
+      << " capacity : power of two\n"
+      << " affinity : default | same | split\n"
+      << " warmup   : non-negative integer smaller than messages\n"
+      << " --json   : emit canonical benchmark JSON v1\n";
 }
 
 bool is_power_of_two(std::uint64_t x) noexcept {
@@ -56,6 +61,64 @@ bool is_valid_affinity(const std::string &affinity) {
   return affinity == "default" || affinity == "same" || affinity == "split";
 }
 
+struct ConsumerLatencyResult {
+  std::uint64_t consumer_id;
+  std::uint64_t count;
+  std::uint64_t p50_ns;
+  std::uint64_t p99_ns;
+  std::uint64_t p999_ns;
+};
+
+struct FanoutBenchResult {
+  std::uint64_t consumers;
+  std::uint64_t messages;
+  std::uint64_t capacity;
+  std::uint64_t warmup;
+  std::uint64_t measured_messages;
+  std::uint64_t elapsed_ns;
+  double throughput_msg_per_sec;
+  std::string affinity;
+  std::vector<ConsumerLatencyResult> latency;
+};
+
+void to_json(nlohmann::json &j, const ConsumerLatencyResult &result) {
+  j = nlohmann::json{
+      {"consumer", result.consumer_id}, {"count", result.count},
+      {"p50_ns", result.p50_ns},        {"p99_ns", result.p99_ns},
+      {"p999_ns", result.p999_ns},
+  };
+}
+
+void to_json(nlohmann::json &j, const FanoutBenchResult &result) {
+  j = nlohmann::json{
+      {"schema_version", "1.0"},
+      {"benchmark",
+       {{"name", "sp_fanout_bench"},
+        {"category", "concurrency"},
+        {"version", "0.1"}}},
+      {"configuration",
+       {{"consumers", result.consumers},
+        {"messages", result.messages},
+        {"capacity", result.capacity},
+        {"affinity", result.affinity},
+        {"warmup", result.warmup}}},
+      {"measurement",
+       {{"measured_messages", result.measured_messages},
+        {"elapsed_ns", result.elapsed_ns},
+        {"throughput_msg_per_sec", result.throughput_msg_per_sec}}},
+      {"latency",
+       {{"unit", "ns"},
+        {"bucket_ns", kBucketNs},
+        {"max_ns", kMaxNs},
+        {"consumers", result.latency}}},
+      {"notes", {"macOS affinity is best-effort and not strict CPU pinning"}},
+  };
+}
+
+void print_json(std::ostream &out, const FanoutBenchResult &result) {
+  const nlohmann::json j = result;
+  out << j.dump(2) << "\n";
+}
 } // namespace
 
 int main(int argc, char **argv) {
@@ -68,6 +131,12 @@ int main(int argc, char **argv) {
   const std::string affinity = argc > 4 ? argv[4] : "default";
   const auto warmup =
       argc > 5 ? parse_arg(argv, 5, kDefaultWarmup) : kDefaultWarmup;
+  const bool json_output = argc > 6 && std::string(argv[6]) == "--json";
+
+  if (argc > 7 || (argc > 6 && !json_output)) {
+    print_usage(argv[0]);
+    return 1;
+  }
 
   if (consumers == 0 || messages == 0 || !is_power_of_two(capacity) ||
       !is_valid_affinity(affinity) || warmup >= messages) {
@@ -160,21 +229,50 @@ int main(int argc, char **argv) {
   const double throughput =
       elapsed_s > 0.0 ? static_cast<double>(messages) / elapsed_s : 0.0;
 
-  std::cout << "queue=single_producer_fanout\n";
-  std::cout << "affinity=" << affinity << "\n";
-  std::cout << "consumers=" << consumers << "\n";
-  std::cout << "messages=" << messages << "\n";
-  std::cout << "capacity=" << capacity << "\n";
-  std::cout << "warmup=" << warmup << "\n";
-  std::cout << "measured_messages=" << measured_messages << "\n";
-  std::cout << "elapsed_ns=" << elapsed_ns << "\n";
-  std::cout << "throughput_msg_per_sec=" << throughput << "\n";
-  std::cout << "hist_unit=ns bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
-            << "\n";
-
+  FanoutBenchResult result{
+      .consumers = consumers,
+      .messages = messages,
+      .capacity = capacity,
+      .warmup = warmup,
+      .measured_messages = measured_messages,
+      .elapsed_ns = elapsed_ns,
+      .throughput_msg_per_sec = throughput,
+      .affinity = affinity,
+      .latency = {},
+  };
+  result.latency.reserve(consumers);
   for (std::uint64_t consumer_id = 0; consumer_id < consumers; ++consumer_id) {
-    std::cout << "consumer=" << consumer_id << "\n";
-    std::cout << hists[consumer_id].report();
+    const auto &hist = hists[consumer_id];
+
+    result.latency.push_back({
+        .consumer_id = consumer_id,
+        .count = hist.count(),
+        .p50_ns = hist.p50_ns(),
+        .p99_ns = hist.p99_ns(),
+        .p999_ns = hist.p999_ns(),
+    });
+  }
+
+  if (json_output) {
+    print_json(std::cout, result);
+  } else {
+    std::cout << "queue=single_producer_fanout\n";
+    std::cout << "affinity=" << affinity << "\n";
+    std::cout << "consumers=" << consumers << "\n";
+    std::cout << "messages=" << messages << "\n";
+    std::cout << "capacity=" << capacity << "\n";
+    std::cout << "warmup=" << warmup << "\n";
+    std::cout << "measured_messages=" << measured_messages << "\n";
+    std::cout << "elapsed_ns=" << elapsed_ns << "\n";
+    std::cout << "throughput_msg_per_sec=" << throughput << "\n";
+    std::cout << "hist_unit=ns bucket_ns=" << kBucketNs << " max_ns=" << kMaxNs
+              << "\n";
+
+    for (std::uint64_t consumer_id = 0; consumer_id < consumers;
+         ++consumer_id) {
+      std::cout << "consumer=" << consumer_id << "\n";
+      std::cout << hists[consumer_id].report();
+    }
   }
   return 0;
 }

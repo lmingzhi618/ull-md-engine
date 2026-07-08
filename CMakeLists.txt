@@ -20,6 +20,16 @@ add_compile_options(
 
 include_directories(include)
 
+include(FetchContent)
+
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+FetchContent_Declare(
+  nlohmann_json
+  GIT_REPOSITORY https://github.com/nlohmann/json.git 
+  GIT_TAG v3.11.3 
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
 add_library(ull
   src/perf/latency_hist.cpp
   src/perf/ticks.cpp
@@ -33,7 +43,7 @@ target_include_directories(ull PUBLIC include)
 #add_executable(ull_replay src/app/replay_main.cpp)
 #target_link_libraries(ull_replay PRIVATE ull)
 add_executable(sp_fanout_bench src/app/sp_fanout_bench_main.cpp)
-target_link_libraries(sp_fanout_bench PRIVATE ull)
+target_link_libraries(sp_fanout_bench PRIVATE ull nlohmann_json::nlohmann_json)
 
 add_executable(spsc_baseline_bench src/app/spsc_baseline_bench_main.cpp)
 target_link_libraries(spsc_baseline_bench PRIVATE ull)

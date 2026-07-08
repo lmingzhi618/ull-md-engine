@@ -27,15 +27,39 @@ static std::uint64_t percentile_ns(const std::vector<std::uint64_t> &b,
   return static_cast<std::uint64_t>(b.size() - 1) * bucket;
 }
 
+std::uint64_t LatencyHist::count() const noexcept { return count_; }
+
+std::uint64_t LatencyHist::p50_ns() const {
+  if (count_ == 0) {
+    return 0;
+  }
+
+  return percentile_ns(buckets_, count_, 0.50, bucket_);
+}
+
+std::uint64_t LatencyHist::p99_ns() const {
+  if (count_ == 0) {
+    return 0;
+  }
+  return percentile_ns(buckets_, count_, 0.99, bucket_);
+}
+
+std::uint64_t LatencyHist::p999_ns() const {
+  if (count_ == 0) {
+    return 0;
+  }
+  return percentile_ns(buckets_, count_, 0.999, bucket_);
+}
+
 std::string LatencyHist::report() const {
   std::ostringstream oss;
   oss << "count=" << count_ << "\n";
   if (count_ == 0)
     return oss.str();
 
-  oss << "p50_ns=" << percentile_ns(buckets_, count_, 0.50, bucket_) << "\n";
-  oss << "p99_ns=" << percentile_ns(buckets_, count_, 0.99, bucket_) << "\n";
-  oss << "p999_ns=" << percentile_ns(buckets_, count_, 0.999, bucket_) << "\n";
+  oss << "p50_ns=" << p50_ns() << "\n";
+  oss << "p99_ns=" << p99_ns() << "\n";
+  oss << "p999_ns=" << p999_ns() << "\n";
   return oss.str();
 }
 } // namespace ull::perf

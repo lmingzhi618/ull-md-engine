@@ -11,6 +11,11 @@ public:
   void add(std::uint64_t ns) noexcept;
   std::string report() const;
 
+  std::uint64_t count() const noexcept;
+  std::uint64_t p50_ns() const;
+  std::uint64_t p99_ns() const;
+  std::uint64_t p999_ns() const;
+
 private:
   std::uint64_t max_;
   std::uint64_t bucket_;
