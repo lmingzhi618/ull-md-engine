@@ -30,6 +30,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(nlohmann_json)
 
+FetchContent_Declare(
+  cxx_json_codegen
+  GIT_REPOSITORY https://github.com/cjm-labs/cxx-json-codegen.git
+  GIT_TAG v0.3.0
+)
+FetchContent_MakeAvailable(cxx_json_codegen)
+
 add_library(ull
   src/perf/latency_hist.cpp
   src/perf/ticks.cpp
@@ -157,3 +164,13 @@ add_test(NAME test_single_producer_event_pipeline COMMAND test_single_producer_e
 add_executable(test_single_producer_event_pipeline_threaded tests/test_single_producer_event_pipeline_threaded.cpp)
 target_link_libraries(test_single_producer_event_pipeline_threaded PRIVATE ull)
 add_test(NAME test_single_producer_event_pipeline_threaded COMMAND test_single_producer_event_pipeline_threaded)
+
+add_executable(test_benchmark_log_event_json tests/test_benchmark_log_event_json.cpp)
+target_link_libraries(test_benchmark_log_event_json PRIVATE ull nlohmann_json::nlohmann_json)
+
+cjm_generate(
+  TARGET test_benchmark_log_event_json 
+  HEADERS include/ull/bench/benchmark_log_event.h
+)
+
+add_test(NAME test_benchmark_log_event_json COMMAND test_benchmark_log_event_json)
