@@ -43,6 +43,7 @@ Implemented today:
 - early sequencer architecture exploration 
 - single-producer event pipeline experiments 
 - shared-ring fanout benchmark experiments 
+- CJM v0.3.0 dogfood tests for generated JSON integration 
 
 Not implemented yet:
 - full Linux `perf` workflow 
@@ -164,6 +165,10 @@ Shared-ring fanout benchmark:
   Current implementation progress. 
 - `docs/experiments/`
   Completed experiment reports. 
+- `docs/experiments/cjm_json_logging_dogfood.md`
+  Downstream CJM v0.3.0 dogfood for a small benchmark log event.
+- `docs/experiments/cjm_mapping_surface_dogfood.md`
+  Extended CJM v0.3.0 mapping-surface dogfood.
 - `docs/design/`
   Architecture and correctness reasoning.
 
