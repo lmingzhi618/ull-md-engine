@@ -174,3 +174,13 @@ cjm_generate(
 )
 
 add_test(NAME test_benchmark_log_event_json COMMAND test_benchmark_log_event_json)
+
+add_executable(test_cjm_mapping_surface_json tests/test_cjm_mapping_surface_json.cpp)
+target_link_libraries(test_cjm_mapping_surface_json PRIVATE ull nlohmann_json::nlohmann_json)
+
+cjm_generate(
+  TARGET test_cjm_mapping_surface_json
+  HEADERS include/ull/bench/cjm_mapping_surface_event.h
+)
+
+add_test(NAME test_cjm_mapping_surface_json COMMAND test_cjm_mapping_surface_json)
