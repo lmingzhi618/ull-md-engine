@@ -2,1134 +2,466 @@
 
 ## 1. Project Direction
 
-`ull-md-engine` evolves from a low-latency market-data engine into a staged performance-engineering platform spanning:
+`ull-md-engine` is a staged low-latency systems laboratory built around a
+bounded market-data processing engine.
 
-* low-latency data movement
-* lock-free concurrency
-* CPU microarchitecture
-* Linux performance analysis
-* memory hierarchy and NUMA
-* SIMD and compiler optimization
-* GPU acceleration
-* heterogeneous CPU/GPU pipelines
-* multi-GPU communication
-* distributed AI-infrastructure performance analysis
+The project is not trying to become a production trading platform as quickly as
+possible. It is also not a generic queue library, a full Disruptor clone, or a
+collection of unrelated benchmarks.
 
-The project should preserve one continuous engineering story:
-
-```text
-market-data pipeline
-    -> low-latency systems laboratory
-    -> CPU performance engineering platform
-    -> heterogeneous CPU/GPU performance platform
-    -> distributed AI-infrastructure performance platform
-```
-
-The goal is not to collect technologies.
-
-The goal is to apply one repeatable performance-engineering methodology across increasingly complex systems:
+The main goal is to build low-latency engineering capability through a repeated
+loop:
 
 ```text
 question
-  -> hypothesis
-  -> controlled experiment
-  -> measurement
-  -> bottleneck evidence
-  -> optimization
-  -> before/after validation
-  -> documented trade-off
+-> hypothesis
+-> controlled implementation
+-> correctness tests
+-> benchmark
+-> analysis
+-> documented trade-off
+-> milestone boundary
 ```
 
+The market-data pipeline gives the experiments a coherent engineering context:
+
+```text
+input
+-> decode
+-> sequence / validate
+-> bounded concurrent transport
+-> market-state or consumer processing
+-> metrics / replay / benchmark output
+```
+
+Later topics such as Linux profiling, NUMA, SIMD, DPDK, RDMA, GPU, and
+AI-infrastructure performance are part of the long-term learning direction.
+They should be introduced through staged prerequisites, clear learning
+objectives, and bounded experiments rather than being rushed into the current
+milestone.
+
+## 2. Roadmap Philosophy
+
+The roadmap is capability-driven rather than feature-count-driven.
+
+Each version should answer:
+
+1. What engineering capability is being learned?
+2. What artifact demonstrates it?
+3. What correctness evidence is required?
+4. What benchmark evidence is required?
+5. What documentation is required?
+6. What is explicitly excluded?
+7. What condition marks the version complete?
+
+A version is complete when its learning objective and demonstration artifacts
+are complete, not when every related idea has been explored.
+
+## 3. Release Summary
+
+| Version | Theme | Primary Capability | Status |
+| --- | --- | --- | --- |
+| v0.1 | Market Data Pipeline | Runnable measurable baseline pipeline | Complete |
+| v0.2 | CPU Latency Experiments | Cache, scheduler, spin, and profiling effects | Complete enough |
+| v0.3 | Concurrent Pipeline Architecture | Contention, backpressure, sequencing, and fanout | In progress |
+| v0.4 | Linux Performance Laboratory | Reproducible profiling, metadata, and benchmark artifacts | Planned |
+| v0.5 | Memory Determinism + NUMA | Allocation, page behavior, locality, and remote memory | Planned |
+| v0.6 | CPU Hot-Path Optimization | Layout, SIMD, compiler, and branch/prefetch experiments | Planned |
+| v0.7+ | Advanced I/O and Heterogeneous Performance | DPDK, RDMA, GPU, and AI-infrastructure tracks with clear prerequisites | Planned long-term |
+
+The later stages should not be treated as committed product scope. They are
+possible future research directions.
+
 ---
 
-## 2. Release Summary
+# v0.1 - Market Data Pipeline
 
-| Version | Theme                                              | Primary Capability                                                           |
-| ------- | -------------------------------------------------- | ---------------------------------------------------------------------------- |
-| v0.1    | Market Data Pipeline                               | Build a measurable end-to-end low-latency pipeline                           |
-| v0.2    | CPU Performance Experiments                        | Demonstrate cache, scheduling, spin, and profiling effects                   |
-| v0.3    | Concurrent Pipeline Architecture                   | Study contention, backpressure, sequencing, and fanout                       |
-| v0.4    | Linux Performance Laboratory                       | Build a reproducible Linux profiling and benchmark foundation                |
-| v0.5    | Memory + NUMA                                      | Analyze allocation, pages, locality, and remote-memory effects               |
-| v0.6    | SIMD / CPU Optimization                            | Optimize real hot paths using layout, vectorization, and compiler techniques |
-| v0.7    | GPU Acceleration                                   | Add CUDA execution and study batching, launch, and transfer overhead         |
-| v0.8    | Heterogeneous Pipeline Performance                 | Optimize CPU/GPU overlap and end-to-end pipeline utilization                 |
-| v0.9    | Multi-GPU Communication                            | Analyze collectives, topology, and communication/computation overlap         |
-| v1.0    | Distributed AI-Infrastructure Performance Platform | Diagnose bottlenecks in distributed AI workloads using unified evidence      |
+## Capability
 
----
+Build a runnable and measurable low-latency market-data pipeline.
 
-# v0.1 — Market Data Pipeline
+## Artifact
 
-## Objective
+A minimal pipeline with:
 
-Build a runnable and measurable data pipeline with stable latency reporting.
+- UDP or synthetic input
+- fixed-size binary message format
+- SPSC transport
+- consumer processing
+- latency histogram
+- repeatable benchmark command
 
-## Core Features
+## Correctness Evidence
 
-* UDP loopback receiver
-* fixed-size binary message format
-* SPSC lock-free ring buffer
-* monotonic timestamp abstraction
-* latency histogram
-* p50 / p99 / p999 reporting
-* single-consumer event path
-* release benchmark scripts
-* unit tests
+- binary message tests
+- SPSC tests
+- UDP receiver tests
+- basic end-to-end validation
 
-## Performance Questions
+## Benchmark Evidence
 
-* What is the baseline end-to-end latency distribution?
-* Where is time spent across receive, enqueue, dequeue, and measurement?
-* How stable is the benchmark across repeated runs?
+- throughput
+- p50 / p99 / p999 latency
+- warmup behavior
+- release build command
 
-## Exit Criteria
+## Documentation
 
-* benchmark executes reliably
-* core modules are tested
-* stable result format exists
-* baseline performance is documented
+- baseline docs
+- module notes
+- milestone status
+
+## Non-Goals
+
+- exchange protocol completeness
+- market-state reconstruction
+- multi-consumer topology
+- production-grade feed handling
+
+## Definition of Done
+
+The baseline pipeline runs reliably, is tested, and produces stable latency
+metrics.
 
 Status: Complete.
 
 ---
 
-# v0.2 — CPU Performance Experiments
+# v0.2 - CPU Latency Experiments
 
-## Objective
+## Capability
 
 Isolate important sources of CPU latency and jitter.
 
-## Core Experiments
+## Artifact
 
-### Cache-Line Contention
+A set of controlled experiments for:
 
-* padded vs unpadded hot counters
-* false-sharing microbenchmark
-* cache-line layout documentation
+- false sharing
+- cache padding
+- busy polling vs blocking
+- thread affinity
+- spin strategies
+- profiling / hotspot analysis
 
-### Busy Polling vs Blocking
+## Correctness Evidence
 
-* lock-free busy polling
-* mutex + condition-variable baseline
-* scheduler wakeup analysis
+- queue correctness tests continue to pass
+- experiment variants preserve comparable semantics
 
-### Thread Affinity
+## Benchmark Evidence
 
-* platform-specific affinity experiments
-* same-group vs split-group placement
-* explicit documentation of macOS limitations
+Each experiment should include:
 
-### Spin Strategies
+- question
+- hypothesis
+- controlled variants
+- command
+- result table or output
+- interpretation
+- limitation
 
-* pure spin
-* CPU relax / pause
-* thread yield
-* exponential backoff
-* adaptive strategy
+## Documentation
 
-### Profiling
+Experiment reports live under `docs/experiments/`.
 
-* call-graph analysis
-* hotspot identification
-* comparison of profiling limitations by platform
+Important reports include:
 
-## Performance Questions
+- `docs/experiments/false_sharing.md`
+- `docs/experiments/busy_vs_blocking.md`
+- `docs/experiments/thread_affinity.md`
+- `docs/experiments/spin_strategies.md`
 
-* When does cache-line contention dominate execution time?
-* How much tail latency comes from scheduler interaction?
-* Why can a less aggressive spin policy improve p99/p999?
-* Which functions dominate CPU time on the hot path?
+## Non-Goals
 
-## Exit Criteria
+- full Linux `perf` workflow
+- NUMA
+- production affinity management
 
-Every experiment must contain:
+## Definition of Done
 
-1. question
-2. hypothesis
-3. controlled variants
-4. reproducible command
-5. measurements
-6. interpretation
-7. limitations
+The main CPU latency effects are demonstrated with runnable code, measurements,
+and written conclusions.
 
 Status: Complete enough for tagged release.
 
 ---
 
-# v0.3 — Concurrent Pipeline Architecture
+# v0.3 - Concurrent Pipeline Architecture
 
-## Objective
+## Capability
 
-Move from low-contention SPSC behavior to contention, overload, sequencing, and pipeline topology.
+Move from low-contention SPSC behavior to contention, overload, sequencing, and
+pipeline topology.
 
-## Core Features
+## Artifact
 
-### Bounded MPSC Ring
+A bounded set of concurrency components and experiments:
 
-* per-slot sequence protocol
-* producer claim vs publish separation
-* blocking/spinning `push`
-* non-blocking `try_push`
-* producer-count scaling
-* capacity sensitivity
-* sequence-gap detection
+- MPSC ring with per-slot sequence protocol
+- blocking/spinning `push`
+- non-blocking `try_push`
+- drop-on-full overload mode
+- producer contention benchmark
+- capacity sensitivity experiment
+- sequence-gap detection
+- memory-ordering documentation
+- single-producer sequencer exploration
+- sequenced ring storage
+- sequence barrier
+- wait strategy
+- single-producer event pipeline
+- limited fanout benchmark
 
-### Backpressure and Overload
+## Correctness Evidence
 
-* bounded backlog
-* drop-on-full behavior
-* explicit correctness consequences
-* sequence-dependent recovery requirements
+Required correctness concerns:
 
-### Contention Experiments
+- producers do not overwrite unconsumed slots
+- consumers do not read unpublished data
+- publication makes payload visible before observation
+- sequence values progress monotonically
+- wrap-around remains bounded by capacity
+- drop mode reports gaps explicitly
+- fanout consumers observe the same published stream
+- producer capacity is gated by the slowest consumer
 
-* 1 / 2 / 4 / 8 producers
-* throughput and tail latency
-* shared-head contention
-* padded vs unpadded metadata
+## Benchmark Evidence
 
-### Sequencer Exploration
+v0.3 benchmarks should show:
 
-* `Sequence`
-* single-producer sequencer
-* claim / publish / consume lifecycle
-* gating sequence
-* sequenced ring storage
-* limited fanout exploration
+- producer-count scaling
+- throughput
+- p50 / p99 / p999 latency
+- push latency where relevant
+- capacity sensitivity
+- overload behavior
+- padded vs unpadded or cell-padded layout effects
+- fanout consumer-count or affinity behavior where useful
 
-## Performance Questions
+## Documentation
 
-* How does producer contention amplify tail latency?
-* Why can larger queues increase latency without improving throughput?
-* When does dropping reduce queueing latency but violate data semantics?
-* What contention remains after removing false sharing?
-* How should ordering be separated from storage?
+Relevant documents:
 
-## Exit Criteria
+- `docs/design/v0_3_concurrency_architecture.md`
+- `docs/design/mpsc_memory_ordering.md`
+- `docs/design/disruptor_component_map.md`
+- `docs/experiments/mpsc_contention.md`
+- `docs/experiments/mpsc_overload_policy.md`
+- `docs/experiments/mpsc_padding.md`
+- `docs/experiments/sp_pipeline_baseline.md`
 
-* MPSC correctness and overload behavior documented
-* memory-ordering reasoning documented
-* contention benchmark completed
-* one bounded sequencer or fanout experiment completed
-* no attempt to clone a full Disruptor unless a specific performance question requires it
+## Non-Goals
+
+v0.3 should complete the bounded Disruptor-style pipeline work already in
+progress, but it should not expand without a specific learning or measurement
+question.
+
+Non-goals:
+
+- full production LMAX Disruptor clone
+- multi-producer sequencer unless a later task explicitly justifies it
+- complex consumer dependency graph
+- wait-strategy zoo
+- general-purpose concurrency framework
+- generic queue library
+- unbounded topology exploration
+
+## Definition of Done
+
+v0.3 is complete when the bounded concurrency story is explainable end to end:
+
+```text
+SPSC baseline
+-> MPSC contention and overload
+-> sequence-based claim/publish/consume
+-> single-producer pipeline
+-> limited fanout and gating
+-> documented trade-offs and stopping line
+```
 
 Status: In progress.
 
 ---
 
-# v0.4 — Linux Performance Laboratory
+# v0.4 - Linux Performance Laboratory
 
-## Objective
+## Capability
 
-Build the instrumentation and reproducibility foundation required for serious CPU, GPU, and AI-infrastructure performance work.
+Build a reproducible Linux performance-analysis foundation.
 
-This phase is a prerequisite for later optimization work.
+This phase exists before deeper optimization work. Its goal is reliable
+evidence, not feature expansion.
 
-## Core Features
+## Artifact
 
-### 1. Strict CPU Affinity
+- Linux benchmark environment notes
+- strict CPU affinity support
+- system topology capture
+- canonical benchmark JSON output
+- benchmark result metadata
+- `perf stat` integration
+- `perf record` / FlameGraph workflow
+- comparison script for result JSON files
 
-Provide Linux support for:
+## Correctness Evidence
 
-* `sched_setaffinity`
-* `pthread_setaffinity_np`
-* CPU-set configuration from benchmark CLI
-* system-topology capture
+- benchmark output remains semantically equivalent across text/JSON modes where
+  both exist
+- JSON schema is parseable and stable
+- metadata fields are documented
+- benchmark scripts fail clearly on unsupported platforms
 
-Required experiments:
+## Benchmark Evidence
 
-* unpinned baseline
-* producer and consumer on different physical cores
-* producer and consumer on SMT siblings
-* different NUMA nodes when hardware permits
+At minimum collect:
 
-Metrics:
+- throughput
+- p50 / p99 / p999
+- sample count
+- warmup
+- capacity
+- CPU placement
+- context switches
+- CPU migrations
+- cycles
+- instructions
+- cache misses where available
 
-* throughput
-* p50
-* p99
-* p999
-* maximum latency
-* context switches
-* CPU migrations
+## Documentation
 
-### 2. `perf stat` Integration
+- benchmark result schema
+- Linux setup notes
+- first `perf stat` report
+- first FlameGraph-backed analysis
 
-Collect at least:
+## Non-Goals
 
-* cycles
-* instructions
-* branches
-* branch misses
-* cache references
-* cache misses
-* context switches
-* CPU migrations
-* page faults
+- CUDA
+- DPDK
+- RDMA
+- NUMA optimization before topology support exists
+- fully generic benchmark framework before repeated use justifies it
 
-Derive where meaningful:
+## Definition of Done
 
-* IPC
-* branch-miss rate
-* cache-miss rate
+v0.4 is complete when at least one benchmark has reproducible JSON output,
+Linux metadata, `perf stat` evidence, and a documented analysis workflow.
 
-Later experiments may add:
-
-* LLC load misses
-* dTLB load misses
-* frontend stalls
-* backend stalls
-* architecture-specific events
-
-### 3. `perf record` and FlameGraph Workflow
-
-Add scripts for:
-
-```text
-perf record
-  -> perf script
-  -> stack collapse
-  -> FlameGraph
-```
-
-Generated artifacts should identify:
-
-* benchmark configuration
-* binary
-* git commit
-* platform
-* profiling command
-* generated SVG
-
-### 4. Unified Benchmark JSON
-
-All benchmarks should support machine-readable JSON conforming to:
-
-```text
-docs/design/benchmark_result_schema.md
-```
-
-Human-readable console output may remain.
-
-JSON becomes the canonical artifact for:
-
-* comparison
-* regression tracking
-* chart generation
-* future automated analysis
-
-### 5. Benchmark Run Metadata
-
-Capture:
-
-* git commit
-* dirty-tree status
-* build type
-* compiler
-* compiler version
-* compiler flags
-* OS
-* kernel
-* CPU model
-* core topology
-* NUMA topology
-* benchmark arguments
-* warmup policy
-* sample count
-* timestamp
-
-### 6. Analysis Scripts
-
-Provide Python tooling to:
-
-* load result JSON
-* compare variants
-* calculate deltas
-* produce latency charts
-* produce throughput charts
-* correlate latency changes with hardware counters
-
-## Performance Analysis Project A — Affinity and Scheduler Interference
-
-### Question
-
-How do CPU placement and scheduler movement affect tail latency?
-
-### Variants
-
-* unpinned
-* pinned to different physical cores
-* pinned to SMT siblings
-* cross-NUMA where available
-
-### Evidence
-
-* latency distribution
-* context switches
-* CPU migrations
-* cycles
-* instructions
-* IPC
-
-## Performance Analysis Project B — Hot-Path Attribution
-
-### Question
-
-Which functions and code paths explain the observed latency distribution?
-
-### Workflow
-
-```text
-baseline
-  -> perf stat
-  -> perf record
-  -> FlameGraph
-  -> identify dominant path
-  -> targeted optimization
-  -> before/after comparison
-```
-
-## Exit Criteria
-
-* Linux benchmark environment documented
-* strict affinity works
-* at least one benchmark emits canonical JSON
-* `perf stat` metadata is captured
-* one FlameGraph-backed optimization study is documented
-* analysis scripts compare at least two result files
+Status: Planned / beginning through canonical JSON work.
 
 ---
 
-# v0.5 — Memory + NUMA
+# v0.5 - Memory Determinism + NUMA
 
-## Objective
+## Capability
 
-Study how allocation, page behavior, cache/TLB behavior, and memory locality affect throughput and tail latency.
+Understand how allocation, page behavior, cache/TLB effects, and memory locality
+affect latency and throughput.
 
-## Core Features
+## Artifact
 
-### 1. Allocation Jitter
+Potential experiments:
 
-Compare:
+- hot-path no-allocation validation
+- allocator jitter comparison
+- preallocation / pool baseline
+- page-fault experiment
+- pre-touch experiment
+- huge-page note where practical
+- NUMA local vs remote memory comparison on suitable hardware
 
-* `new/delete`
-* `malloc/free`
-* preallocated fixed-size pool
-* slab or freelist allocator
-* optional `std::pmr`
+## Non-Goals
 
-Metrics:
+- allocator framework without a current pipeline need
+- NUMA work on hardware that cannot demonstrate NUMA behavior
+- memory tricks without benchmark evidence
 
-* allocation latency
-* p50
-* p99
-* p999
-* max
-* throughput
-* page faults
-* CPU time
+## Definition of Done
 
-Primary question:
+One or more memory experiments produce correctness evidence, latency evidence,
+and a written explanation of the mechanism.
 
-> Why can dynamic allocation have modest average cost but severe tail-latency impact?
-
-### 2. Hot-Path No-Allocation Mode
-
-Provide explicit evidence that selected pipeline modes perform no dynamic allocation after initialization.
-
-Possible validation mechanisms:
-
-* allocator instrumentation
-* test hooks
-* profiler evidence
-* explicit implementation invariant with tests
-
-### 3. Page-Fault Experiment
-
-Compare:
-
-* lazy allocation
-* pre-touch
-* optional `mlock`
-
-Measure:
-
-* minor page faults
-* major page faults
-* startup latency
-* steady-state tail latency
-
-### 4. Huge-Page Experiment
-
-Compare where supported:
-
-* regular pages
-* transparent huge pages
-* explicit huge pages
-
-Measure:
-
-* dTLB-related counters
-* throughput
-* tail latency
-
-### 5. NUMA-Aware Allocation
-
-Support:
-
-* CPU pinning by NUMA node
-* memory allocation by NUMA node
-* local CPU / local memory
-* local CPU / remote memory
-* producer and consumer placement across nodes
-
-Tools may include:
-
-* `numactl`
-* `libnuma`
-
-### 6. Topology-Aware Result Metadata
-
-JSON results should include:
-
-* NUMA node placement
-* CPU set
-* memory policy
-* page mode
-
-## Performance Analysis Projects
-
-### Project A — Local vs Remote Memory
-
-How much latency and bandwidth are lost when compute and memory placement diverge?
-
-### Project B — Allocation-Induced Tail Jitter
-
-Can preallocation reduce p999 and max latency even when throughput changes little?
-
-### Project C — Queue Residency and Memory Pressure
-
-How do queue capacity and working-set size interact with cache and TLB behavior?
-
-## Exit Criteria
-
-* at least one custom or preallocated allocator path
-* page-fault experiment
-* local-vs-remote NUMA experiment on suitable hardware
-* JSON captures placement and memory policy
-* one bottleneck explanation combines latency and hardware-counter evidence
+Status: Planned.
 
 ---
 
-# v0.6 — SIMD / CPU Optimization
+# v0.6 - CPU Hot-Path Optimization
 
-## Objective
+## Capability
 
-Optimize a real pipeline hot path and explain the improvement through microarchitectural evidence.
+Optimize a real pipeline hot path and explain the improvement with
+microarchitectural evidence.
 
-## Core Features
+## Artifact
 
-### 1. Scalar Baseline
+Potential experiments:
 
-Choose a concrete workload:
+- scalar baseline
+- data-layout comparison
+- SIMD implementation where hardware supports it
+- compiler flag comparison
+- assembly inspection where useful
+- branch or prefetch experiment when driven by evidence
 
-* binary message parsing
-* field normalization
-* filtering
-* aggregation
-* checksum or validation
+## Non-Goals
 
-The baseline must be simple, correct, and benchmarked.
+- toy SIMD unrelated to the pipeline
+- keeping optimizations that do not measure better
+- architecture-specific code without a scalar reference
 
-### 2. Data-Layout Experiment
+## Definition of Done
 
-Compare:
+A profile-to-optimization case study demonstrates correctness, benchmark
+improvement, counter evidence, and trade-offs.
 
-* AoS
-* SoA
-* optional AoSoA
-
-Measure:
-
-* cycles/item
-* instructions/item
-* IPC
-* cache misses
-* branch misses
-* throughput
-* latency distribution
-
-### 3. SIMD Implementation
-
-Implement at least one architecture-specific optimized path:
-
-* AVX2 preferred for x86
-* AVX-512 when supported
-* NEON for ARM comparison where useful
-
-Retain a scalar reference implementation for correctness.
-
-### 4. Compiler Optimization Study
-
-Compare:
-
-* `-O2`
-* `-O3`
-* `-march=native`
-* LTO
-* optional PGO
-
-Record:
-
-* build configuration
-* performance change
-* relevant generated assembly differences
-
-### 5. Branch and Prefetch Experiments
-
-Only add when driven by a concrete hypothesis.
-
-Possible variants:
-
-* branchy vs branchless
-* likely/unlikely annotations
-* manual prefetch
-
-Do not retain optimizations without measurable benefit.
-
-## Performance Analysis Project A — Scalar to SIMD
-
-```text
-baseline
-  -> profile
-  -> identify bottleneck
-  -> change data layout or algorithm
-  -> vectorize
-  -> compare counters
-  -> validate correctness
-  -> validate performance
-```
-
-## Performance Analysis Project B — Throughput vs Tail Latency
-
-Does a throughput optimization also improve tail latency, or does it create new burst and jitter behavior?
-
-## Exit Criteria
-
-* one real hot path optimized
-* scalar and SIMD paths tested for correctness
-* cycles/item and throughput reported
-* hardware-counter explanation documented
-* compiler configuration included in JSON
+Status: Planned.
 
 ---
 
-# v0.7 — GPU Acceleration
+# Planned Long-Term Research Tracks
 
-## Objective
+The following tracks are part of the long-term learning plan, not discarded or
+optional trivia:
 
-Introduce CUDA and move from CPU-only analysis to heterogeneous execution.
+- DPDK and kernel-bypass networking
+- RDMA and low-latency network transport
+- GPU acceleration
+- heterogeneous CPU/GPU pipelines
+- distributed AI-infrastructure performance analysis
 
-The objective is not sophisticated AI modeling.
+They should not interrupt the current v0.3/v0.4 sequence. Each track requires
+prerequisites, hardware or environment support, a design note, and a bounded
+experiment before implementation.
 
-The objective is to study:
-
-* GPU execution
-* batching
-* launch overhead
-* transfer overhead
-* CPU/GPU crossover
-* GPU utilization
-
-## Core Features
-
-### 1. GPU-Capable Workload
-
-Add a simple parallel stage:
-
-* filtering
-* normalization
-* aggregation
-* rolling or statistical transform
-
-Pipeline:
+A likely long-term ordering is:
 
 ```text
-UDP or replay
-  -> CPU preprocessing
-  -> batch formation
-  -> H2D transfer
-  -> CUDA kernel
-  -> result collection
+v0.4 Linux performance foundation
+-> v0.5 memory determinism and NUMA
+-> v0.6 CPU hot-path optimization
+-> v0.7 kernel-bypass networking: DPDK / RDMA
+-> v0.8 GPU acceleration
+-> v0.9 heterogeneous pipeline performance
+-> v1.0 AI-infrastructure performance studies
 ```
 
-### 2. Batch-Size Sweep
-
-Test a broad range:
-
-```text
-1
-8
-32
-128
-1024
-8192
-```
-
-Exact values may change by workload.
-
-Measure:
-
-* end-to-end latency
-* queueing latency
-* H2D latency
-* kernel latency
-* throughput
-* GPU utilization
-
-Primary question:
-
-> Where is the latency/throughput knee between underutilized small batches and queue-heavy large batches?
-
-### 3. CPU vs GPU Crossover
-
-Run the same operation on:
-
-* CPU
-* GPU
-
-Primary question:
-
-> At what workload size does GPU acceleration overcome transfer and launch overhead?
-
-### 4. CUDA Event Timing
-
-Use GPU-native events for:
-
-* H2D timing
-* kernel timing
-* D2H timing
-
-Preserve host-side end-to-end timing.
-
-### 5. GPU Metadata
-
-Result JSON should capture:
-
-* GPU model
-* driver version
-* CUDA version
-* kernel configuration
-* batch size
-* transfer mode
-
-## Performance Analysis Project A — Batch-Size Phase Diagram
-
-Identify:
-
-* CPU-bound region
-* transfer-bound region
-* launch-overhead region
-* GPU-efficient region
-* queueing-dominated region
-
-## Performance Analysis Project B — CPU/GPU Crossover
-
-Produce a performance curve showing where GPU execution becomes beneficial.
-
-## Exit Criteria
-
-* one CUDA kernel integrated
-* CPU reference path retained
-* batch sweep documented
-* transfer and kernel timing separated
-* result JSON includes GPU metadata
+Some advanced tracks may still deserve separate repositories if they grow beyond
+the bounded market-data pipeline context.
 
 ---
 
-# v0.8 — Heterogeneous Pipeline Performance
+## Immediate Next Steps
 
-## Objective
+Before choosing the next task, inspect the repository state and compare code,
+tests, benchmarks, and documentation.
 
-Optimize the complete CPU/GPU pipeline rather than isolated kernels.
+Current likely direction:
 
-## Core Features
+1. Finish the bounded v0.3 Disruptor-style sequencer/fanout pipeline.
+2. Stabilize canonical JSON output for benchmark results.
+3. Update project status after each bounded milestone.
+4. Begin v0.4 through a small Linux profiling or metadata experiment.
 
-### 1. Pageable vs Pinned Host Memory
-
-Compare:
-
-* regular host allocation
-* pinned host memory
-
-Measure:
-
-* H2D latency
-* D2H latency
-* bandwidth
-* CPU overhead
-* end-to-end effect
-
-### 2. Synchronous vs Asynchronous Transfer
-
-Compare:
-
-* blocking copies
-* `cudaMemcpyAsync`
-
-### 3. Multi-Buffer Pipeline
-
-Implement double buffering or multi-buffering.
-
-Example:
-
-```text
-batch N:      H2D -> compute -> D2H
-batch N + 1:        H2D -> compute -> D2H
-```
-
-### 4. CUDA Streams
-
-Compare:
-
-* one stream
-* two streams
-* multiple streams where justified
-
-Measure:
-
-* overlap ratio
-* exposed copy time
-* exposed compute time
-* GPU idle gaps
-* CPU idle gaps
-
-### 5. Nsight Systems Analysis
-
-At least one project must diagnose:
-
-* serialization
-* launch gaps
-* CPU stalls
-* GPU idle time
-* copy/compute overlap
-
-### 6. Nsight Compute Analysis
-
-At least one kernel should be analyzed for:
-
-* occupancy
-* memory throughput
-* major warp-stall reasons
-* SM efficiency
-* arithmetic or memory intensity where useful
-
-## Performance Analysis Project A — End-to-End Overlap Optimization
-
-```text
-serialized baseline
-  -> timeline evidence
-  -> pinned memory
-  -> asynchronous copies
-  -> buffering and streams
-  -> improved overlap
-  -> identify new bottleneck
-```
-
-## Performance Analysis Project B — GPU Starvation
-
-Determine whether low GPU utilization is caused by:
-
-* slow CPU preprocessing
-* transfer serialization
-* small batches
-* launch gaps
-* kernel inefficiency
-
-## Exit Criteria
-
-* pinned-memory comparison
-* asynchronous transfer path
-* at least one overlap design
-* Nsight Systems report
-* one Nsight Compute-backed kernel analysis
-* JSON includes stage-level timing
-
----
-
-# v0.9 — Multi-GPU Communication
-
-## Objective
-
-Study the communication layer that dominates large-scale AI workloads.
-
-## Core Features
-
-### 1. NCCL Benchmark Integration
-
-Support:
-
-* AllReduce
-* AllGather
-* ReduceScatter
-* Broadcast
-
-Run a message-size sweep.
-
-Metrics:
-
-* latency
-* algorithm bandwidth
-* bus bandwidth
-* scaling efficiency
-
-### 2. Topology Capture
-
-Record:
-
-* GPU placement
-* PCIe hierarchy
-* NVLink connectivity
-* NUMA relationship
-* topology artifacts such as `nvidia-smi topo -m`
-
-### 3. Topology-Aware Placement
-
-Compare favorable and unfavorable:
-
-* CPU placement
-* GPU selection
-* NUMA placement
-
-### 4. Collective Algorithm Analysis
-
-Where observable or controllable, study:
-
-* ring-like behavior
-* tree-like behavior
-* small-message latency
-* large-message bandwidth
-
-### 5. Communication/Computation Overlap
-
-Implement useful compute overlapping with collective communication.
-
-Measure:
-
-* total communication time
-* exposed communication time
-* hidden communication time
-* overlap percentage
-
-## Performance Analysis Projects
-
-### Project A — Collective Performance Curve
-
-How does the bottleneck change from tiny messages to bandwidth-scale messages?
-
-### Project B — Topology Penalty
-
-How much performance is lost from poor CPU/GPU/NUMA placement?
-
-### Project C — Exposed vs Hidden Communication
-
-How much communication can be hidden behind compute, and what limits further overlap?
-
-## Exit Criteria
-
-* multi-GPU benchmark executed
-* topology artifact captured
-* message-size sweep documented
-* at least one overlap study
-* JSON includes collective and topology metadata
-
----
-
-# v1.0 — Distributed AI-Infrastructure Performance Platform
-
-## Objective
-
-Turn the project into a platform for bottleneck-driven analysis of distributed AI workloads.
-
-The system should not become a full training framework.
-
-It should provide:
-
-* instrumentation
-* controlled experiments
-* workload adapters
-* evidence collection
-* bottleneck analysis
-
-## Reference Workload
-
-Use a small but real workload:
-
-* PyTorch DDP
-* multi-GPU training
-* synthetic compute/communication loop
-* controlled input preprocessing
-
-The workload exists to generate observable bottlenecks.
-
-## Core Features
-
-### 1. Stage-Level Instrumentation
-
-Measure:
-
-* input generation or loading
-* CPU preprocessing
-* queueing
-* batching
-* H2D transfer
-* GPU compute
-* D2H where applicable
-* collective communication
-* idle gaps
-
-### 2. Bottleneck Taxonomy
-
-Classify evidence under:
-
-* CPU-bound
-* memory-bound
-* H2D-bound
-* GPU launch-overhead-bound
-* GPU compute-bound
-* GPU memory-bound
-* communication-bound
-* synchronization-bound
-* input-starved
-* queueing/backlog-dominated
-
-### 3. Evidence Bundle
-
-A performance study should combine:
-
-* end-to-end latency and throughput
-* stage timing
-* CPU counters
-* GPU timeline evidence
-* GPU kernel metrics
-* communication metrics
-* topology metadata
-
-### 4. `ull-analyze`
-
-A future tool may:
-
-* ingest canonical JSON
-* compare runs
-* detect regressions
-* identify likely bottleneck classes
-* generate Markdown or HTML reports
-
-The initial system should be heuristic and transparent.
-
-It must not pretend to provide perfect automatic diagnosis.
-
-### 5. Controlled Bottleneck Injection
-
-Add modes that intentionally create:
-
-* slow CPU preprocessing
-* inefficient small GPU batches
-* transfer serialization
-* memory pressure
-* communication imbalance
-
-Purpose:
-
-> Validate whether instrumentation can distinguish different bottleneck classes.
-
-### 6. Scaling Study
-
-Where hardware permits:
-
-* 1 GPU
-* 2 GPUs
-* 4+ GPUs
-
-Measure:
-
-* throughput scaling
-* scaling efficiency
-* communication fraction
-* idle fraction
-
-## Flagship Performance Analysis Project A — GPU Starvation
-
-Possible causes:
-
-* CPU preprocessing too slow
-* batch formation too slow
-* H2D copies serialized
-* batch too small
-* synchronization gaps
-
-The report must show evidence that distinguishes these causes.
-
-## Flagship Project B — Distributed Scaling Breakdown
-
-Primary question:
-
-> Why does throughput stop scaling as GPU count increases?
-
-Evidence:
-
-* compute time
-* communication time
-* exposed communication
-* synchronization
-* topology
-
-## Flagship Project C — Iterative Bottleneck Removal
-
-```text
-baseline
-  -> identify dominant bottleneck
-  -> optimize
-  -> bottleneck shifts
-  -> identify next bottleneck
-  -> optimize again
-```
-
-This project should demonstrate a central principle of performance engineering:
-
-> Removing one bottleneck usually exposes another.
-
-## Exit Criteria
-
-* one real distributed workload adapter
-* unified stage-level result format
-* CPU, GPU, and communication evidence in one report
-* controlled bottleneck-injection experiment
-* scaling study
-* `ull-analyze` prototype or equivalent report generator
-
----
-
-# Cross-Version Engineering Rules
-
-All work from v0.4 onward must follow these rules:
-
-1. No optimization without a stated hypothesis.
-2. No performance claim without reproducible evidence.
-3. Every benchmark identifies platform and build configuration.
-4. Human-readable output is useful; canonical JSON is required for machine comparison.
-5. Every experiment distinguishes warmup from measured samples.
-6. Tail latency is reported whenever latency matters.
-7. Throughput improvements are checked for latency regressions.
-8. Correctness is validated before performance comparison.
-9. Platform limitations and unavailable counters are documented.
-10. Failed hypotheses are documented when they produce useful insight.
-11. New queue or data-structure variants require a concrete performance question.
-12. CPU, GPU, and distributed stages use the same analysis methodology even when tools differ.
-
-Related documents:
-
-* `docs/design/design_requirements.md`
-* `docs/design/performance_analysis_platform.md`
-* `docs/design/benchmark_result_schema.md`
+Do not jump directly to CUDA, DPDK, RDMA, or distributed AI implementation from
+the current state. Keep them visible as planned long-term tracks.
