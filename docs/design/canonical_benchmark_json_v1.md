@@ -241,12 +241,10 @@ Proposed CLI:
 ./build/rel/sp_fanout_bench 4 1000000 1024 default 50000 --json 
 ```
 
-Initial behavior:
-- normal text output remains the default 
-- `--json` prints JSON to stdout 
-- no output file support yet 
-- no result directory creation yet 
-- no system metadata yet 
+Current behavior:
+- JSON output is the default for `sp_fanout_bench`
+- `--json` explicitly selects JSON output 
+- `--text` keeps the human-readable output for manual debugging 
 
 This keeps the first implementation small.
 
@@ -270,8 +268,9 @@ It should not change benchmark behavior.
 
 Only the output format should vary:
 ```text 
-default -> human-readable text 
+default -> machine-readable JSON 
 --json  -> machine-readable JSON 
+--text  -> machine-readable text 
 ```
 
 The benchmark should produce the same underlying measurements in both modes.
